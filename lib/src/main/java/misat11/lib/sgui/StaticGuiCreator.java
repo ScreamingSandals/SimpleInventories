@@ -87,7 +87,7 @@ public class StaticGuiCreator {
 			inventory.setItem(45, cosmeticItem);
 		}
 
-		for (int a = 1; a <= 7; a++) {
+		for (int a = 1; a <= 8; a++) {
 			inventory.setItem(45 + a, cosmeticItem);
 		}
 
