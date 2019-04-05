@@ -1,6 +1,7 @@
 package misat11.lib.sgui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,9 @@ public class SimpleGuiFormat {
 	private final List<ItemInfo> generatedData = new ArrayList<ItemInfo>();
 
 	private int lastpos = 0;
+
+	private ItemInfo previous = null;
+	private Map<String, ItemInfo> ids = new HashMap<String, ItemInfo>();
 
 	public SimpleGuiFormat(List<Map<String, Object>> data) {
 		this.data = data;
@@ -37,6 +41,69 @@ public class SimpleGuiFormat {
 	}
 
 	private int generateItem(ItemInfo parent, Map<String, Object> object, int lastpos) {
+		if (object.containsKey("insert")) {
+			Object obj = object.get("insert");
+			if (obj instanceof String && obj != null) {
+				String insert = (String) obj;
+				if ("main".equalsIgnoreCase(insert)) {
+					if (object.containsKey("items")) {
+						List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
+						for (Map<String, Object> itemObject : items) {
+							this.lastpos = generateItem(null, itemObject, this.lastpos);
+						}
+					}
+					return parent == null ? this.lastpos : lastpos;
+				} else if (insert.startsWith("§")) {
+					ItemInfo inserted = ids.get(insert.substring(1));
+					if (inserted != null) {
+						if (object.containsKey("items")) {
+							List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
+							for (Map<String, Object> itemObject : items) {
+								inserted.getData().lastpos = generateItem(inserted, itemObject, inserted.getData().lastpos);
+							}
+						}
+						return parent == inserted ? inserted.getData().lastpos : lastpos;
+					}
+				}
+			}
+		}
+		
+		if (object.containsKey("clone")) {
+			Object obj = object.get("clone");
+			if (obj instanceof String && obj != null) {
+				String clone = (String) obj;
+				if ("previous".equalsIgnoreCase(clone)) {
+					if (previous != null) {
+						for (Map.Entry<String, Object> entry : previous.getData().getData().entrySet()) {
+							if (!object.containsKey(entry.getKey()) && !isPositionProperty(entry.getKey())) { 
+								// Clone just non exists keys and without position
+								Object val = entry.getValue();
+								if (val instanceof ItemStack) {
+									val = ((ItemStack) val).clone();
+								}
+								object.put(entry.getKey(), val);
+							}
+						}
+					}
+				} else if ("cosmetic".equalsIgnoreCase(clone)) {
+					object.put("stack", new ItemStack(Material.AIR)); // Apply correct ItemStack in StaticGuiCreator
+				} else if (clone.startsWith("§")) {
+					ItemInfo cloned = ids.get(clone.substring(1));
+					if (cloned != null) {
+						for (Map.Entry<String, Object> entry : cloned.getData().getData().entrySet()) {
+							if (!object.containsKey(entry.getKey()) && !isPositionProperty(entry.getKey())) { 
+								// Clone just non exists keys and without position
+								Object val = entry.getValue();
+								if (val instanceof ItemStack) {
+									val = ((ItemStack) val).clone();
+								}
+								object.put(entry.getKey(), val);
+							}
+						}
+					}
+				}
+			}
+		}
 		ItemStack stack = object.containsKey("stack") ? (ItemStack) object.get("stack") : new ItemStack(Material.AIR);
 		int positionC = lastpos;
 		int linebreakC = 0;
@@ -97,7 +164,8 @@ public class SimpleGuiFormat {
 				for (Object obj : propertiesList) {
 					if (obj instanceof Map) {
 						Map<String, Object> propertyMap = (Map<String, Object>) obj;
-						Property pr = new Property(propertyMap.containsKey("name") ? (String) propertyMap.get("name") : null, propertyMap);
+						Property pr = new Property(
+								propertyMap.containsKey("name") ? (String) propertyMap.get("name") : null, propertyMap);
 						properties.add(pr);
 					}
 				}
@@ -113,6 +181,10 @@ public class SimpleGuiFormat {
 			}
 		}
 		generatedData.add(info);
+		previous = info;
+		if (id != null) {
+			ids.put(id, info);
+		}
 		int nextPosition = positionC;
 		if (pagebreakC >= 2) {
 			nextPosition += (ITEMS_ON_PAGE - (nextPosition % ITEMS_ON_PAGE));
@@ -125,5 +197,10 @@ public class SimpleGuiFormat {
 		}
 		lastpos = nextPosition;
 		return lastpos;
+	}
+
+	private boolean isPositionProperty(String key) {
+		return key.equals("row") || key.equals("column") || key.equals("skip") || key.equals("linebreak")
+				|| key.equals("pagebreak");
 	}
 }

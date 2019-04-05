@@ -41,6 +41,16 @@ public class StaticGuiCreator {
 	}
 
 	private void generateItem(ItemInfo item, ItemInfo parent, String pr) {
+		if (item.getData().getData().containsKey("clone")) {
+			Object obj = item.getData().getData().get("clone");
+			if (obj instanceof String && obj != null) {
+				String clone = (String) obj;
+				if ("cosmetic".equalsIgnoreCase(clone)) {
+					item.setItem(cosmeticItem.clone());
+				}
+			}
+		}
+		
 		GenerateItemEvent event = new GenerateItemEvent(guiFormat, item);
 		Bukkit.getPluginManager().callEvent(event);
 
