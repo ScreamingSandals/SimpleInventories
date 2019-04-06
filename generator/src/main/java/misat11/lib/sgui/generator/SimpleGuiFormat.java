@@ -1,12 +1,10 @@
-package misat11.lib.sgui;
+package misat11.lib.sgui.generator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 public class SimpleGuiFormat {
 
@@ -14,7 +12,7 @@ public class SimpleGuiFormat {
 
 	public static final int ITEMS_ON_ROW = 9;
 
-	private final List<Map<String, Object>>[] data;
+	private final List<Map<String, Object>> data;
 	private final List<ItemInfo> generatedData = new ArrayList<ItemInfo>();
 
 	private int lastpos = 0;
@@ -22,11 +20,11 @@ public class SimpleGuiFormat {
 	private ItemInfo previous = null;
 	private Map<String, ItemInfo> ids = new HashMap<String, ItemInfo>();
 
-	public SimpleGuiFormat(List<Map<String, Object>>... data) {
+	public SimpleGuiFormat(List<Map<String, Object>> data) {
 		this.data = data;
 	}
 
-	public List<Map<String, Object>>[] getData() {
+	public List<Map<String, Object>> getData() {
 		return this.data;
 	}
 
@@ -35,10 +33,8 @@ public class SimpleGuiFormat {
 	}
 
 	public void generateData() {
-		for (List<Map<String, Object>> list : data) {
-			for (Map<String, Object> object : list) {
-				lastpos = generateItem(null, object, lastpos);
-			}
+		for (Map<String, Object> object : data) {
+			lastpos = generateItem(null, object, lastpos);
 		}
 	}
 
@@ -61,8 +57,7 @@ public class SimpleGuiFormat {
 						if (object.containsKey("items")) {
 							List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
 							for (Map<String, Object> itemObject : items) {
-								inserted.getData().lastpos = generateItem(inserted, itemObject,
-										inserted.getData().lastpos);
+								inserted.getData().lastpos = generateItem(inserted, itemObject, inserted.getData().lastpos);
 							}
 						}
 						return parent == inserted ? inserted.getData().lastpos : lastpos;
@@ -70,11 +65,11 @@ public class SimpleGuiFormat {
 				}
 			}
 		}
-
+		
 		if (object.containsKey("clone")) {
 			Object obj = object.get("clone");
 			if (obj instanceof String && obj != null) {
-
+				
 				boolean cloneOverride = false;
 				boolean cloneListIncrement = false;
 				if (object.containsKey("clone-method")) {
@@ -85,9 +80,7 @@ public class SimpleGuiFormat {
 							// no changes
 						} else if ("override".equalsIgnoreCase(cloneMethod)) {
 							cloneOverride = true;
-						} else if ("increment".equalsIgnoreCase(cloneMethod)
-								|| "increment-default".equalsIgnoreCase(cloneMethod)
-								|| "increment-missing".equalsIgnoreCase(cloneMethod)) {
+						} else if ("increment".equalsIgnoreCase(cloneMethod) || "increment-default".equalsIgnoreCase(cloneMethod) || "increment-missing".equalsIgnoreCase(cloneMethod)) {
 							cloneListIncrement = true;
 						} else if ("increment-override".equalsIgnoreCase(cloneMethod)) {
 							cloneOverride = true;
@@ -95,12 +88,12 @@ public class SimpleGuiFormat {
 						}
 					}
 				}
-
+				
 				String clone = (String) obj;
 				if ("previous".equalsIgnoreCase(clone)) {
 					if (previous != null) {
 						for (Map.Entry<String, Object> entry : previous.getData().getData().entrySet()) {
-							if (!isPositionProperty(entry.getKey())) {
+							if (!isPositionProperty(entry.getKey())) { 
 								// Clone just non exists keys and without position
 								Object val = entry.getValue();
 								if (val instanceof List) {
@@ -121,21 +114,16 @@ public class SimpleGuiFormat {
 										object.put(entry.getKey(), val);
 									}
 								} else if (!object.containsKey(entry.getKey()) || cloneOverride) {
-									if (val instanceof ItemStack) {
-										val = ((ItemStack) val).clone();
-									}
 									object.put(entry.getKey(), val);
 								}
 							}
 						}
 					}
-				} else if ("cosmetic".equalsIgnoreCase(clone)) {
-					object.put("stack", new ItemStack(Material.AIR)); // Apply correct ItemStack in StaticGuiCreator
 				} else if (clone.startsWith("§")) {
 					ItemInfo cloned = ids.get(clone.substring(1));
 					if (cloned != null) {
 						for (Map.Entry<String, Object> entry : cloned.getData().getData().entrySet()) {
-							if (!isPositionProperty(entry.getKey())) {
+							if (!isPositionProperty(entry.getKey())) { 
 								// Clone just non exists keys and without position
 								Object val = entry.getValue();
 								if (val instanceof List) {
@@ -156,9 +144,6 @@ public class SimpleGuiFormat {
 										object.put(entry.getKey(), val);
 									}
 								} else if (!object.containsKey(entry.getKey()) || cloneOverride) {
-									if (val instanceof ItemStack) {
-										val = ((ItemStack) val).clone();
-									}
 									object.put(entry.getKey(), val);
 								}
 							}
@@ -167,7 +152,7 @@ public class SimpleGuiFormat {
 				}
 			}
 		}
-		ItemStack stack = object.containsKey("stack") ? (ItemStack) object.get("stack") : new ItemStack(Material.AIR);
+		ItemStack stack = object.containsKey("stack") ? new ItemStack((Map<String, Object>)object.get("stack")) : new ItemStack(new HashMap<>());
 		int positionC = lastpos;
 		int linebreakC = 0;
 		int pagebreakC = 0;
