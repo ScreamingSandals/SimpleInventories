@@ -225,6 +225,7 @@ public class SimpleGuiFormat {
 		ItemData iData = new ItemData(id, properties, object);
 		ItemInfo info = new ItemInfo(parent, stack.clone(), positionC, iData);
 		if (object.containsKey("items")) {
+			info.setHasChilds(true);
 			List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
 			for (Map<String, Object> itemObject : items) {
 				iData.lastpos = generateItem(info, itemObject, iData.lastpos);

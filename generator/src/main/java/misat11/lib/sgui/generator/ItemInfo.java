@@ -5,6 +5,7 @@ public class ItemInfo {
 	private int position;
 	private ItemStack item;
 	private ItemData data;
+	private boolean hasChilds;
 	
 	public ItemInfo(ItemInfo parent, ItemStack item, int position, ItemData data) {
 		this.parent = parent;
@@ -43,6 +44,14 @@ public class ItemInfo {
 
 	public void setParent(ItemInfo parent) {
 		this.parent = parent;
+	}
+
+	public boolean hasChilds() {
+		return hasChilds;
+	}
+
+	public void setHasChilds(boolean hasChilds) {
+		this.hasChilds = hasChilds;
 	}
 	
 }
