@@ -66,8 +66,8 @@ public class Sample extends JavaPlugin implements Listener {
         
     }
 
-	@EventHandler
-	public void onGeneratingItem(GenerateItemEvent event) {
+    @EventHandler
+    public void onGeneratingItem(GenerateItemEvent event) {
         if (event.getFormat() != format) {
             return; // you should check if the format is yours
         }
@@ -75,8 +75,8 @@ public class Sample extends JavaPlugin implements Listener {
         // here do some stuff on generating item with creator
     }
 
-	@EventHandler
-	public void onPreAction(PreActionEvent event) {
+    @EventHandler
+    public void onPreAction(PreActionEvent event) {
         if (event.getFormat() != format) {
             return; // you should check if the format is yours
         }
@@ -89,8 +89,8 @@ public class Sample extends JavaPlugin implements Listener {
     
     }
 
-	@EventHandler
-	public void onPostAction(PostActionEvent event) {
+    @EventHandler
+    public void onPostAction(PostActionEvent event) {
         if (event.getFormat() != format) {
             return; // you should check if the format is yours
         }
