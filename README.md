@@ -4,6 +4,8 @@ Simple Gui Format used for formatting guis for Spigot minigames!
 
 [![Build Status](https://jenkins.mtorus.cz:443/view/Minecraft%20plugins/job/SimpleGuiFormat/badge/icon?style=flat-square)](https://jenkins.mtorus.cz:443/view/Minecraft%20plugins/job/SimpleGuiFormat/)
 
+Look into our wiki: https://github.com/Misat11/SimpleGuiFormat/wiki
+
 ## How to use
 1. Import maven repository
 ```xml
@@ -57,13 +59,13 @@ public class Sample extends JavaPlugin implements Listener {
         format = new SimpleGuiFormat(data);
         format.generateData();
 
-        SimpleGuiCreator creator = new StaticGuiCreator(nameOfYourInventory, format, backItem, pageBackItem, pageForwardItem, cosmeticItem);
+        StaticGuiCreator creator = new StaticGuiCreator(nameOfYourInventory, format, backItem, pageBackItem, pageForwardItem, cosmeticItem);
 
         StaticInventoryListener listener = new StaticInventoryListener(creator);
         Bukkit.getServer().getPluginManager().registerEvents(listener, this); // Needed for navigate in inventory
         Bukkit.getServer().getPluginManager().registerEvents(this, this); // Needed for onclick action
 
-        
+        creator.generate();
     }
 
     @EventHandler
