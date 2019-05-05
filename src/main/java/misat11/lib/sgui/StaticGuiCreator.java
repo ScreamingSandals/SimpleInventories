@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import misat11.lib.sgui.events.GenerateItemEvent;
 
-public class StaticGuiCreator {
+public class StaticGuiCreator implements GuiCreator {
 	private final SimpleGuiFormat guiFormat;
 	private final String prefix;
 
@@ -108,6 +109,7 @@ public class StaticGuiCreator {
 		return inventoryForHandler;
 	}
 
+	@Override
 	public SimpleGuiFormat getFormat() {
 		return guiFormat;
 	}
@@ -124,23 +126,33 @@ public class StaticGuiCreator {
 		return inventories.get(parent);
 	}
 
+	@Override
 	public String getPrefix() {
 		return prefix;
 	}
 
+	@Override
 	public ItemStack getBackItem() {
 		return backItem;
 	}
 
+	@Override
 	public ItemStack getPageBackItem() {
 		return pageBackItem;
 	}
 
+	@Override
 	public ItemStack getPageForwardItem() {
 		return pageForwardItem;
 	}
 
+	@Override
 	public ItemStack getCosmeticItem() {
 		return cosmeticItem;
+	}
+
+	@Override
+	public void openForPlayer(Player player) {
+		player.openInventory(inventories.get(null).get(0));
 	}
 }
