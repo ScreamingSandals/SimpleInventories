@@ -1,7 +1,5 @@
 package misat11.lib.sgui;
 
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,11 +46,19 @@ public class DynamicInventoryListener implements Listener {
 				ItemStack pageBack = creator.getPageBackItem();
 				ItemStack pageForward = creator.getPageForwardItem();
 				if (back.equals(cur) && slot == 0) {
-					// TODO
+					if (parent != null) {
+						ItemInfo parentOfParent = parent.getParent();
+						int pageOfParent = (parent.getPosition() / SimpleGuiFormat.ITEMS_ON_PAGE);
+						new DynamicGuiHolder(player, creator, parentOfParent, pageOfParent);
+					}
 				} else if (pageBack.equals(cur) && slot == 45) {
-					// TODO
+					if (page > 0) {
+						new DynamicGuiHolder(player, creator, parent, page - 1);
+					}
 				} else if (pageForward.equals(cur) && slot == 53) {
-					// TODO
+					if (creator.getLastPageNumbers().get(parent) > page) {
+						new DynamicGuiHolder(player, creator, parent, page + 1);
+					}
 				}
 				return;
 			}

@@ -11,6 +11,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+import misat11.lib.sgui.events.GenerateItemEvent;
+
 public class DynamicGuiHolder implements InventoryHolder {
 
 	private final SimpleGuiFormat format;
@@ -29,9 +31,9 @@ public class DynamicGuiHolder implements InventoryHolder {
 		this.page = page;
 		List<ItemInfo> items = new ArrayList<ItemInfo>();
 		if (this.creator.getDynamicInfo().containsKey(null)) {
-			Map<Integer, List<ItemInfo>> map = this.creator.getDynamicInfo().get(null);
-			if (map.containsKey(0)) {
-				items.addAll(map.get(0));
+			Map<Integer, List<ItemInfo>> map = this.creator.getDynamicInfo().get(parent);
+			if (map.containsKey(page)) {
+				items.addAll(map.get(page));
 			}
 		}
 		this.items = items;
@@ -39,6 +41,7 @@ public class DynamicGuiHolder implements InventoryHolder {
 		this.inv = Bukkit.createInventory(this, 54, creator.getPrefix() + "§r - " + (page + 1));
 		this.itemsInInventory = new HashMap<Integer, ItemInfo>();
 		this.repaint();
+		this.player.openInventory(this.inv);
 	}
 	
 	public void repaint() {
@@ -66,9 +69,9 @@ public class DynamicGuiHolder implements InventoryHolder {
 		}
 		
 		if (this.creator.getLastPageNumbers().get(this.parent) > this.page) {
-			this.inv.setItem(54, creator.getPageForwardItem());
+			this.inv.setItem(53, creator.getPageForwardItem());
 		} else {
-			this.inv.setItem(54, creator.getCosmeticItem());
+			this.inv.setItem(53, creator.getCosmeticItem());
 		}
 		
 		for (ItemInfo item : items) {
@@ -82,6 +85,10 @@ public class DynamicGuiHolder implements InventoryHolder {
 					}
 				}
 			}
+			
+			GenerateItemEvent event = new GenerateItemEvent(this.format, item);
+			Bukkit.getPluginManager().callEvent(event);
+			
 			int cpos = (item.getPosition() % SimpleGuiFormat.ITEMS_ON_PAGE) + SimpleGuiFormat.ITEMS_ON_ROW;
 			
 			this.inv.setItem(cpos, stack);
