@@ -7,6 +7,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 
 import misat11.lib.sgui.ItemInfo;
+import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.SimpleGuiFormat;
 
 public class PreActionEvent extends Event implements Cancellable {
@@ -16,10 +17,10 @@ public class PreActionEvent extends Event implements Cancellable {
 	private SimpleGuiFormat format = null;
 	private Inventory inv = null;
 	private ItemInfo parent = null;
-	private ItemInfo item = null;
+	private PlayerItemInfo item = null;
 	private boolean cancel = false;
 
-	public PreActionEvent(Player player, SimpleGuiFormat format, Inventory inv, ItemInfo parent, ItemInfo item) {
+	public PreActionEvent(Player player, SimpleGuiFormat format, Inventory inv, ItemInfo parent, PlayerItemInfo item) {
 		this.player = player;
 		this.format = format;
 		this.inv = inv;
@@ -47,8 +48,12 @@ public class PreActionEvent extends Event implements Cancellable {
 		return this.parent;
 	}
 	
-	public ItemInfo getItem() {
+	public PlayerItemInfo getItem() {
 		return this.item;
+	}
+	
+	public ItemInfo getOriginalItem() {
+		return this.item.getOriginal();
 	}
 
 	@Override

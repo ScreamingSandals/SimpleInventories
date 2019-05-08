@@ -5,6 +5,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 import misat11.lib.sgui.ItemInfo;
+import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.SimpleGuiFormat;
 
 public class GenerateItemEvent extends Event {
@@ -12,9 +13,9 @@ public class GenerateItemEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	
 	private SimpleGuiFormat format;
-	private ItemInfo info;
+	private PlayerItemInfo info;
 	
-	public GenerateItemEvent(SimpleGuiFormat format, ItemInfo info) {
+	public GenerateItemEvent(SimpleGuiFormat format, PlayerItemInfo info) {
 		this.format = format;
 		this.info = info;
 	}
@@ -23,18 +24,37 @@ public class GenerateItemEvent extends Event {
 		return format;
 	}
 
-	public ItemInfo getInfo() {
+	public PlayerItemInfo getInfo() {
 		return info;
+	}
+	
+	public ItemInfo getOriginalInfo() {
+		return info.getOriginal();
 	}
 
     public ItemStack getStack() {
-    	return info.getItem();
+    	return info.getStack();
     }
     
     public void setStack(ItemStack stack) {
-    	info.setItem(stack);
+    	info.setStack(stack);
     }
-
+    
+    public boolean isVisible() {
+    	return info.isVisible();
+    }
+    
+    public void setVisible(boolean visible) {
+    	info.setVisible(visible);
+    }
+    
+    public boolean isDisabled() {
+    	return info.isDisabled();
+    }
+    
+    public void setDisabled(boolean disabled) {
+    	info.setDisabled(disabled);
+    }
 
 	public static HandlerList getHandlerList() {
 		return GenerateItemEvent.handlers;

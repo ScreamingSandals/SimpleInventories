@@ -1,12 +1,19 @@
 package misat11.lib.sgui;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.plugin.Plugin;
 
 public class SimpleGuiFormat {
 
@@ -14,30 +21,133 @@ public class SimpleGuiFormat {
 
 	public static final int ITEMS_ON_ROW = 9;
 
-	private final List<Map<String, Object>>[] data;
+	private final List<List<Map<String, Object>>> data = new ArrayList<List<Map<String, Object>>>();
 	private final List<ItemInfo> generatedData = new ArrayList<ItemInfo>();
 
 	private int lastpos = 0;
 
 	private ItemInfo previous = null;
 	private Map<String, ItemInfo> ids = new HashMap<String, ItemInfo>();
+	
+	private boolean animationsEnabled = false;
+	private Plugin pluginForRunnables = null;
+	
+	private boolean genericShopEnabled = false;
+	private boolean genericShopPriceTypeRequired = false;
 
-	public SimpleGuiFormat(List<Map<String, Object>>... data) {
-		this.data = data;
+	// FROM CREATOR
+	private final Map<ItemInfo, Map<Integer, List<ItemInfo>>> infoByAbsolutePosition = new HashMap<ItemInfo, Map<Integer, List<ItemInfo>>>();
+	private final Map<ItemInfo, Integer> lastPageNumbers = new HashMap<ItemInfo, Integer>();
+	private final String prefix;
+	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
+
+	public SimpleGuiFormat(String prefix, ItemStack backItem, ItemStack pageBackItem, ItemStack pageForwardItem,
+			ItemStack cosmeticItem) {
+		this.prefix = prefix;
+		this.backItem = backItem;
+		this.pageBackItem = pageBackItem;
+		this.pageForwardItem = pageForwardItem;
+		this.cosmeticItem = cosmeticItem;
 	}
 
-	public List<Map<String, Object>>[] getData() {
+	public void load(List<Map<String, Object>> data) {
+		this.data.add(data);
+	}
+
+	public void load(String fileName) throws IOException, InvalidConfigurationException {
+		load(new File(fileName), "data");
+	}
+
+	public void load(String fileName, String configPath)
+			throws IOException, InvalidConfigurationException {
+		load(new File(fileName), configPath);
+	}
+
+	public void loadFromDataFolder(File pluginDataFolder, String fileName)
+			throws IOException, InvalidConfigurationException {
+		load(new File(pluginDataFolder, fileName), "data");
+	}
+
+	public void loadFromDataFolder(File pluginDataFolder, String fileName, String configPath)
+			throws IOException, InvalidConfigurationException {
+		load(new File(pluginDataFolder, fileName), configPath);
+	}
+
+	public void load(File file) throws IOException, InvalidConfigurationException {
+		load(file, "data");
+	}
+
+	public void load(File file, String configPath)
+			throws IOException, InvalidConfigurationException {
+		YamlConfiguration config = new YamlConfiguration();
+		config = new YamlConfiguration();
+		config.load(file);
+		List<Map<String, Object>> data = (List<Map<String, Object>>) config.getList(configPath);
+		this.data.add(data);
+	}
+	
+	public void enableAnimations(Plugin plugin) {
+		this.animationsEnabled = true;
+		this.pluginForRunnables = plugin;
+	}
+	
+	public void disableAnimations() {
+		this.animationsEnabled = false;
+	}
+	
+	public boolean isAnimationsEnabled() {
+		return this.animationsEnabled && this.pluginForRunnables != null;
+	}
+	
+	public void enableGenericShop(boolean priceTypeRequired) {
+		this.genericShopEnabled = true;
+		this.genericShopPriceTypeRequired = priceTypeRequired;
+	}
+	
+	public void disableGenericShop() {
+		this.genericShopEnabled = false;
+	}
+	
+	public boolean isGenericShopEnabled() {
+		return this.genericShopEnabled;
+	}
+	
+	public boolean isPriceTypeRequired() {
+		return this.genericShopPriceTypeRequired;
+	}
+	
+	public Plugin getPluginForRunnables() {
+		return this.pluginForRunnables;
+	}
+
+	public List<List<Map<String, Object>>> getData() {
 		return this.data;
-	}
-
-	public List<ItemInfo> getPreparedData() {
-		return this.generatedData;
 	}
 
 	public void generateData() {
 		for (List<Map<String, Object>> list : data) {
 			for (Map<String, Object> object : list) {
 				lastpos = generateItem(null, object, lastpos);
+			}
+		}
+		
+		for (ItemInfo info : this.generatedData) {
+			if (!infoByAbsolutePosition.containsKey(info.getParent())) {
+				infoByAbsolutePosition.put(info.getParent(), new HashMap<Integer, List<ItemInfo>>());
+			}
+			int page = (info.getPosition() / SimpleGuiFormat.ITEMS_ON_PAGE);
+			Map<Integer, List<ItemInfo>> map = infoByAbsolutePosition.get(info.getParent());
+			if (!map.containsKey(page)) {
+				map.put(page, new ArrayList<>());
+			}
+			map.get(page).add(info);
+			if (!lastPageNumbers.containsKey(info.getParent())) {
+				lastPageNumbers.put(info.getParent(), page);
+			} else {
+				int lastPage = lastPageNumbers.get(info.getParent());
+				if (page > lastPage) {
+					lastPageNumbers.put(info.getParent(), page);
+				}
 			}
 		}
 	}
@@ -61,11 +171,10 @@ public class SimpleGuiFormat {
 						if (object.containsKey("items")) {
 							List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
 							for (Map<String, Object> itemObject : items) {
-								inserted.getData().lastpos = generateItem(inserted, itemObject,
-										inserted.getData().lastpos);
+								inserted.lastpos = generateItem(inserted, itemObject, inserted.lastpos);
 							}
 						}
-						return parent == inserted ? inserted.getData().lastpos : lastpos;
+						return parent == inserted ? inserted.lastpos : lastpos;
 					}
 				}
 			}
@@ -99,7 +208,7 @@ public class SimpleGuiFormat {
 				String clone = (String) obj;
 				if ("previous".equalsIgnoreCase(clone)) {
 					if (previous != null) {
-						for (Map.Entry<String, Object> entry : previous.getData().getData().entrySet()) {
+						for (Map.Entry<String, Object> entry : previous.getData().entrySet()) {
 							if (!isPositionProperty(entry.getKey())) {
 								// Clone just non exists keys and without position
 								Object val = entry.getValue();
@@ -134,7 +243,7 @@ public class SimpleGuiFormat {
 				} else if (clone.startsWith("§")) {
 					ItemInfo cloned = ids.get(clone.substring(1));
 					if (cloned != null) {
-						for (Map.Entry<String, Object> entry : cloned.getData().getData().entrySet()) {
+						for (Map.Entry<String, Object> entry : cloned.getData().entrySet()) {
 							if (!isPositionProperty(entry.getKey())) {
 								// Clone just non exists keys and without position
 								Object val = entry.getValue();
@@ -237,13 +346,27 @@ public class SimpleGuiFormat {
 				}
 			}
 		}
-		ItemData iData = new ItemData(id, properties, object);
-		ItemInfo info = new ItemInfo(parent, stack.clone(), positionC, iData);
+		List<ItemStack> animation = null;
+		if (object.containsKey("animation")) {
+			animation = (List<ItemStack>) object.get("animation");
+		}
+		ItemInfo info = new ItemInfo(parent, stack.clone(), positionC, (boolean) object.getOrDefault("visible", true),
+				(boolean) object.getOrDefault("disabled", false), id, properties, object, animation);
 		if (object.containsKey("items")) {
 			List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
 			for (Map<String, Object> itemObject : items) {
-				iData.lastpos = generateItem(info, itemObject, iData.lastpos);
+				info.lastpos = generateItem(info, itemObject, info.lastpos);
 			}
+		} else if (object.containsKey("book")) {
+			List<Map<String, Object>> pages = (List<Map<String, Object>>) object.get("book");
+			ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+			BookMeta meta = (BookMeta) book.getItemMeta();
+			for (Map<String, Object> page : pages) {
+				String text = (String) page.get("text");
+				meta.addPage(text);
+			}
+			book.setItemMeta(meta);
+			info.setBook(book);
 		}
 		generatedData.add(info);
 		previous = info;
@@ -267,5 +390,37 @@ public class SimpleGuiFormat {
 	private boolean isPositionProperty(String key) {
 		return key.equals("row") || key.equals("column") || key.equals("skip") || key.equals("linebreak")
 				|| key.equals("pagebreak");
+	}
+	
+	public Map<ItemInfo, Map<Integer, List<ItemInfo>>> getDynamicInfo(){
+		return this.infoByAbsolutePosition;
+	}
+	
+	public Map<ItemInfo, Integer> getLastPageNumbers() {
+		return this.lastPageNumbers;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public ItemStack getBackItem() {
+		return backItem;
+	}
+
+	public ItemStack getPageBackItem() {
+		return pageBackItem;
+	}
+
+	public ItemStack getPageForwardItem() {
+		return pageForwardItem;
+	}
+
+	public ItemStack getCosmeticItem() {
+		return cosmeticItem;
+	}
+
+	public void openForPlayer(Player player) {
+		new GuiHolder(player, this, null, 0);
 	}
 }

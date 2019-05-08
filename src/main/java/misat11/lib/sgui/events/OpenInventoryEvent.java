@@ -7,29 +7,28 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.Inventory;
 
 import misat11.lib.sgui.ItemInfo;
-import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.SimpleGuiFormat;
 
-public class PostActionEvent extends Event implements Cancellable {
+public class OpenInventoryEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
 	private Player player = null;
 	private SimpleGuiFormat format = null;
 	private Inventory inv = null;
-	private ItemInfo parent = null;
-	private PlayerItemInfo item = null;
 	private boolean cancel = false;
+	private ItemInfo parent = null;
+	private int page = 0;
 
-	public PostActionEvent(Player player, SimpleGuiFormat format, Inventory inv, ItemInfo parent, PlayerItemInfo item) {
+	public OpenInventoryEvent(Player player, SimpleGuiFormat format, Inventory inv, ItemInfo parent, int page) {
 		this.player = player;
 		this.format = format;
 		this.inv = inv;
 		this.parent = parent;
-		this.item = item;
+		this.page = page;
 	}
 
 	public static HandlerList getHandlerList() {
-		return PostActionEvent.handlers;
+		return OpenInventoryEvent.handlers;
 	}
 
 	public Player getPlayer() {
@@ -48,17 +47,13 @@ public class PostActionEvent extends Event implements Cancellable {
 		return this.parent;
 	}
 	
-	public PlayerItemInfo getItem() {
-		return this.item;
+	public int getPage() {
+		return this.page;
 	}
 	
-	public ItemInfo getOriginalItem() {
-		return this.item.getOriginal();
-	}
-
 	@Override
 	public HandlerList getHandlers() {
-		return PostActionEvent.handlers;
+		return OpenInventoryEvent.handlers;
 	}
 
 	@Override
