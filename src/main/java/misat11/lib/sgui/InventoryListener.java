@@ -42,7 +42,7 @@ public class InventoryListener implements Listener {
 			PlayerItemInfo playersItem = holder.getItemInfoOnPosition(slot);
 			ItemInfo originalItem = playersItem != null ? playersItem.getOriginal() : null;
 
-			PreActionEvent event = new PreActionEvent(player, format, inventory, parent, playersItem);
+			PreActionEvent event = new PreActionEvent(player, format, inventory, parent, playersItem, e.getClick());
 
 			Bukkit.getPluginManager().callEvent(event);
 
@@ -128,7 +128,7 @@ public class InventoryListener implements Listener {
 						String type = (String) originalData.get("price-type");
 
 						ShopTransactionEvent shopEvent = new ShopTransactionEvent(player, format, playersItem, price,
-								type);
+								type, e.getClick());
 						Bukkit.getPluginManager().callEvent(shopEvent);
 
 						if (player.getOpenInventory().getTopInventory().getHolder() == holder) {
@@ -142,7 +142,7 @@ public class InventoryListener implements Listener {
 						String type = (String) originalData.getOrDefault("price-type", "default");
 
 						ShopTransactionEvent shopEvent = new ShopTransactionEvent(player, format, playersItem, price,
-								type);
+								type, e.getClick());
 						Bukkit.getPluginManager().callEvent(shopEvent);
 
 						if (player.getOpenInventory().getTopInventory().getHolder() == holder) {
@@ -153,7 +153,7 @@ public class InventoryListener implements Listener {
 				}
 			}
 
-			PostActionEvent postEvent = new PostActionEvent(player, format, inventory, parent, playersItem);
+			PostActionEvent postEvent = new PostActionEvent(player, format, inventory, parent, playersItem, e.getClick());
 			Bukkit.getPluginManager().callEvent(postEvent);
 
 			if (player.getOpenInventory().getTopInventory().getHolder() == holder) {

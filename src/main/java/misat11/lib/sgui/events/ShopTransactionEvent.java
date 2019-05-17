@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 import misat11.lib.sgui.ItemInfo;
@@ -23,14 +24,16 @@ public class ShopTransactionEvent extends Event implements Cancellable {
 	private ItemStack stack = null;
 	private PlayerItemInfo item = null;
 	private boolean cancel = false;
+	private ClickType clickType = null;
 
-	public ShopTransactionEvent(Player player, SimpleGuiFormat format, PlayerItemInfo item, int price, String type) {
+	public ShopTransactionEvent(Player player, SimpleGuiFormat format, PlayerItemInfo item, int price, String type, ClickType clickType) {
 		this.player = player;
 		this.format = format;
 		this.item = item;
 		this.stack = item.getOriginal().getItem().clone();
 		this.price = price;
 		this.type = type;
+		this.clickType = clickType;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -63,6 +66,10 @@ public class ShopTransactionEvent extends Event implements Cancellable {
 	
 	public ItemStack getStack() {
 		return this.stack;
+	}
+	
+	public ClickType getClickType() {
+		return this.clickType;
 	}
 	
 	public boolean hasPlayerInInventory() {

@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 
 import misat11.lib.sgui.ItemInfo;
@@ -19,13 +20,15 @@ public class PreActionEvent extends Event implements Cancellable {
 	private ItemInfo parent = null;
 	private PlayerItemInfo item = null;
 	private boolean cancel = false;
+	private ClickType clickType = null;
 
-	public PreActionEvent(Player player, SimpleGuiFormat format, Inventory inv, ItemInfo parent, PlayerItemInfo item) {
+	public PreActionEvent(Player player, SimpleGuiFormat format, Inventory inv, ItemInfo parent, PlayerItemInfo item, ClickType clickType) {
 		this.player = player;
 		this.format = format;
 		this.inv = inv;
 		this.parent = parent;
 		this.item = item;
+		this.clickType = clickType;
 	}
 
 	public static HandlerList getHandlerList() {
@@ -54,6 +57,10 @@ public class PreActionEvent extends Event implements Cancellable {
 	
 	public ItemInfo getOriginalItem() {
 		return this.item.getOriginal();
+	}
+	
+	public ClickType getClickType() {
+		return this.clickType;
 	}
 
 	@Override
