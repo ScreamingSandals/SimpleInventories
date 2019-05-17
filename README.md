@@ -19,7 +19,7 @@ Look into our wiki: https://github.com/Misat11/SimpleGuiFormat/wiki
 <dependency>
   <groupId>misat11.lib.sgui</groupId>
   <artifactId>SimpleGuiFormat</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.4</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -32,8 +32,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import misat11.lib.sgui.SimpleGuiFormat;
-import misat11.lib.sgui.StaticGuiCreator;
-import misat11.lib.sgui.StaticInventoryListener;
+import misat11.lib.sgui.InventoryListener;
 import misat11.lib.sgui.events.GenerateItemEvent;
 import misat11.lib.sgui.events.PostActionEvent;
 import misat11.lib.sgui.events.PreActionEvent;
@@ -41,9 +40,11 @@ import misat11.lib.sgui.events.PreActionEvent;
 public class Sample extends JavaPlugin implements Listener {
 
     public SimpleGuiFormat format;
-    public StaticGuiCreator creator;
 
     public void onEnable() {
+    
+        InventoryListener listener = new InventoryListener(); // for all guis
+        Bukkit.getServer().getPluginManager().registerEvents(listener, this); // Needed for navigate in inventory
 
         // here do some things to load the configuration
 
@@ -56,16 +57,12 @@ public class Sample extends JavaPlugin implements Listener {
 
         // now we must create gui from configuration
 
-        format = new SimpleGuiFormat(data);
-        format.generateData();
+        format = new SimpleGuiFormat(nameOfYourInventory, backItem, pageBackItem, pageForwardItem, cosmeticItem);
+        format.load(data);
 
-        StaticGuiCreator creator = new StaticGuiCreator(nameOfYourInventory, format, backItem, pageBackItem, pageForwardItem, cosmeticItem);
-
-        StaticInventoryListener listener = new StaticInventoryListener(creator);
-        Bukkit.getServer().getPluginManager().registerEvents(listener, this); // Needed for navigate in inventory
         Bukkit.getServer().getPluginManager().registerEvents(this, this); // Needed for onclick action
 
-        creator.generate();
+        format.generateData();
     }
 
     @EventHandler
@@ -106,7 +103,7 @@ public class Sample extends JavaPlugin implements Listener {
     }
 
     public void show(Player player) {
-        p.openInventory(creator.getInventories(null).get(0)); // get main inventory
+        format.openForPlayer(player);
     }
 }
 ```
