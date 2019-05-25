@@ -30,7 +30,7 @@ public class InventoryListener implements Listener {
 			Player player = (Player) e.getWhoClicked();
 			e.setCancelled(true);
 			Inventory inventory = e.getClickedInventory();
-			if (!inventory.equals(primaryInventory)) { // check if inventory with GuiHolder and clicked inventory is
+			if (!primaryInventory.equals(inventory)) { // check if inventory with GuiHolder and clicked inventory is
 														// same
 				return;
 			}
