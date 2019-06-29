@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import io.netty.buffer.ByteBuf;
@@ -29,7 +30,7 @@ public class InventoryListener implements Listener {
 		if (primaryInventory.getHolder() instanceof GuiHolder) {
 			Player player = (Player) e.getWhoClicked();
 			e.setCancelled(true);
-			Inventory inventory = e.getClickedInventory();
+			Inventory inventory = getInventory(e.getView(), e.getRawSlot()); 
 			if (!primaryInventory.equals(inventory)) { // check if inventory with GuiHolder and clicked inventory is
 														// same
 				return;
@@ -184,5 +185,18 @@ public class InventoryListener implements Listener {
 	private static final Class<?> ppoob = getNMSClass("PacketPlayOutOpenBook");
 	private static final Class<?> eh = getNMSClass("EnumHand");
 	private static final Class<?> p = getNMSClass("Packet");
+	
+	// implement this method here for fix it on older craftbukkit servers
+    public final Inventory getInventory(InventoryView view, int rawSlot) {
+        if (rawSlot == InventoryView.OUTSIDE) {
+            return null;
+        }
+
+        if (rawSlot < view.getTopInventory().getSize()) {
+            return view.getTopInventory();
+        } else {
+            return view.getBottomInventory();
+        }
+    }
 
 }
