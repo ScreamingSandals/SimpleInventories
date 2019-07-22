@@ -109,7 +109,7 @@ public class GuiHolder implements InventoryHolder {
 			
 			PlayerItemInfo playersInfo = new PlayerItemInfo(item, stack.clone(), item.isVisible(), item.isDisabled());
 			
-			GenerateItemEvent event = new GenerateItemEvent(this.format, playersInfo);
+			GenerateItemEvent event = new GenerateItemEvent(this.format, playersInfo, player);
 			Bukkit.getPluginManager().callEvent(event);
 			
 			int cpos = (item.getPosition() % SimpleGuiFormat.ITEMS_ON_PAGE) + SimpleGuiFormat.ITEMS_ON_ROW;
