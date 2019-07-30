@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,6 +17,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.Plugin;
+
+import misat11.lib.sgui.placeholders.PAPIPlaceholderParser;
+import misat11.lib.sgui.placeholders.PlaceholderConstantParser;
+import misat11.lib.sgui.placeholders.PlaceholderParser;
+import misat11.lib.sgui.placeholders.PlayerPlaceholderParser;
 
 public class SimpleGuiFormat {
 
@@ -28,12 +36,14 @@ public class SimpleGuiFormat {
 
 	private ItemInfo previous = null;
 	private Map<String, ItemInfo> ids = new HashMap<String, ItemInfo>();
-	
+
 	private boolean animationsEnabled = false;
 	private Plugin pluginForRunnables = null;
-	
+
 	private boolean genericShopEnabled = false;
 	private boolean genericShopPriceTypeRequired = false;
+
+	private Map<String, PlaceholderParser> placeholders = new HashMap<>();
 
 	// FROM CREATOR
 	private final Map<ItemInfo, Map<Integer, List<ItemInfo>>> infoByAbsolutePosition = new HashMap<ItemInfo, Map<Integer, List<ItemInfo>>>();
@@ -48,6 +58,11 @@ public class SimpleGuiFormat {
 		this.pageBackItem = pageBackItem;
 		this.pageForwardItem = pageForwardItem;
 		this.cosmeticItem = cosmeticItem;
+
+		registerPlaceholder("player", new PlayerPlaceholderParser());
+		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+			registerPlaceholder("papi", new PAPIPlaceholderParser());
+		}
 	}
 
 	public void load(List<Map<String, Object>> data) {
@@ -58,8 +73,7 @@ public class SimpleGuiFormat {
 		load(new File(fileName), "data");
 	}
 
-	public void load(String fileName, String configPath)
-			throws IOException, InvalidConfigurationException {
+	public void load(String fileName, String configPath) throws IOException, InvalidConfigurationException {
 		load(new File(fileName), configPath);
 	}
 
@@ -77,45 +91,44 @@ public class SimpleGuiFormat {
 		load(file, "data");
 	}
 
-	public void load(File file, String configPath)
-			throws IOException, InvalidConfigurationException {
+	public void load(File file, String configPath) throws IOException, InvalidConfigurationException {
 		YamlConfiguration config = new YamlConfiguration();
 		config = new YamlConfiguration();
 		config.load(file);
 		List<Map<String, Object>> data = (List<Map<String, Object>>) config.getList(configPath);
 		this.data.add(data);
 	}
-	
+
 	public void enableAnimations(Plugin plugin) {
 		this.animationsEnabled = true;
 		this.pluginForRunnables = plugin;
 	}
-	
+
 	public void disableAnimations() {
 		this.animationsEnabled = false;
 	}
-	
+
 	public boolean isAnimationsEnabled() {
 		return this.animationsEnabled && this.pluginForRunnables != null;
 	}
-	
+
 	public void enableGenericShop(boolean priceTypeRequired) {
 		this.genericShopEnabled = true;
 		this.genericShopPriceTypeRequired = priceTypeRequired;
 	}
-	
+
 	public void disableGenericShop() {
 		this.genericShopEnabled = false;
 	}
-	
+
 	public boolean isGenericShopEnabled() {
 		return this.genericShopEnabled;
 	}
-	
+
 	public boolean isPriceTypeRequired() {
 		return this.genericShopPriceTypeRequired;
 	}
-	
+
 	public Plugin getPluginForRunnables() {
 		return this.pluginForRunnables;
 	}
@@ -124,13 +137,48 @@ public class SimpleGuiFormat {
 		return this.data;
 	}
 
+	public boolean registerPlaceholder(String name, String value) {
+		return registerPlaceholder(name, new PlaceholderConstantParser(value));
+	}
+
+	public boolean registerPlaceholder(String name, PlaceholderParser parser) {
+		if (name.contains(".") || name.contains(":") || name.contains("%") || name.contains(" ")) {
+			return false;
+		}
+		placeholders.put(name, parser);
+		return true;
+	}
+
+	public String processPlaceholders(Player player, String text) {
+		Pattern pat = Pattern.compile("%[^%]+%");
+		Matcher matcher = pat.matcher(text);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			String matched = matcher.group();
+			matched = matcher.group().substring(1, matched.length() - 1);
+			String[] args = matched.split("(?<!\\.)\\.(?!\\.)");
+			String[] gargs = new String[args.length - 1];
+			for (int i = 0; i < args.length; i++) {
+				args[i] = args[i].replaceAll("\\.+", ".");
+				if (i > 0) {
+					gargs[i - 1] = args[i];
+				}
+			}
+			String key = args[0];
+			if (placeholders.containsKey(key)) {
+				matcher.appendReplacement(sb, placeholders.get(key).processPlaceholder(key, player, gargs));
+			}
+		}
+		return sb.toString();
+	}
+
 	public void generateData() {
 		for (List<Map<String, Object>> list : data) {
 			for (Map<String, Object> object : list) {
 				lastpos = generateItem(null, object, lastpos);
 			}
 		}
-		
+
 		for (ItemInfo info : this.generatedData) {
 			if (!infoByAbsolutePosition.containsKey(info.getParent())) {
 				infoByAbsolutePosition.put(info.getParent(), new HashMap<Integer, List<ItemInfo>>());
@@ -339,7 +387,7 @@ public class SimpleGuiFormat {
 				for (Object obj : propertiesList) {
 					if (obj instanceof Map) {
 						Map<String, Object> propertyMap = (Map<String, Object>) obj;
-						Property pr = new Property(
+						Property pr = new Property(this,
 								propertyMap.containsKey("name") ? (String) propertyMap.get("name") : null, propertyMap);
 						properties.add(pr);
 					}
@@ -350,8 +398,9 @@ public class SimpleGuiFormat {
 		if (object.containsKey("animation")) {
 			animation = (List<ItemStack>) object.get("animation");
 		}
-		ItemInfo info = new ItemInfo(parent, stack.clone(), positionC, (boolean) object.getOrDefault("visible", true),
-				(boolean) object.getOrDefault("disabled", false), id, properties, object, animation);
+		ItemInfo info = new ItemInfo(this, parent, stack.clone(), positionC,
+				(boolean) object.getOrDefault("visible", true), (boolean) object.getOrDefault("disabled", false), id,
+				properties, object, animation);
 		if (object.containsKey("items")) {
 			List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
 			for (Map<String, Object> itemObject : items) {
@@ -363,6 +412,10 @@ public class SimpleGuiFormat {
 			BookMeta meta = (BookMeta) book.getItemMeta();
 			for (Map<String, Object> page : pages) {
 				String text = (String) page.get("text");
+				/*
+				 * TODO we should just save text and generate book when player clicked (and will
+				 * be able to use placeholders here)
+				 */
 				meta.addPage(text);
 			}
 			book.setItemMeta(meta);
@@ -391,11 +444,11 @@ public class SimpleGuiFormat {
 		return key.equals("row") || key.equals("column") || key.equals("skip") || key.equals("linebreak")
 				|| key.equals("pagebreak");
 	}
-	
-	public Map<ItemInfo, Map<Integer, List<ItemInfo>>> getDynamicInfo(){
+
+	public Map<ItemInfo, Map<Integer, List<ItemInfo>>> getDynamicInfo() {
 		return this.infoByAbsolutePosition;
 	}
-	
+
 	public Map<ItemInfo, Integer> getLastPageNumbers() {
 		return this.lastPageNumbers;
 	}

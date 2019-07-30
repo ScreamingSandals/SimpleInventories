@@ -1,10 +1,12 @@
 package misat11.lib.sgui;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class GuiAnimator extends BukkitRunnable {
@@ -30,7 +32,21 @@ public class GuiAnimator extends BukkitRunnable {
 					position = 0;
 				}
 				int cpos = (info.getPosition() % SimpleGuiFormat.ITEMS_ON_PAGE) + SimpleGuiFormat.ITEMS_ON_ROW;
-				ItemStack anim = animation.get(position);
+				ItemStack anim = animation.get(position).clone();
+				if (anim.hasItemMeta()) {
+					ItemMeta meta = anim.getItemMeta();
+					if (meta.hasDisplayName()) {
+						meta.setDisplayName(this.holder.getFormat().processPlaceholders(this.holder.getPlayer(), meta.getDisplayName()));
+					}
+					if (meta.hasLore()) {
+						List<String> lore = new ArrayList<String>();
+						for (String str : meta.getLore()) {
+							lore.add(this.holder.getFormat().processPlaceholders(this.holder.getPlayer(), str));
+						}
+						meta.setLore(lore);
+					}
+					anim.setItemMeta(meta);
+				}
 				this.holder.getInventory().setItem(cpos, anim);
 				this.itemsWithAnimation.put(info, position + 1);
 				

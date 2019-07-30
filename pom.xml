@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>misat11.lib.sgui</groupId>
 	<artifactId>SimpleGuiFormat</artifactId>
-	<version>0.0.8-snapshot</version>
+	<version>0.0.8-snapshot2</version>
 	<packaging>jar</packaging>
 
 	<repositories>
@@ -12,6 +12,10 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
 	</repositories>
 
 	<properties>
@@ -30,6 +34,12 @@
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
 			<version>4.1.21.Final</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>me.clip</groupId>
+			<artifactId>placeholderapi</artifactId>
+			<version>2.10.3</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

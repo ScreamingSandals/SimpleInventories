@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerItemInfo {
@@ -12,8 +13,10 @@ public class PlayerItemInfo {
 	private boolean visible;
 	private boolean disabled;
 	private List<ItemStack> animation;
+	private Player player;
 	
-	public PlayerItemInfo(ItemInfo original, ItemStack stack, boolean visible, boolean disabled) {
+	public PlayerItemInfo(Player player, ItemInfo original, ItemStack stack, boolean visible, boolean disabled) {
+		this.player = player;
 		this.original = original;
 		this.stack = stack;
 		this.visible = visible;
@@ -70,8 +73,13 @@ public class PlayerItemInfo {
 		return original.getProperties();
 	}
 	
+	@Deprecated
 	public Map<String, Object> getData() {
 		return original.getData();
+	}
+	
+	public MapReader getReader() {
+		return original.getReader(player);
 	}
 	
 	public boolean hasId() {
@@ -98,5 +106,7 @@ public class PlayerItemInfo {
 		this.animation = animation;
 	}
 	
-	
+	public SimpleGuiFormat getFormat() {
+		return original.getFormat();
+	}
 }

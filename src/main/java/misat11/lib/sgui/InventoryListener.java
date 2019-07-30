@@ -1,7 +1,6 @@
 package misat11.lib.sgui;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -122,11 +121,11 @@ public class InventoryListener implements Listener {
 			}
 
 			if (format.isGenericShopEnabled()) {
-				Map<String, Object> originalData = playersItem.getData();
+				MapReader originalData = playersItem.getReader();
 				if (format.isPriceTypeRequired()) {
 					if (originalData.containsKey("price") && originalData.containsKey("price-type")) {
-						int price = (int) originalData.get("price");
-						String type = (String) originalData.get("price-type");
+						int price = originalData.getInt("price");
+						String type = originalData.getString("price-type");
 
 						ShopTransactionEvent shopEvent = new ShopTransactionEvent(player, format, playersItem, price,
 								type, e.getClick());
@@ -139,8 +138,8 @@ public class InventoryListener implements Listener {
 					}
 				} else {
 					if (originalData.containsKey("price")) {
-						int price = (int) originalData.get("price");
-						String type = (String) originalData.getOrDefault("price-type", "default");
+						int price = originalData.getInt("price");
+						String type = originalData.getString("price-type", "default");
 
 						ShopTransactionEvent shopEvent = new ShopTransactionEvent(player, format, playersItem, price,
 								type, e.getClick());

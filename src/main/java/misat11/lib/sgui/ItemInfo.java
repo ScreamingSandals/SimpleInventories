@@ -3,6 +3,7 @@ package misat11.lib.sgui;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemInfo {
@@ -16,9 +17,11 @@ public class ItemInfo {
 	private List<Property> properties;
 	private Map<String, Object> data;
 	private ItemStack book;
+	private SimpleGuiFormat format;
 	public int lastpos = 0;
 	
-	public ItemInfo(ItemInfo parent, ItemStack item, int position, boolean visible, boolean disabled, String id, List<Property> properties, Map<String, Object> data, List<ItemStack> animation) {
+	public ItemInfo(SimpleGuiFormat format, ItemInfo parent, ItemStack item, int position, boolean visible, boolean disabled, String id, List<Property> properties, Map<String, Object> data, List<ItemStack> animation) {
+		this.format = format;
 		this.parent = parent;
 		this.item = item;
 		this.position = position;
@@ -58,8 +61,13 @@ public class ItemInfo {
 		return properties;
 	}
 
+	@Deprecated
 	public Map<String, Object> getData() {
 		return data;
+	}
+	
+	public MapReader getReader(Player owner) {
+		return new MapReader(format, data, owner);
 	}
 	
 	public List<ItemStack> getAnimation() {
@@ -92,6 +100,10 @@ public class ItemInfo {
 	
 	public boolean hasBook() {
 		return book != null;
+	}
+	
+	public SimpleGuiFormat getFormat() {
+		return format;
 	}
 	
 }
