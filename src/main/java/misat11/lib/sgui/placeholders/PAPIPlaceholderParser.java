@@ -20,7 +20,7 @@ public class PAPIPlaceholderParser implements PlaceholderParser {
 		String identifier = format.substring(0, index).toLowerCase();
 		String params = format.substring(index + 1);
 		if (hooks.containsKey(identifier)) {
-			String value = hooks.get(identifier).onRequest(player, params);
+			String value = hooks.get(identifier).onPlaceholderRequest(player, params);
 			if (value != null) {
 				return value;
 			}
