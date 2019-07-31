@@ -23,7 +23,7 @@ public class BooleanCondition implements Condition {
 			return ((Boolean) ob).booleanValue() == true;
 		}
 		if (ob instanceof String) {
-			return !((String) ob).isBlank();
+			return !((String) ob).isEmpty();
 		}
 		if (ob instanceof Number) {
 			return ((Number) ob).doubleValue() != 0;
