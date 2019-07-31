@@ -27,7 +27,7 @@ public class MapReader {
 	}
 
 	public MapReader getMap(String key) {
-		Object obj = map.get(key);
+		Object obj = get(key);
 		if (obj instanceof Map) {
 			return new MapReader(format, (Map<String, Object>) obj, player);
 		}
@@ -39,18 +39,18 @@ public class MapReader {
 	}
 	
 	public String getString(String key, String def) {
-		Object obj = map.get(key);
+		Object obj = get(key);
 		if (obj instanceof String) {
-			return format.processPlaceholders(player, (String) obj);
+			return (String) obj;
 		}
 		return def;
 	}
 	
 	private Number getNumber(String key, Number def) {
-		Object obj = map.get(key);
+		Object obj = get(key);
 		if (obj instanceof String) {
 			// Object is string, but maybe can be converted to number
-			String s = getString(key);
+			String s = (String) obj;
 			try {
 				Number number = Double.parseDouble(s);
 				return number;
@@ -117,9 +117,9 @@ public class MapReader {
 	}
 
 	public char getChar(String key, char def) {
-		Object obj = map.get(key);
+		Object obj = get(key);
 		if (obj instanceof String) {
-			return format.processPlaceholders(player, (String) obj).charAt(0);
+			return ((String) obj).charAt(0);
 		}
 		if (obj instanceof Character) {
 			return (Character) obj;
@@ -132,7 +132,7 @@ public class MapReader {
 	}
 
 	public boolean getBoolean(String key, boolean def) {
-		Object obj = map.get(key);
+		Object obj = get(key);
 		if (obj instanceof String) {
 			return Boolean.parseBoolean(format.processPlaceholders(player, (String) obj));
 		}
@@ -143,7 +143,7 @@ public class MapReader {
 	}
 	
 	public List<String> getStringList(String key){
-		Object obj = map.get(key);
+		Object obj = get(key);
 		List<String> newStrList = new ArrayList<>();
 		if (obj instanceof List) {
 			List<String> stringList = (List<String>) obj;
@@ -155,7 +155,7 @@ public class MapReader {
 	}
 	
 	public List<MapReader> getMapList(String key) {
-		Object obj = map.get(key);
+		Object obj = get(key);
 		List<MapReader> newMapList = new ArrayList<>();
 		if (obj instanceof List) {
 			List<Map<String, Object>> mapList = (List<Map<String, Object>>) obj;
@@ -170,10 +170,12 @@ public class MapReader {
 		return map.containsKey(key);
 	}
 	
-
-	@Deprecated
 	public Object get(String key) {
-		return map.get(key);
+		Object obj = map.get(key);
+		if (obj instanceof String) {
+			obj = format.processPlaceholders(player, (String) obj);
+		}
+		return obj;
 	}
 	
 	@Deprecated
