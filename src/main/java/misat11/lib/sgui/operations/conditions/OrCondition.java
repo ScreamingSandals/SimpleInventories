@@ -1,4 +1,4 @@
-package misat11.lib.sgui.conditions;
+package misat11.lib.sgui.operations.conditions;
 
 import org.bukkit.entity.Player;
 
