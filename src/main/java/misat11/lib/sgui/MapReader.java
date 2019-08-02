@@ -142,7 +142,11 @@ public class MapReader {
 		return def;
 	}
 	
-	public List<String> getStringList(String key){
+	public List<String> getStringList(String key) {
+		return getStringList(key, null);
+	}
+	
+	public List<String> getStringList(String key, List<String> def){
 		Object obj = get(key);
 		List<String> newStrList = new ArrayList<>();
 		if (obj instanceof List) {
@@ -151,7 +155,7 @@ public class MapReader {
 				newStrList.add(format.processPlaceholders(player, s));
 			}
 		}
-		return newStrList;
+		return newStrList.isEmpty() && def != null ? def : newStrList;
 	}
 	
 	public List<MapReader> getMapList(String key) {
