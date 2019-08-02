@@ -21,6 +21,7 @@ import org.bukkit.plugin.Plugin;
 import misat11.lib.sgui.operations.OperationParser;
 import misat11.lib.sgui.operations.conditions.Condition;
 import misat11.lib.sgui.placeholders.PAPIPlaceholderParser;
+import misat11.lib.sgui.placeholders.PermissionPlaceholderParser;
 import misat11.lib.sgui.placeholders.PlaceholderConstantParser;
 import misat11.lib.sgui.placeholders.PlaceholderParser;
 import misat11.lib.sgui.placeholders.PlayerPlaceholderParser;
@@ -62,6 +63,7 @@ public class SimpleGuiFormat {
 		this.cosmeticItem = cosmeticItem;
 
 		registerPlaceholder("player", new PlayerPlaceholderParser());
+		registerPlaceholder("permission", new PermissionPlaceholderParser());
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			registerPlaceholder("papi", new PAPIPlaceholderParser());
 		}
@@ -327,7 +329,15 @@ public class SimpleGuiFormat {
 				}
 			}
 		}
-		ItemStack stack = object.containsKey("stack") ? (ItemStack) object.get("stack") : new ItemStack(Material.AIR);
+		ItemStack stack = new ItemStack(Material.AIR);
+		if (object.containsKey("stack")) {
+			Object st = object.get("stack");
+			if (st instanceof ItemStack) {
+				stack = (ItemStack) st;
+			} else if (st instanceof String) {
+				stack = ShortStackParser.parseShortStack((String) st);
+			}
+		}
 		int positionC = lastpos;
 		int linebreakC = 0;
 		int pagebreakC = 0;
@@ -399,7 +409,15 @@ public class SimpleGuiFormat {
 		}
 		List<ItemStack> animation = null;
 		if (object.containsKey("animation")) {
-			animation = (List<ItemStack>) object.get("animation");
+			List<Object> anim = (List<Object>) object.get("animation");
+			animation = new ArrayList<>();
+			for (Object ani : anim) {
+				if (ani instanceof ItemStack) {
+					animation.add((ItemStack) ani);
+				} else if (ani instanceof String) {
+					animation.add(ShortStackParser.parseShortStack((String) ani));
+				}
+			}
 		}
 		Map<Condition, Map<String, Object>> conditions = new HashMap<>();
 		if (object.containsKey("conditions")) {

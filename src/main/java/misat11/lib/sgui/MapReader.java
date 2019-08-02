@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class MapReader {
 
@@ -156,6 +158,33 @@ public class MapReader {
 		return newStrList.isEmpty() && def != null ? def : newStrList;
 	}
 	
+	public List<ItemStack> getStackList(String key) {
+		return getStackList(key, null);
+	}
+	
+	public List<ItemStack> getStackList(String key, List<ItemStack> def){
+		Object obj = get(key);
+		if (!(obj instanceof List)) {
+			return def;
+		}
+		List<ItemStack> newStrList = new ArrayList<>((List) obj);
+		return newStrList.isEmpty() && def != null ? def : newStrList;
+	}
+	
+	public ItemStack getItemStack(String key) {
+		return getItemStack(key, null);
+	}
+	
+	public ItemStack getItemStack(String key, ItemStack def) {
+		Object obj = get(key);
+		if (obj instanceof ItemStack) {
+			return (ItemStack) obj;
+		} else if (obj instanceof String) {
+			return ShortStackParser.parseShortStack((String) obj);
+		}
+		return def;
+	}
+	
 	public List<MapReader> getMapList(String key) {
 		Object obj = map.get(key);
 		List<MapReader> newMapList = new ArrayList<>();
@@ -195,6 +224,23 @@ public class MapReader {
 				nmap.put(entry.getKey(), convert(entry.getValue()));
 			}
 			obj = nmap;
+		}
+		if (obj instanceof ItemStack) {
+			ItemStack stack = (ItemStack) obj;
+			if (stack.hasItemMeta()) {
+				ItemMeta meta = stack.getItemMeta();
+				if (meta.hasDisplayName()) {
+					meta.setDisplayName(format.processPlaceholders(player, meta.getDisplayName()));
+				}
+				if (meta.hasLore()) {
+					List<String> lore = new ArrayList<String>();
+					for (String str : meta.getLore()) {
+						lore.add(format.processPlaceholders(player, str));
+					}
+					meta.setLore(lore);
+				}
+				stack.setItemMeta(meta);
+			}
 		}
 		return obj;
 	}
