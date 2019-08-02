@@ -24,6 +24,7 @@ public class BooleanCondition implements Condition {
 			return (Boolean) ob;
 		}
 		if (ob instanceof String) {
+			ob = format.processPlaceholders(player, (String) ob);
 			return !((String) ob).isEmpty() && !"false".equalsIgnoreCase((String) ob)
 					&& !"null".equalsIgnoreCase((String) ob);
 		}
