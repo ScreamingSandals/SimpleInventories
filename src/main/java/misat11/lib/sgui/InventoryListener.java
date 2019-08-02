@@ -59,7 +59,7 @@ public class InventoryListener implements Listener {
 				if (back.equals(cur) && slot == 0) {
 					if (parent != null) {
 						ItemInfo parentOfParent = parent.getParent();
-						int pageOfParent = (parent.getPosition() / SimpleGuiFormat.ITEMS_ON_PAGE);
+						int pageOfParent = (parent.getPosition() / format.getItemsOnPage());
 						new GuiHolder(player, format, parentOfParent, pageOfParent);
 					}
 				} else if (pageBack.equals(cur) && slot == 45) {

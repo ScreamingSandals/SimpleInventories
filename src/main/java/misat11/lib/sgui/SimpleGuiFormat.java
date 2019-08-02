@@ -28,10 +28,9 @@ import misat11.lib.sgui.placeholders.PlayerPlaceholderParser;
 import misat11.lib.sgui.placeholders.WorldPlaceholderParser;
 
 public class SimpleGuiFormat {
-
-	public static final int ITEMS_ON_PAGE = 36;
-
-	public static final int ITEMS_ON_ROW = 9;
+	
+	private int items_on_row = 9; // TODO
+	private int items_on_page = items_on_row * 4;
 
 	private final List<List<Map<String, Object>>> data = new ArrayList<List<Map<String, Object>>>();
 	private final List<ItemInfo> generatedData = new ArrayList<ItemInfo>();
@@ -54,14 +53,24 @@ public class SimpleGuiFormat {
 	private final Map<ItemInfo, Integer> lastPageNumbers = new HashMap<ItemInfo, Integer>();
 	private final String prefix;
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
+	
+	public SimpleGuiFormat(Options options) {
+		this(options.getPrefix(), options.getBackItem(), options.getPageBackItem(), options.getPageForwardItem(), options.getCosmeticItem());
+		
+		this.animationsEnabled = options.isAnimationsEnabled();
+		this.pluginForRunnables = options.getAnimationPlugin();
+		this.genericShopEnabled = options.isGenericShop();
+		this.genericShopPriceTypeRequired = options.isGenericShopPriceTypeRequired();
+		this.items_on_page = options.getRows() * 4;
+	}
 
 	public SimpleGuiFormat(String prefix, ItemStack backItem, ItemStack pageBackItem, ItemStack pageForwardItem,
 			ItemStack cosmeticItem) {
 		this.prefix = prefix;
-		this.backItem = backItem;
-		this.pageBackItem = pageBackItem;
-		this.pageForwardItem = pageForwardItem;
-		this.cosmeticItem = cosmeticItem;
+		this.backItem = backItem.clone();
+		this.pageBackItem = pageBackItem.clone();
+		this.pageForwardItem = pageForwardItem.clone();
+		this.cosmeticItem = cosmeticItem.clone();
 
 		registerPlaceholder("player", new PlayerPlaceholderParser());
 		registerPlaceholder("permission", new PermissionPlaceholderParser());
@@ -190,7 +199,7 @@ public class SimpleGuiFormat {
 			if (!infoByAbsolutePosition.containsKey(info.getParent())) {
 				infoByAbsolutePosition.put(info.getParent(), new HashMap<Integer, List<ItemInfo>>());
 			}
-			int page = (info.getPosition() / SimpleGuiFormat.ITEMS_ON_PAGE);
+			int page = (info.getPosition() / items_on_page);
 			Map<Integer, List<ItemInfo>> map = infoByAbsolutePosition.get(info.getParent());
 			if (!map.containsKey(page)) {
 				map.put(page, new ArrayList<>());
@@ -364,10 +373,10 @@ public class SimpleGuiFormat {
 			}
 		}
 		if (pagebreakC == 1 || pagebreakC == 3) {
-			positionC += (ITEMS_ON_PAGE - (positionC % ITEMS_ON_PAGE));
+			positionC += (items_on_page - (positionC % items_on_page));
 		}
 		if (object.containsKey("row")) {
-			positionC = positionC - (positionC % ITEMS_ON_PAGE) + (((int) object.get("row") - 1) * 9) + (positionC % 9);
+			positionC = positionC - (positionC % items_on_page) + (((int) object.get("row") - 1) * items_on_row) + (positionC % items_on_row);
 		}
 		if (object.containsKey("column")) {
 			Object cl = object.get("column");
@@ -382,10 +391,10 @@ public class SimpleGuiFormat {
 				column = (int) cl;
 			}
 
-			positionC = (positionC - (positionC % 9)) + column;
+			positionC = (positionC - (positionC % items_on_row)) + column;
 		}
 		if (linebreakC == 1 || linebreakC == 3) {
-			positionC += (9 - (positionC % 9));
+			positionC += (items_on_row - (positionC % items_on_row));
 		}
 		if (object.containsKey("skip")) {
 			positionC += (int) object.get("skip");
@@ -491,10 +500,10 @@ public class SimpleGuiFormat {
 		}
 		int nextPosition = positionC;
 		if (pagebreakC >= 2) {
-			nextPosition += (ITEMS_ON_PAGE - (nextPosition % ITEMS_ON_PAGE));
+			nextPosition += (items_on_page - (nextPosition % items_on_page));
 		}
 		if (linebreakC >= 2) {
-			nextPosition += (9 - (nextPosition % 9));
+			nextPosition += (items_on_row - (nextPosition % items_on_row));
 		}
 		if (pagebreakC < 2 && linebreakC < 2) {
 			nextPosition++;
@@ -534,6 +543,14 @@ public class SimpleGuiFormat {
 
 	public ItemStack getCosmeticItem() {
 		return cosmeticItem;
+	}
+	
+	public int getItemsOnPage() {
+		return items_on_page;
+	}
+	
+	public int getItemsOnRow() {
+		return items_on_row;
 	}
 
 	public void openForPlayer(Player player) {
