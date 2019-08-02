@@ -171,6 +171,7 @@ public class SimpleGuiFormat {
 				matcher.appendReplacement(sb, placeholders.get(key).processPlaceholder(key, player, gargs));
 			}
 		}
+		matcher.appendTail(sb);
 		return sb.toString();
 	}
 
@@ -430,14 +431,14 @@ public class SimpleGuiFormat {
 			conditions.put(f_visible_cond, f_visible_map);
 		}
 
-		Object f_disabled = object.getOrDefault("disabled", true);
-		boolean disabled = true;
+		Object f_disabled = object.getOrDefault("disabled", false);
+		boolean disabled = false;
 		if (f_disabled instanceof Boolean) {
 			disabled = (Boolean) f_disabled;
 		} else if (f_disabled instanceof String) {
 			Condition f_disabled_cond = OperationParser.getFinalNegation(this, (String) f_disabled);
 			Map<String, Object> f_disabled_map = new HashMap<String, Object>();
-			f_disabled_map.put("disabled", false);
+			f_disabled_map.put("disabled", true);
 			conditions.put(f_disabled_cond, f_disabled_map);
 		}
 

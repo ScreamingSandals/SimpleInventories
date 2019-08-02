@@ -1,6 +1,7 @@
 package misat11.lib.sgui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class MapReader {
 	}
 
 	public MapReader getMap(String key) {
-		Object obj = get(key);
+		Object obj = map.get(key);
 		if (obj instanceof Map) {
 			return new MapReader(format, (Map<String, Object>) obj, player);
 		}
@@ -134,7 +135,7 @@ public class MapReader {
 	public boolean getBoolean(String key, boolean def) {
 		Object obj = get(key);
 		if (obj instanceof String) {
-			return Boolean.parseBoolean(format.processPlaceholders(player, (String) obj));
+			return Boolean.parseBoolean((String) obj);
 		}
 		if (obj instanceof Boolean) {
 			return (Boolean) obj;
@@ -148,18 +149,15 @@ public class MapReader {
 	
 	public List<String> getStringList(String key, List<String> def){
 		Object obj = get(key);
-		List<String> newStrList = new ArrayList<>();
-		if (obj instanceof List) {
-			List<String> stringList = (List<String>) obj;
-			for (String s : stringList){
-				newStrList.add(format.processPlaceholders(player, s));
-			}
+		if (!(obj instanceof List)) {
+			return def;
 		}
+		List<String> newStrList = new ArrayList<>((List) obj);
 		return newStrList.isEmpty() && def != null ? def : newStrList;
 	}
 	
 	public List<MapReader> getMapList(String key) {
-		Object obj = get(key);
+		Object obj = map.get(key);
 		List<MapReader> newMapList = new ArrayList<>();
 		if (obj instanceof List) {
 			List<Map<String, Object>> mapList = (List<Map<String, Object>>) obj;
@@ -175,11 +173,34 @@ public class MapReader {
 	}
 	
 	public Object get(String key) {
-		Object obj = map.get(key);
+		return convert(map.get(key));
+	}
+	
+	private Object convert(Object obj) {
 		if (obj instanceof String) {
 			obj = format.processPlaceholders(player, (String) obj);
 		}
+		if (obj instanceof List) {
+			List list = (List) obj;
+			List<Object> nlist = new ArrayList<>();
+			for (Object ob : list) {
+				nlist.add(convert(ob));
+			}
+			obj = nlist;
+		}
+		if (obj instanceof Map) {
+			Map<String, Object> map = (Map<String, Object>) obj;
+			Map<String, Object> nmap = new HashMap<>();
+			for (Map.Entry<String, Object> entry : map.entrySet()) {
+				nmap.put(entry.getKey(), convert(entry.getValue()));
+			}
+			obj = nmap;
+		}
 		return obj;
+	}
+	
+	public Map<String, Object> convertToMap() {
+		return (Map<String, Object>) convert(map);
 	}
 	
 	@Deprecated
