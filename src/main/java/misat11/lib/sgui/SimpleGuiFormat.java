@@ -18,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.Plugin;
 
+import misat11.lib.sgui.operations.OperationParser;
+import misat11.lib.sgui.operations.conditions.Condition;
 import misat11.lib.sgui.placeholders.PAPIPlaceholderParser;
 import misat11.lib.sgui.placeholders.PlaceholderConstantParser;
 import misat11.lib.sgui.placeholders.PlaceholderParser;
@@ -398,9 +400,49 @@ public class SimpleGuiFormat {
 		if (object.containsKey("animation")) {
 			animation = (List<ItemStack>) object.get("animation");
 		}
-		ItemInfo info = new ItemInfo(this, parent, stack.clone(), positionC,
-				(boolean) object.getOrDefault("visible", true), (boolean) object.getOrDefault("disabled", false), id,
-				properties, object, animation);
+		Map<Condition, Map<String, Object>> conditions = new HashMap<>();
+		if (object.containsKey("conditions")) {
+			List<Map<String, Object>> configuredConditions = (List<Map<String, Object>>) object.get("conditions");
+			for (Map<String, Object> entry : configuredConditions) {
+				String f_if = (String) entry.get("if");
+				if (entry.containsKey("then")) {
+					Condition f_cond_then = OperationParser.getFinalCondition(this, f_if);
+					Map<String, Object> f_then = (Map<String, Object>) entry.get("then");
+					conditions.put(f_cond_then, f_then);
+				}
+				if (entry.containsKey("else")) {
+					Condition f_cond_else = OperationParser.getFinalNegation(this, f_if);
+					Map<String, Object> f_else = (Map<String, Object>) entry.get("else");
+					conditions.put(f_cond_else, f_else);
+
+				}
+			}
+		}
+
+		Object f_visible = object.getOrDefault("visible", true);
+		boolean visible = true;
+		if (f_visible instanceof Boolean) {
+			visible = (Boolean) f_visible;
+		} else if (f_visible instanceof String) {
+			Condition f_visible_cond = OperationParser.getFinalNegation(this, (String) f_visible);
+			Map<String, Object> f_visible_map = new HashMap<String, Object>();
+			f_visible_map.put("visible", false);
+			conditions.put(f_visible_cond, f_visible_map);
+		}
+
+		Object f_disabled = object.getOrDefault("disabled", true);
+		boolean disabled = true;
+		if (f_disabled instanceof Boolean) {
+			disabled = (Boolean) f_disabled;
+		} else if (f_disabled instanceof String) {
+			Condition f_disabled_cond = OperationParser.getFinalNegation(this, (String) f_disabled);
+			Map<String, Object> f_disabled_map = new HashMap<String, Object>();
+			f_disabled_map.put("disabled", false);
+			conditions.put(f_disabled_cond, f_disabled_map);
+		}
+
+		ItemInfo info = new ItemInfo(this, parent, stack.clone(), positionC, visible, disabled, id, properties, object,
+				animation, conditions);
 		if (object.containsKey("items")) {
 			List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
 			for (Map<String, Object> itemObject : items) {

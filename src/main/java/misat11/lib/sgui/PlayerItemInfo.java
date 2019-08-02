@@ -7,6 +7,8 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import misat11.lib.sgui.operations.conditions.Condition;
+
 public class PlayerItemInfo {
 	private ItemInfo original;
 	private ItemStack stack;
@@ -14,6 +16,7 @@ public class PlayerItemInfo {
 	private boolean disabled;
 	private List<ItemStack> animation;
 	private Player player;
+	private Map<String, Object> data;
 	
 	public PlayerItemInfo(Player player, ItemInfo original, ItemStack stack, boolean visible, boolean disabled) {
 		this.player = player;
@@ -27,8 +30,35 @@ public class PlayerItemInfo {
 				animation.add(anim.clone());
 			}
 		}
+		
+		/* We can (and we must) use deprecated variables in internal code :D */
+		this.data = original.getData();
+
+		Map<Condition, Map<String, Object>> conditions = original.getConditions();
+		for (Map.Entry<Condition, Map<String, Object>> entry : conditions.entrySet()) {
+			Condition cond = entry.getKey();
+			if (cond.process(player)) {
+				for (Map.Entry<String, Object> change : entry.getValue().entrySet()) {
+					this.data.put(change.getKey(), change.getValue());
+					if (change.getKey().equals("visible")) {
+						this.visible = (boolean) change.getValue();
+					} else if (change.getKey().equals("disabled")) {
+						this.disabled = (boolean) change.getValue();
+					} else if (change.getKey().equals("stack")) {
+						this.stack = (ItemStack) change.getValue();
+					} else if (change.getKey().equals("animation")) {
+						animation = new ArrayList<ItemStack>();
+						for (ItemStack anim : (List<ItemStack>) change.getValue()) {
+							animation.add(anim.clone());
+						}
+					}
+				}
+			}
+		}
 	}
 
+	/* You shouldn't work with original item! */
+	@Deprecated
 	public ItemInfo getOriginal() {
 		return original;
 	}
@@ -75,11 +105,11 @@ public class PlayerItemInfo {
 	
 	@Deprecated
 	public Map<String, Object> getData() {
-		return original.getData();
+		return data;
 	}
 	
 	public MapReader getReader() {
-		return original.getReader(player);
+		return new MapReader(original.getFormat(), data, player);
 	}
 	
 	public boolean hasId() {
@@ -108,5 +138,10 @@ public class PlayerItemInfo {
 	
 	public SimpleGuiFormat getFormat() {
 		return original.getFormat();
+	}
+	
+	/* Returned map should be readed with MapReader */
+	public Map<Condition, Map<String, Object>> getConditions() {
+		return original.getConditions();
 	}
 }

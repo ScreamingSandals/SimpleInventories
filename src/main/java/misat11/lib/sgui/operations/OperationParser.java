@@ -3,7 +3,6 @@ package misat11.lib.sgui.operations;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 import misat11.lib.sgui.SimpleGuiFormat;
 import misat11.lib.sgui.operations.conditions.AndCondition;
@@ -34,6 +33,15 @@ public class OperationParser {
 			return new BooleanCondition(format, ((BlankOperation) op).getBlankObject());
 		} else {
 			return new BooleanCondition(format, op);
+		}
+	}
+	
+	public static Condition getFinalNegation(SimpleGuiFormat format, String operationString) {
+		Operation op = getFinalOperation(format, operationString);
+		if (op instanceof BlankOperation) {
+			return new NegationCondition(format, ((BlankOperation) op).getBlankObject());
+		} else {
+			return new NegationCondition(format, op);
 		}
 	}
 
@@ -161,13 +169,11 @@ public class OperationParser {
 				}
 				i = bracketEnd; // jump out of bracket
 				Operation operand = internalProcess(format, internalFirstResult); // process bracket
-				System.out.println("Bracket " + operand + "; operation before " + lastOperation);
 
 				if (lastOperand != null && lastOperation.equals("")) {
 					throw new RuntimeException("Invalid operation: There are two operands without operator!");
 				}
 				if (!lastOperation.equals("")) {
-					System.out.println("This");
 					Operation op = null;
 					switch (lastOperation) {
 					case "==":
@@ -198,7 +204,6 @@ public class OperationParser {
 						operations.add(op);
 					}
 				} else {
-					System.out.println("This2");
 					lastOperand = operand;
 				}
 			} else {
@@ -239,15 +244,10 @@ public class OperationParser {
 					lastOperand = str;
 				}
 			}
-			System.out.println("Last OPERAND: " + lastOperand);
 		}
 
 		if (lastOperand != null && !operations.contains(lastOperand)) {
 			operations.add(lastOperand);
-		}
-
-		for (Object obj : operations) {
-			System.out.println("OPERATION " + obj);
 		}
 
 		// 3) If there is just one operation, return it!

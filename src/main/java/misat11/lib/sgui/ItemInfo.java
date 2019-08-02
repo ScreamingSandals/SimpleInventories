@@ -6,6 +6,8 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import misat11.lib.sgui.operations.conditions.Condition;
+
 public class ItemInfo {
 	private ItemInfo parent;
 	private int position;
@@ -18,9 +20,12 @@ public class ItemInfo {
 	private Map<String, Object> data;
 	private ItemStack book;
 	private SimpleGuiFormat format;
+	private Map<Condition, Map<String, Object>> conditions;
 	public int lastpos = 0;
-	
-	public ItemInfo(SimpleGuiFormat format, ItemInfo parent, ItemStack item, int position, boolean visible, boolean disabled, String id, List<Property> properties, Map<String, Object> data, List<ItemStack> animation) {
+
+	public ItemInfo(SimpleGuiFormat format, ItemInfo parent, ItemStack item, int position, boolean visible,
+			boolean disabled, String id, List<Property> properties, Map<String, Object> data, List<ItemStack> animation,
+			Map<Condition, Map<String, Object>> conditions) {
 		this.format = format;
 		this.parent = parent;
 		this.item = item;
@@ -31,12 +36,13 @@ public class ItemInfo {
 		this.properties = properties;
 		this.data = data;
 		this.animation = animation;
+		this.conditions = conditions;
 	}
-	
+
 	public int getPosition() {
 		return position;
 	}
-	
+
 	public ItemStack getItem() {
 		return item;
 	}
@@ -44,11 +50,11 @@ public class ItemInfo {
 	public ItemInfo getParent() {
 		return parent;
 	}
-	
+
 	public boolean isVisible() {
 		return this.visible;
 	}
-	
+
 	public boolean isDisabled() {
 		return this.disabled;
 	}
@@ -65,27 +71,27 @@ public class ItemInfo {
 	public Map<String, Object> getData() {
 		return data;
 	}
-	
+
 	public MapReader getReader(Player owner) {
 		return new MapReader(format, data, owner);
 	}
-	
+
 	public List<ItemStack> getAnimation() {
 		return animation;
 	}
-	
+
 	public boolean hasId() {
 		return id != null;
 	}
-	
+
 	public boolean hasProperties() {
 		return properties != null && !properties.isEmpty();
 	}
-	
+
 	public boolean hasData() {
 		return data != null && !data.isEmpty();
 	}
-	
+
 	public boolean hasAnimation() {
 		return animation != null && !animation.isEmpty();
 	}
@@ -97,13 +103,17 @@ public class ItemInfo {
 	public void setBook(ItemStack book) {
 		this.book = book;
 	}
-	
+
 	public boolean hasBook() {
 		return book != null;
 	}
-	
+
 	public SimpleGuiFormat getFormat() {
 		return format;
 	}
 	
+	public Map<Condition, Map<String, Object>> getConditions() {
+		return conditions;
+	}
+
 }
