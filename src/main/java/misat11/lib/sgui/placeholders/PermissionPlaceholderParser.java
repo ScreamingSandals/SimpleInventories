@@ -6,7 +6,7 @@ public class PermissionPlaceholderParser implements PlaceholderParser {
 
 	@Override
 	public String processPlaceholder(String key, Player player, String[] arguments) {
-		if (arguments.length > 2) {
+		if (arguments.length >= 2) {
 			String[] permission = new String[arguments.length - 1];
 			for (int i = 1; i < arguments.length; i++) {
 				permission[i - 1] = arguments[i];

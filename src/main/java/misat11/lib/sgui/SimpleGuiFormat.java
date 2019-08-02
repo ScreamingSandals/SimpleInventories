@@ -25,6 +25,7 @@ import misat11.lib.sgui.placeholders.PermissionPlaceholderParser;
 import misat11.lib.sgui.placeholders.PlaceholderConstantParser;
 import misat11.lib.sgui.placeholders.PlaceholderParser;
 import misat11.lib.sgui.placeholders.PlayerPlaceholderParser;
+import misat11.lib.sgui.placeholders.WorldPlaceholderParser;
 
 public class SimpleGuiFormat {
 
@@ -64,6 +65,7 @@ public class SimpleGuiFormat {
 
 		registerPlaceholder("player", new PlayerPlaceholderParser());
 		registerPlaceholder("permission", new PermissionPlaceholderParser());
+		registerPlaceholder("world", new WorldPlaceholderParser());
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			registerPlaceholder("papi", new PAPIPlaceholderParser());
 		}
