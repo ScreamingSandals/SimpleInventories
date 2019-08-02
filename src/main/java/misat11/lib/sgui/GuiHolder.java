@@ -45,7 +45,6 @@ public class GuiHolder implements InventoryHolder {
 		this.itemsInInventory = new HashMap<Integer, PlayerItemInfo>();
 		this.itemsWithAnimation = new ArrayList<PlayerItemInfo>();
 		this.repaint();
-		this.player.closeInventory(); // Close old inventory
 
 		OpenInventoryEvent event = new OpenInventoryEvent(this.player, this.format, this.inv, this.parent, this.page);
 		Bukkit.getPluginManager().callEvent(event);
