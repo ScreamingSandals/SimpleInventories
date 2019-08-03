@@ -48,8 +48,12 @@ public class PlayerItemInfo {
 						this.stack = (ItemStack) change.getValue();
 					} else if (change.getKey().equals("animation")) {
 						animation = new ArrayList<ItemStack>();
-						for (ItemStack anim : (List<ItemStack>) change.getValue()) {
-							animation.add(anim.clone());
+						for (Object anim : (List<Object>) change.getValue()) {
+							if (anim instanceof ItemStack) {
+								animation.add(((ItemStack) anim).clone());
+							} else if (anim instanceof String) {
+								animation.add(ShortStackParser.parseShortStack((String) anim));
+							}
 						}
 					}
 				}

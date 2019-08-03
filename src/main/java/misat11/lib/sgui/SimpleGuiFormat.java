@@ -29,8 +29,12 @@ import misat11.lib.sgui.placeholders.WorldPlaceholderParser;
 
 public class SimpleGuiFormat {
 	
-	private int items_on_row = 9; // TODO
-	private int items_on_page = items_on_row * 4;
+	private int items_on_row = Options.ITEMS_ON_ROW;
+	private int rows = Options.ROWS;
+	private int render_start_offset = Options.RENDER_OFFSET;
+	private int render_actual_rows = Options.RENDER_ACTUAL_ROWS;
+	private int render_header_row_start = Options.RENDER_HEADER_START;
+	private int render_footer_row_start = Options.RENDER_FOOTER_START;
 
 	private final List<List<Map<String, Object>>> data = new ArrayList<List<Map<String, Object>>>();
 	private final List<ItemInfo> generatedData = new ArrayList<ItemInfo>();
@@ -55,15 +59,33 @@ public class SimpleGuiFormat {
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
 	
 	public SimpleGuiFormat(Options options) {
-		this(options.getPrefix(), options.getBackItem(), options.getPageBackItem(), options.getPageForwardItem(), options.getCosmeticItem());
-		
+		this.prefix = options.getPrefix();
+		this.backItem = options.getBackItem().clone();
+		this.pageBackItem = options.getPageBackItem().clone();
+		this.pageForwardItem = options.getPageForwardItem().clone();
+		this.cosmeticItem = options.getCosmeticItem().clone();
 		this.animationsEnabled = options.isAnimationsEnabled();
 		this.pluginForRunnables = options.getAnimationPlugin();
 		this.genericShopEnabled = options.isGenericShop();
 		this.genericShopPriceTypeRequired = options.isGenericShopPriceTypeRequired();
-		this.items_on_page = options.getRows() * 4;
+		this.rows = options.getRows();
+		this.items_on_row = options.getItems_on_row();
+		this.render_actual_rows = options.getRender_actual_rows();
+		this.render_header_row_start = options.getRender_header_start();
+		this.render_footer_row_start = options.getRender_footer_start();
+		this.render_start_offset = options.getRender_offset();
+		
+		initPlaceholders();		
+		
+		this.placeholders.putAll(options.getPlaceholders());
 	}
 
+	/* 
+	 * Use new constructor!
+	 * @deprecated Old constructor
+	 * @see #SimpleGuiFormat(Options)
+	 */
+	@Deprecated
 	public SimpleGuiFormat(String prefix, ItemStack backItem, ItemStack pageBackItem, ItemStack pageForwardItem,
 			ItemStack cosmeticItem) {
 		this.prefix = prefix;
@@ -71,12 +93,16 @@ public class SimpleGuiFormat {
 		this.pageBackItem = pageBackItem.clone();
 		this.pageForwardItem = pageForwardItem.clone();
 		this.cosmeticItem = cosmeticItem.clone();
-
-		registerPlaceholder("player", new PlayerPlaceholderParser());
-		registerPlaceholder("permission", new PermissionPlaceholderParser());
-		registerPlaceholder("world", new WorldPlaceholderParser());
+		
+		initPlaceholders();
+	}
+	
+	private void initPlaceholders() {
+		placeholders.put("player", new PlayerPlaceholderParser());
+		placeholders.put("permission", new PermissionPlaceholderParser());
+		placeholders.put("world", new WorldPlaceholderParser());
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			registerPlaceholder("papi", new PAPIPlaceholderParser());
+			placeholders.put("papi", new PAPIPlaceholderParser());
 		}
 	}
 
@@ -114,11 +140,13 @@ public class SimpleGuiFormat {
 		this.data.add(data);
 	}
 
+	@Deprecated
 	public void enableAnimations(Plugin plugin) {
 		this.animationsEnabled = true;
 		this.pluginForRunnables = plugin;
 	}
 
+	@Deprecated
 	public void disableAnimations() {
 		this.animationsEnabled = false;
 	}
@@ -127,11 +155,13 @@ public class SimpleGuiFormat {
 		return this.animationsEnabled && this.pluginForRunnables != null;
 	}
 
+	@Deprecated
 	public void enableGenericShop(boolean priceTypeRequired) {
 		this.genericShopEnabled = true;
 		this.genericShopPriceTypeRequired = priceTypeRequired;
 	}
-
+	
+	@Deprecated
 	public void disableGenericShop() {
 		this.genericShopEnabled = false;
 	}
@@ -152,10 +182,12 @@ public class SimpleGuiFormat {
 		return this.data;
 	}
 
+	@Deprecated
 	public boolean registerPlaceholder(String name, String value) {
 		return registerPlaceholder(name, new PlaceholderConstantParser(value));
 	}
 
+	@Deprecated
 	public boolean registerPlaceholder(String name, PlaceholderParser parser) {
 		if (name.contains(".") || name.contains(":") || name.contains("%") || name.contains(" ")) {
 			return false;
@@ -199,7 +231,7 @@ public class SimpleGuiFormat {
 			if (!infoByAbsolutePosition.containsKey(info.getParent())) {
 				infoByAbsolutePosition.put(info.getParent(), new HashMap<Integer, List<ItemInfo>>());
 			}
-			int page = (info.getPosition() / items_on_page);
+			int page = (info.getPosition() / getItemsOnPage());
 			Map<Integer, List<ItemInfo>> map = infoByAbsolutePosition.get(info.getParent());
 			if (!map.containsKey(page)) {
 				map.put(page, new ArrayList<>());
@@ -373,10 +405,10 @@ public class SimpleGuiFormat {
 			}
 		}
 		if (pagebreakC == 1 || pagebreakC == 3) {
-			positionC += (items_on_page - (positionC % items_on_page));
+			positionC += (getItemsOnPage() - (positionC % getItemsOnPage()));
 		}
 		if (object.containsKey("row")) {
-			positionC = positionC - (positionC % items_on_page) + (((int) object.get("row") - 1) * items_on_row) + (positionC % items_on_row);
+			positionC = positionC - (positionC % getItemsOnPage()) + (((int) object.get("row") - 1) * items_on_row) + (positionC % items_on_row);
 		}
 		if (object.containsKey("column")) {
 			Object cl = object.get("column");
@@ -384,9 +416,9 @@ public class SimpleGuiFormat {
 			if ("left".equals(cl) || "first".equals(cl)) {
 				column = 0;
 			} else if ("middle".equals(cl) || "center".equals(cl)) {
-				column = 4;
+				column = items_on_row / 2;
 			} else if ("right".equals(cl) || "last".equals(cl)) {
-				column = 8;
+				column = items_on_row - 1;
 			} else {
 				column = (int) cl;
 			}
@@ -500,7 +532,7 @@ public class SimpleGuiFormat {
 		}
 		int nextPosition = positionC;
 		if (pagebreakC >= 2) {
-			nextPosition += (items_on_page - (nextPosition % items_on_page));
+			nextPosition += (getItemsOnPage() - (nextPosition % getItemsOnPage()));
 		}
 		if (linebreakC >= 2) {
 			nextPosition += (items_on_row - (nextPosition % items_on_row));
@@ -546,11 +578,31 @@ public class SimpleGuiFormat {
 	}
 	
 	public int getItemsOnPage() {
-		return items_on_page;
+		return items_on_row * rows;
 	}
 	
 	public int getItemsOnRow() {
 		return items_on_row;
+	}
+	
+	public int getRows() {
+		return rows;
+	}
+	
+	public int getRenderRows() {
+		return render_actual_rows;
+	}
+	
+	public int getRenderHeaderStart() {
+		return render_header_row_start;
+	}
+	
+	public int getRenderFooterStart() {
+		return render_footer_row_start;
+	}
+	
+	public int getRenderOffset() {
+		return render_start_offset;
 	}
 
 	public void openForPlayer(Player player) {

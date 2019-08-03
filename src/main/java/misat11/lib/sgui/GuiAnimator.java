@@ -31,7 +31,7 @@ public class GuiAnimator extends BukkitRunnable {
 				if ((animation.size() - 1) < position) {
 					position = 0;
 				}
-				int cpos = (info.getPosition() % this.holder.getFormat().getItemsOnPage()) + this.holder.getFormat().getItemsOnRow();
+				int cpos = (info.getPosition() % this.holder.getFormat().getItemsOnPage()) + this.holder.getFormat().getRenderOffset();
 				ItemStack anim = animation.get(position).clone();
 				if (anim.hasItemMeta()) {
 					ItemMeta meta = anim.getItemMeta();
@@ -47,7 +47,7 @@ public class GuiAnimator extends BukkitRunnable {
 					}
 					anim.setItemMeta(meta);
 				}
-				this.holder.getInventory().setItem(cpos, anim);
+				this.holder.safePutStackToInventory(cpos, anim);
 				this.itemsWithAnimation.put(info, position + 1);
 				
 			}

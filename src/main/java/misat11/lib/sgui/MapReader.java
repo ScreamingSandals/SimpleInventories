@@ -167,7 +167,14 @@ public class MapReader {
 		if (!(obj instanceof List)) {
 			return def;
 		}
-		List<ItemStack> newStrList = new ArrayList<>((List) obj);
+		List<ItemStack> newStrList = new ArrayList<>();
+		for (Object ob : (List) obj) {
+			if (ob instanceof ItemStack) {
+				newStrList.add((ItemStack) ob);
+			} else if (ob instanceof String) {
+				newStrList.add(ShortStackParser.parseShortStack((String) ob));
+			}
+		}
 		return newStrList.isEmpty() && def != null ? def : newStrList;
 	}
 	

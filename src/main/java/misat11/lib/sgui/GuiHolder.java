@@ -41,7 +41,7 @@ public class GuiHolder implements InventoryHolder {
 		}
 		this.items = items;
 		this.player = player;
-		this.inv = Bukkit.createInventory(this, 54, format.getPrefix() + "§r - " + (page + 1));
+		this.inv = Bukkit.createInventory(this, format.getItemsOnRow() * format.getRenderRows(), format.getPrefix() + "§r - " + (page + 1));
 		this.itemsInInventory = new HashMap<Integer, PlayerItemInfo>();
 		this.itemsWithAnimation = new ArrayList<PlayerItemInfo>();
 		this.repaint();
@@ -70,29 +70,29 @@ public class GuiHolder implements InventoryHolder {
 		}
 
 		if (this.parent != null) {
-			this.inv.setItem(0, format.getBackItem());
+			safePutStackToInventory(format.getRenderHeaderStart(), format.getBackItem());
 		} else {
-			this.inv.setItem(0, format.getCosmeticItem());
+			safePutStackToInventory(format.getRenderHeaderStart(), format.getCosmeticItem());
 		}
 
-		for (int a = 1; a <= 8; a++) {
-			this.inv.setItem(a, format.getCosmeticItem());
+		for (int a = 1; a < format.getItemsOnRow(); a++) {
+			safePutStackToInventory(format.getRenderHeaderStart() + a, format.getCosmeticItem());
 		}
 
 		if (page > 0) {
-			this.inv.setItem(45, format.getPageBackItem());
+			safePutStackToInventory(format.getRenderFooterStart(), format.getPageBackItem());
 		} else {
-			this.inv.setItem(45, format.getCosmeticItem());
+			safePutStackToInventory(format.getRenderFooterStart(), format.getCosmeticItem());
 		}
 
-		for (int a = 1; a <= 7; a++) {
-			this.inv.setItem(45 + a, format.getCosmeticItem());
+		for (int a = 1; a < format.getItemsOnRow(); a++) {
+			safePutStackToInventory(format.getRenderFooterStart() + a, format.getCosmeticItem());
 		}
 
 		if (this.format.getLastPageNumbers().get(this.parent) > this.page) {
-			this.inv.setItem(53, format.getPageForwardItem());
+			safePutStackToInventory(format.getRenderFooterStart() + format.getItemsOnRow() - 1, format.getPageForwardItem());
 		} else {
-			this.inv.setItem(53, format.getCosmeticItem());
+			safePutStackToInventory(format.getRenderFooterStart() + format.getItemsOnRow() - 1, format.getCosmeticItem());
 		}
 
 		for (ItemInfo item : items) {
@@ -129,14 +129,14 @@ public class GuiHolder implements InventoryHolder {
 			GenerateItemEvent event = new GenerateItemEvent(this.format, playersInfo, player);
 			Bukkit.getPluginManager().callEvent(event);
 
-			int cpos = (item.getPosition() % format.getItemsOnPage()) + format.getItemsOnRow();
+			int cpos = (item.getPosition() % format.getItemsOnPage()) + format.getRenderOffset();
 
 			if (playersInfo.isVisible()) {
 				if (playersInfo.hasAnimation()) {
 					this.animationExists = true;
 					this.itemsWithAnimation.add(playersInfo);
 				}
-				this.inv.setItem(cpos, event.getStack());
+				safePutStackToInventory(cpos, event.getStack());
 				this.itemsInInventory.put(cpos, playersInfo);
 			}
 		}
@@ -174,6 +174,12 @@ public class GuiHolder implements InventoryHolder {
 	@Override
 	public Inventory getInventory() {
 		return this.inv;
+	}
+	
+	public void safePutStackToInventory(int i, ItemStack stack) {
+		if (i < this.inv.getSize()) {
+			this.inv.setItem(i, stack);
+		}
 	}
 
 }

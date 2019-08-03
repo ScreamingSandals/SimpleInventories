@@ -56,17 +56,17 @@ public class InventoryListener implements Listener {
 				ItemStack back = format.getBackItem();
 				ItemStack pageBack = format.getPageBackItem();
 				ItemStack pageForward = format.getPageForwardItem();
-				if (back.equals(cur) && slot == 0) {
+				if (back.equals(cur) && slot == format.getRenderHeaderStart()) {
 					if (parent != null) {
 						ItemInfo parentOfParent = parent.getParent();
 						int pageOfParent = (parent.getPosition() / format.getItemsOnPage());
 						new GuiHolder(player, format, parentOfParent, pageOfParent);
 					}
-				} else if (pageBack.equals(cur) && slot == 45) {
+				} else if (pageBack.equals(cur) && slot == format.getRenderFooterStart()) {
 					if (page > 0) {
 						new GuiHolder(player, format, parent, page - 1);
 					}
-				} else if (pageForward.equals(cur) && slot == 53) {
+				} else if (pageForward.equals(cur) && slot == (format.getRenderFooterStart() + format.getItemsOnRow() - 1)) {
 					if (format.getLastPageNumbers().get(parent) > page) {
 						new GuiHolder(player, format, parent, page + 1);
 					}
