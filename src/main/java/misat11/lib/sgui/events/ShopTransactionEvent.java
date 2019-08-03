@@ -1,5 +1,6 @@
 package misat11.lib.sgui.events;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.entity.Player;
@@ -8,6 +9,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import misat11.lib.sgui.ItemInfo;
 import misat11.lib.sgui.PlayerItemInfo;
@@ -31,6 +33,20 @@ public class ShopTransactionEvent extends Event implements Cancellable {
 		this.format = format;
 		this.item = item;
 		this.stack = item.getOriginal().getItem().clone();
+		if (this.stack.hasItemMeta()) {
+			ItemMeta meta = this.stack.getItemMeta();
+			if (meta.hasDisplayName()) {
+				meta.setDisplayName(format.processPlaceholders(player, meta.getDisplayName()));
+			}
+			if (meta.hasLore()) {
+				List<String> lore = new ArrayList<String>();
+				for (String str : meta.getLore()) {
+					lore.add(format.processPlaceholders(player, str));
+				}
+				meta.setLore(lore);
+			}
+			this.stack.setItemMeta(meta);
+		}
 		this.price = price;
 		this.type = type;
 		this.clickType = clickType;
