@@ -15,6 +15,11 @@ public class ShortStackParser {
 
 	@SuppressWarnings("deprecation")
 	public static ItemStack parseShortStack(String shortStack) {
+		shortStack = shortStack.trim();
+		if (shortStack.startsWith("(cast to ItemStack)")) {
+			shortStack = shortStack.substring(19).trim();
+		}
+		
 		char[] characters = shortStack.toCharArray();
 		List<String> arguments = new ArrayList<String>();
 		int lastIndexOfEscape = -2;

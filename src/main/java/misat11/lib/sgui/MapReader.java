@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import misat11.lib.sgui.operations.OperationParser;
+
 public class MapReader {
 
 	private Map<String, Object> map;
@@ -58,7 +60,18 @@ public class MapReader {
 				Number number = Double.parseDouble(s);
 				return number;
 			} catch (NumberFormatException e) {
-					// Object isn't number
+				// Object isn't number, try to use aritmetic
+				try {
+					Object ob = OperationParser.getFinalOperation(format, s).resolveFor(player);
+					if (ob instanceof Number) {
+						return (Number) ob;
+					} else if (ob instanceof String) {
+						Number number = Double.parseDouble((String) ob);
+						return number;
+					}
+				} catch (NumberFormatException ex) {
+					
+				}
 			}
 		}
 		if (obj instanceof Number) {
@@ -215,6 +228,9 @@ public class MapReader {
 	private Object convert(Object obj) {
 		if (obj instanceof String) {
 			obj = format.processPlaceholders(player, (String) obj);
+			if (((String) obj).startsWith("(cast to ItemStack)")) {
+				obj = ShortStackParser.parseShortStack((String) obj);
+			}
 		}
 		if (obj instanceof List) {
 			List list = (List) obj;
