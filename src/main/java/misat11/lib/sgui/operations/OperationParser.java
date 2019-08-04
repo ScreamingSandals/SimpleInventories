@@ -10,6 +10,13 @@ import misat11.lib.sgui.operations.arithmetic.DivisionArithmetic;
 import misat11.lib.sgui.operations.arithmetic.ModuloArithmetic;
 import misat11.lib.sgui.operations.arithmetic.MultiplicationArithmetic;
 import misat11.lib.sgui.operations.arithmetic.SubstractionArithmetic;
+import misat11.lib.sgui.operations.bitwise.AndBitwise;
+import misat11.lib.sgui.operations.bitwise.ComplimentBitwise;
+import misat11.lib.sgui.operations.bitwise.LeftShiftBitwise;
+import misat11.lib.sgui.operations.bitwise.OrBitwise;
+import misat11.lib.sgui.operations.bitwise.RightShiftBitwise;
+import misat11.lib.sgui.operations.bitwise.XorBitwise;
+import misat11.lib.sgui.operations.bitwise.ZeroFillRightShiftBitwise;
 import misat11.lib.sgui.operations.conditions.AndCondition;
 import misat11.lib.sgui.operations.conditions.BooleanCondition;
 import misat11.lib.sgui.operations.conditions.Condition;
@@ -316,6 +323,20 @@ public class OperationParser {
 			return new AdditionArithmetic(format, 0, operand);
 		case "u-":
 			return new SubstractionArithmetic(format, 0, operand);
+		case "&":
+			return new AndBitwise(format, lastOperand, operand);
+		case "|":
+			return new OrBitwise(format, lastOperand, operand);
+		case "^":
+			return new XorBitwise(format, lastOperand, operand);
+		case "~":
+			return new ComplimentBitwise(format, operand);
+		case "<<":
+			return new LeftShiftBitwise(format, lastOperand, operand);
+		case ">>":
+			return new RightShiftBitwise(format, lastOperand, operand);
+		case ">>>":
+			return new ZeroFillRightShiftBitwise(format, lastOperand, operand);
 		default:
 			return null;
 		}
