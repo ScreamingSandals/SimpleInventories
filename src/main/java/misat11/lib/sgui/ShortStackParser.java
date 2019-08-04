@@ -12,7 +12,7 @@ public class ShortStackParser {
 	public static final List<String> STRING_BEGIN_END = Arrays.asList("\"", "'");
 	public static final List<String> ESCAPE_SYMBOLS = Arrays.asList("\\");
 	public static final List<String> ARGUMENT_SEPARATORS = Arrays.asList(";");
-	
+
 	@SuppressWarnings("deprecation")
 	public static ItemStack parseShortStack(String shortStack) {
 		char[] characters = shortStack.toCharArray();
@@ -47,19 +47,45 @@ public class ShortStackParser {
 		if (!build.equals("")) {
 			arguments.add(build);
 		}
-		
+
 		Material mat = Material.AIR;
 		int damage = 0;
 		int amount = 1;
 		String displayName = null;
 		List<String> lore = new ArrayList<String>();
-		
+
 		for (int i = 0; i < arguments.size(); i++) {
 			String argument = arguments.get(i);
 			if (i == 0) {
 				String[] splitByColon = argument.split(":");
-				mat = Material.getMaterial(splitByColon[0].toUpperCase());
+				mat = Material.matchMaterial(splitByColon[0]);
 				if (mat == null) {
+					// try legacy
+					try {
+						Material.matchMaterial(splitByColon[0], true);
+					} catch (Throwable t) {
+					}
+				}
+				if (mat == null) {
+					// maybe it's id?
+					try {
+						int legacyId = Integer.parseInt(splitByColon[0]);
+						
+						for (Material mater : Material.values()) {
+							try {
+								if (mater.getId() == legacyId) {
+									mat = mater;
+								}
+							} catch (Throwable t) {
+								// This material is not legacy
+							}
+						}
+					} catch (Throwable t) {
+						// this is not id
+					}
+				}
+				if (mat == null) {
+					// this is nothing, let it be air
 					mat = Material.AIR;
 				}
 				if (splitByColon.length > 1) {
@@ -73,7 +99,7 @@ public class ShortStackParser {
 				lore.add(argument);
 			}
 		}
-		
+
 		ItemStack stack = new ItemStack(mat, amount, (short) damage);
 		if (mat != Material.AIR) {
 			ItemMeta meta = stack.getItemMeta();
@@ -84,7 +110,7 @@ public class ShortStackParser {
 				meta.setLore(lore);
 			}
 			stack.setItemMeta(meta);
-			
+
 		}
 		return stack;
 	}
