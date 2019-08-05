@@ -99,7 +99,7 @@ public class OperationParser {
 				if (lastIndexOfEscape != (i - 1) && c.equals(buildingStringWith)) {
 					buildingString = false;
 					if (includeBuildingStringWith) {
-						operand += buildingStringWith;
+						operand = buildingStringWith + operand + buildingStringWith;
 					}
 					if (finalizeStringAfterBuild) {
 						firstResult.add(new Operand(operand.trim()));
