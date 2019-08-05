@@ -27,6 +27,7 @@ public class Options {
 	private boolean genericShop = false;
 	private boolean genericShopPriceTypeRequired = true;
 	private boolean animationsEnabled = false;
+	private boolean showPageNumber = true;
 	private Plugin animationPlugin = null;
 	private String prefix = "Inventory";
 	private Map<String, PlaceholderParser> placeholders = new HashMap<>();
@@ -175,5 +176,13 @@ public class Options {
 		}
 		placeholders.put(name, parser);
 		return true;
+	}
+
+	public boolean isShowPageNumber() {
+		return showPageNumber;
+	}
+
+	public void setShowPageNumber(boolean showPageNumber) {
+		this.showPageNumber = showPageNumber;
 	}
 }

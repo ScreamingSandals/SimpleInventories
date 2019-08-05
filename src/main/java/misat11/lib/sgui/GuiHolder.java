@@ -41,7 +41,8 @@ public class GuiHolder implements InventoryHolder {
 		}
 		this.items = items;
 		this.player = player;
-		this.inv = Bukkit.createInventory(this, format.getItemsOnRow() * format.getRenderRows(), format.getPrefix() + "§r - " + (page + 1));
+		this.inv = Bukkit.createInventory(this, format.getItemsOnRow() * format.getRenderRows(),
+				format.getPrefix() + (format.getShowPageNumber() ? ("§r - " + (page + 1)) : ""));
 		this.itemsInInventory = new HashMap<Integer, PlayerItemInfo>();
 		this.itemsWithAnimation = new ArrayList<PlayerItemInfo>();
 		this.repaint();
@@ -90,9 +91,11 @@ public class GuiHolder implements InventoryHolder {
 		}
 
 		if (this.format.getLastPageNumbers().get(this.parent) > this.page) {
-			safePutStackToInventory(format.getRenderFooterStart() + format.getItemsOnRow() - 1, format.getPageForwardItem());
+			safePutStackToInventory(format.getRenderFooterStart() + format.getItemsOnRow() - 1,
+					format.getPageForwardItem());
 		} else {
-			safePutStackToInventory(format.getRenderFooterStart() + format.getItemsOnRow() - 1, format.getCosmeticItem());
+			safePutStackToInventory(format.getRenderFooterStart() + format.getItemsOnRow() - 1,
+					format.getCosmeticItem());
 		}
 
 		for (ItemInfo item : items) {
@@ -106,7 +109,7 @@ public class GuiHolder implements InventoryHolder {
 					}
 				}
 			}
-			
+
 			ItemStack cloned = stack.clone();
 			if (cloned.hasItemMeta()) {
 				ItemMeta meta = cloned.getItemMeta();
@@ -123,8 +126,7 @@ public class GuiHolder implements InventoryHolder {
 				cloned.setItemMeta(meta);
 			}
 
-			PlayerItemInfo playersInfo = new PlayerItemInfo(player, item, cloned, item.isVisible(),
-					item.isDisabled());
+			PlayerItemInfo playersInfo = new PlayerItemInfo(player, item, cloned, item.isVisible(), item.isDisabled());
 
 			GenerateItemEvent event = new GenerateItemEvent(this.format, playersInfo, player);
 			Bukkit.getPluginManager().callEvent(event);
@@ -175,7 +177,7 @@ public class GuiHolder implements InventoryHolder {
 	public Inventory getInventory() {
 		return this.inv;
 	}
-	
+
 	public void safePutStackToInventory(int i, ItemStack stack) {
 		if (i < this.inv.getSize()) {
 			this.inv.setItem(i, stack);

@@ -50,6 +50,8 @@ public class SimpleGuiFormat {
 
 	private boolean genericShopEnabled = false;
 	private boolean genericShopPriceTypeRequired = false;
+	
+	private boolean showPageNumber = true;
 
 	private Map<String, PlaceholderParser> placeholders = new HashMap<>();
 
@@ -75,6 +77,7 @@ public class SimpleGuiFormat {
 		this.render_header_row_start = options.getRender_header_start();
 		this.render_footer_row_start = options.getRender_footer_start();
 		this.render_start_offset = options.getRender_offset();
+		this.showPageNumber = options.isShowPageNumber();
 		
 		initPlaceholders();		
 		
@@ -648,6 +651,10 @@ public class SimpleGuiFormat {
 	
 	public int getRenderOffset() {
 		return render_start_offset;
+	}
+	
+	public boolean getShowPageNumber() {
+		return showPageNumber;
 	}
 
 	public SimpleGuiFormat openForPlayer(Player player) {
