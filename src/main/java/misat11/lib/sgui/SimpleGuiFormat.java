@@ -208,6 +208,39 @@ public class SimpleGuiFormat {
 	}
 
 	public String processPlaceholders(Player player, String text) {
+		char[] characters = text.toCharArray();
+		int lastEscapeIndex = -2;
+		String buf = "";
+		for (int i = 0; i < characters.length; i++) {
+			char c = characters[i];
+			if (c == '{' && lastEscapeIndex != (i - 1)) {
+				int bracketEnd = characters.length;
+				int alastEscapeIndex = -2;
+				String bracketBuf = "";
+				for (int j = i + 1; j < characters.length; j++) {
+					char cc = characters[j];
+					if (cc == '\\' && alastEscapeIndex != (j - 1)) {
+						alastEscapeIndex = j;
+					} else if (cc == '}' && alastEscapeIndex != (j - 1)) {
+						bracketEnd = j;
+						break;
+					} else {
+						bracketBuf += cc;
+					}
+				}
+				i = bracketEnd;
+				buf += String.valueOf((Object) OperationParser.getFinalOperation(this, bracketBuf).resolveFor(player));
+			} else if (c == '}' && lastEscapeIndex != (i - 1)) {
+				
+			} else if (c == '\\' && lastEscapeIndex != (i - 1)) {
+				lastEscapeIndex = i;
+			} else {
+				buf += c;
+			}
+		}
+		
+		text = buf;
+		
 		Pattern pat = Pattern.compile("%[^%]+%");
 		Matcher matcher = pat.matcher(text);
 		StringBuffer sb = new StringBuffer();
