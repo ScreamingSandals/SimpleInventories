@@ -150,7 +150,7 @@ public class MapReader {
 	public boolean getBoolean(String key, boolean def) {
 		Object obj = get(key);
 		if (obj instanceof String) {
-			return Boolean.parseBoolean((String) obj);
+			return OperationParser.getFinalCondition(format, (String) obj).process(player);
 		}
 		if (obj instanceof Boolean) {
 			return (Boolean) obj;

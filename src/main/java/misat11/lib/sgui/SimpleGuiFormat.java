@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.Plugin;
 
+import misat11.lib.sgui.builder.FormatBuilder;
 import misat11.lib.sgui.operations.OperationParser;
 import misat11.lib.sgui.operations.conditions.Condition;
 import misat11.lib.sgui.placeholders.PAPIPlaceholderParser;
@@ -106,49 +107,57 @@ public class SimpleGuiFormat {
 		}
 	}
 
-	public void load(List<Map<String, Object>> data) {
+	public SimpleGuiFormat load(List<Map<String, Object>> data) {
 		this.data.add(data);
+		return this;
+	}
+	
+	public SimpleGuiFormat load(FormatBuilder builder) {
+		return load(builder.getResult());
 	}
 
-	public void load(String fileName) throws IOException, InvalidConfigurationException {
-		load(new File(fileName), "data");
+	public SimpleGuiFormat load(String fileName) throws IOException, InvalidConfigurationException {
+		return load(new File(fileName), "data");
 	}
 
-	public void load(String fileName, String configPath) throws IOException, InvalidConfigurationException {
-		load(new File(fileName), configPath);
+	public SimpleGuiFormat load(String fileName, String configPath) throws IOException, InvalidConfigurationException {
+		return load(new File(fileName), configPath);
 	}
 
-	public void loadFromDataFolder(File pluginDataFolder, String fileName)
+	public SimpleGuiFormat loadFromDataFolder(File pluginDataFolder, String fileName)
 			throws IOException, InvalidConfigurationException {
-		load(new File(pluginDataFolder, fileName), "data");
+		return load(new File(pluginDataFolder, fileName), "data");
 	}
 
-	public void loadFromDataFolder(File pluginDataFolder, String fileName, String configPath)
+	public SimpleGuiFormat loadFromDataFolder(File pluginDataFolder, String fileName, String configPath)
 			throws IOException, InvalidConfigurationException {
-		load(new File(pluginDataFolder, fileName), configPath);
+		return load(new File(pluginDataFolder, fileName), configPath);
 	}
 
-	public void load(File file) throws IOException, InvalidConfigurationException {
-		load(file, "data");
+	public SimpleGuiFormat load(File file) throws IOException, InvalidConfigurationException {
+		return load(file, "data");
 	}
 
-	public void load(File file, String configPath) throws IOException, InvalidConfigurationException {
+	public SimpleGuiFormat load(File file, String configPath) throws IOException, InvalidConfigurationException {
 		YamlConfiguration config = new YamlConfiguration();
 		config = new YamlConfiguration();
 		config.load(file);
 		List<Map<String, Object>> data = (List<Map<String, Object>>) config.getList(configPath);
 		this.data.add(data);
+		return this;
 	}
 
 	@Deprecated
-	public void enableAnimations(Plugin plugin) {
+	public SimpleGuiFormat enableAnimations(Plugin plugin) {
 		this.animationsEnabled = true;
 		this.pluginForRunnables = plugin;
+		return this;
 	}
 
 	@Deprecated
-	public void disableAnimations() {
+	public SimpleGuiFormat disableAnimations() {
 		this.animationsEnabled = false;
+		return this;
 	}
 
 	public boolean isAnimationsEnabled() {
@@ -156,14 +165,16 @@ public class SimpleGuiFormat {
 	}
 
 	@Deprecated
-	public void enableGenericShop(boolean priceTypeRequired) {
+	public SimpleGuiFormat enableGenericShop(boolean priceTypeRequired) {
 		this.genericShopEnabled = true;
 		this.genericShopPriceTypeRequired = priceTypeRequired;
+		return this;
 	}
 	
 	@Deprecated
-	public void disableGenericShop() {
+	public SimpleGuiFormat disableGenericShop() {
 		this.genericShopEnabled = false;
+		return this;
 	}
 
 	public boolean isGenericShopEnabled() {
@@ -220,7 +231,7 @@ public class SimpleGuiFormat {
 		return sb.toString();
 	}
 
-	public void generateData() {
+	public SimpleGuiFormat generateData() {
 		for (List<Map<String, Object>> list : data) {
 			for (Map<String, Object> object : list) {
 				lastpos = generateItem(null, object, lastpos);
@@ -246,6 +257,7 @@ public class SimpleGuiFormat {
 				}
 			}
 		}
+		return this;
 	}
 
 	private int generateItem(ItemInfo parent, Map<String, Object> object, int lastpos) {
@@ -605,7 +617,8 @@ public class SimpleGuiFormat {
 		return render_start_offset;
 	}
 
-	public void openForPlayer(Player player) {
+	public SimpleGuiFormat openForPlayer(Player player) {
 		new GuiHolder(player, this, null, 0);
+		return this;
 	}
 }
