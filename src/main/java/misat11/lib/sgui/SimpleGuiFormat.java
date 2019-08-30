@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.Plugin;
@@ -660,5 +661,15 @@ public class SimpleGuiFormat {
 	public SimpleGuiFormat openForPlayer(Player player) {
 		new GuiHolder(player, this, null, 0);
 		return this;
+	}
+	
+	public GuiHolder getCurrentGuiHolder(Player player) {
+		Inventory top = player.getOpenInventory().getTopInventory();
+		if (top != null) {
+			if (top.getHolder() instanceof GuiHolder) {
+				return (GuiHolder) top.getHolder();
+			}
+		}
+		return null;
 	}
 }
