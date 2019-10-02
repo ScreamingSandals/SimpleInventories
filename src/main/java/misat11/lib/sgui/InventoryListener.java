@@ -1,21 +1,22 @@
 package misat11.lib.sgui;
 
-import java.lang.reflect.InvocationTargetException;
-
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import misat11.lib.sgui.events.CloseInventoryEvent;
+import misat11.lib.sgui.events.PostActionEvent;
+import misat11.lib.sgui.events.PreActionEvent;
+import misat11.lib.sgui.events.ShopTransactionEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import misat11.lib.sgui.events.PostActionEvent;
-import misat11.lib.sgui.events.PreActionEvent;
-import misat11.lib.sgui.events.ShopTransactionEvent;
+import java.lang.reflect.InvocationTargetException;
 
 public class InventoryListener implements Listener {
 
@@ -113,7 +114,7 @@ public class InventoryListener implements Listener {
 								.newInstance(eh.getDeclaredMethod("valueOf", String.class).invoke(eh, "MAIN_HAND")));
 					}
 
-				} catch (Throwable t) {
+				} catch (Throwable ignored) {
 				}
 
 				player.getInventory().setItem(heldslot, oldItem);
@@ -158,6 +159,27 @@ public class InventoryListener implements Listener {
 
 			if (player.getOpenInventory().getTopInventory().getHolder() == holder) {
 				holder.repaint();
+			}
+		}
+	}
+
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent event) {
+		if (!(event.getPlayer() instanceof Player)) {
+			return;
+		}
+
+		Player player = (Player) event.getPlayer();
+		Inventory inventory = event.getInventory();
+		if (inventory.getHolder() instanceof GuiHolder) {
+			GuiHolder holder = (GuiHolder) inventory.getHolder();
+			SimpleGuiFormat format = holder.getFormat();
+
+			CloseInventoryEvent closeInventoryEvent = new CloseInventoryEvent(player, format, inventory);
+			Bukkit.getPluginManager().callEvent(closeInventoryEvent);
+
+			if (closeInventoryEvent.isCancelled()) {
+				format.openForPlayer(player);
 			}
 		}
 	}

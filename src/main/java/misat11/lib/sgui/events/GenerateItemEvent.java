@@ -1,13 +1,12 @@
 package misat11.lib.sgui.events;
 
+import misat11.lib.sgui.ItemInfo;
+import misat11.lib.sgui.PlayerItemInfo;
+import misat11.lib.sgui.SimpleGuiFormat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
-
-import misat11.lib.sgui.ItemInfo;
-import misat11.lib.sgui.PlayerItemInfo;
-import misat11.lib.sgui.SimpleGuiFormat;
 
 public class GenerateItemEvent extends Event {
 
