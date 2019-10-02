@@ -15,30 +15,23 @@ import java.util.List;
 import java.util.Map;
 
 public class GuiHolder implements InventoryHolder {
-
-	private SimpleGuiFormat format;
-	private final List<ItemInfo> items;
-	private final Map<Integer, PlayerItemInfo> itemsInInventory;
-	private final ItemInfo parent;
-	private final int page;
 	private final Player player;
 	private final Inventory inv;
+
+	private SimpleGuiFormat format;
+	private List<ItemInfo> items;
+	private Map<Integer, PlayerItemInfo> itemsInInventory;
+	private ItemInfo parent;
+	private int page;
 	private boolean animationExists = false;
-	private final List<PlayerItemInfo> itemsWithAnimation;
+	private List<PlayerItemInfo> itemsWithAnimation;
 	private GuiAnimator animator;
 
 	public GuiHolder(Player player, SimpleGuiFormat format, ItemInfo parent, int page) {
 		this.format = format;
 		this.parent = parent;
 		this.page = page;
-		List<ItemInfo> items = new ArrayList<>();
-		if (this.format.getDynamicInfo().containsKey(null)) {
-			Map<Integer, List<ItemInfo>> map = this.format.getDynamicInfo().get(parent);
-			if (map.containsKey(page)) {
-				items.addAll(map.get(page));
-			}
-		}
-		this.items = items;
+		this.items = getItemsInfo();
 		this.player = player;
 		this.inv = Bukkit.createInventory(this, format.getItemsOnRow() * format.getRenderRows(),
 				format.getPrefix() + (format.getShowPageNumber() ? ("§r - " + (page + 1)) : ""));
@@ -158,6 +151,7 @@ public class GuiHolder implements InventoryHolder {
 
 	public void setFormat(SimpleGuiFormat format) {
 		this.format = format;
+		this.items = getItemsInfo();
 	}
 
 	public List<ItemInfo> getItems() {
@@ -185,5 +179,16 @@ public class GuiHolder implements InventoryHolder {
 		if (i < this.inv.getSize()) {
 			this.inv.setItem(i, stack);
 		}
+	}
+
+	private List<ItemInfo> getItemsInfo() {
+		List<ItemInfo> items = new ArrayList<>();
+		if (this.format.getDynamicInfo().containsKey(null)) {
+			Map<Integer, List<ItemInfo>> map = this.format.getDynamicInfo().get(parent);
+			if (map.containsKey(page)) {
+				items.addAll(map.get(page));
+			}
+		}
+		return items;
 	}
 }
