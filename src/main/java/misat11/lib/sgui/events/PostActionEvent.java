@@ -1,15 +1,14 @@
 package misat11.lib.sgui.events;
 
+import misat11.lib.sgui.ItemInfo;
+import misat11.lib.sgui.PlayerItemInfo;
+import misat11.lib.sgui.SimpleGuiFormat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
-
-import misat11.lib.sgui.ItemInfo;
-import misat11.lib.sgui.PlayerItemInfo;
-import misat11.lib.sgui.SimpleGuiFormat;
 
 public class PostActionEvent extends Event implements Cancellable {
 
