@@ -175,7 +175,7 @@ public class InventoryListener implements Listener {
 			GuiHolder holder = (GuiHolder) inventory.getHolder();
 			SimpleGuiFormat format = holder.getFormat();
 
-			CloseInventoryEvent closeInventoryEvent = new CloseInventoryEvent(player, format, inventory);
+			CloseInventoryEvent closeInventoryEvent = new CloseInventoryEvent(player, format, holder, inventory);
 			Bukkit.getPluginManager().callEvent(closeInventoryEvent);
 
 			if (closeInventoryEvent.isCancelled()) {

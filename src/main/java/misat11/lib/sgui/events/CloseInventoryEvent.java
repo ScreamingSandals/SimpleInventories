@@ -1,5 +1,6 @@
 package misat11.lib.sgui.events;
 
+import misat11.lib.sgui.GuiHolder;
 import misat11.lib.sgui.SimpleGuiFormat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -11,12 +12,14 @@ public class CloseInventoryEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private Player player;
     private SimpleGuiFormat format;
+    private GuiHolder guiHolder;
     private Inventory inventory;
     private boolean isCanceled = false;
 
-    public CloseInventoryEvent(Player player, SimpleGuiFormat format, Inventory inventory) {
+    public CloseInventoryEvent(Player player, SimpleGuiFormat format, GuiHolder guiHolder, Inventory inventory) {
         this.player = player;
         this.format = format;
+        this.guiHolder = guiHolder;
         this.inventory = inventory;
     }
 
@@ -26,6 +29,10 @@ public class CloseInventoryEvent extends Event implements Cancellable {
 
     public SimpleGuiFormat getFormat() {
         return format;
+    }
+
+    public GuiHolder getGuiHolder() {
+        return guiHolder;
     }
 
     public Inventory getInventory() {
