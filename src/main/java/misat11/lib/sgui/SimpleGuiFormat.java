@@ -20,6 +20,8 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.Plugin;
 
 import misat11.lib.sgui.builder.FormatBuilder;
+import misat11.lib.sgui.loaders.Loader;
+import misat11.lib.sgui.loaders.LoaderRegister;
 import misat11.lib.sgui.operations.OperationParser;
 import misat11.lib.sgui.operations.conditions.Condition;
 import misat11.lib.sgui.placeholders.PAPIPlaceholderParser;
@@ -110,6 +112,22 @@ public class SimpleGuiFormat {
 			placeholders.put("papi", new PAPIPlaceholderParser());
 		}
 	}
+	
+	public SimpleGuiFormat clearInput() {
+		this.data.clear();
+		this.previous = null;
+		return this;
+	}
+	
+	public SimpleGuiFormat purgeData() {
+		this.clearInput();
+		this.ids.clear();
+		this.generatedData.clear();
+		this.lastpos = 0;
+		this.infoByAbsolutePosition.clear();
+		this.lastPageNumbers.clear();
+		return this;
+	}
 
 	public SimpleGuiFormat load(List<Map<String, Object>> data) {
 		this.data.add(data);
@@ -120,34 +138,38 @@ public class SimpleGuiFormat {
 		return load(builder.getResult());
 	}
 
-	public SimpleGuiFormat load(String fileName) throws IOException, InvalidConfigurationException {
+	public SimpleGuiFormat load(String fileName)  throws Exception {
 		return load(new File(fileName), "data");
 	}
 
-	public SimpleGuiFormat load(String fileName, String configPath) throws IOException, InvalidConfigurationException {
+	public SimpleGuiFormat load(String fileName, String configPath)  throws Exception {
 		return load(new File(fileName), configPath);
 	}
 
 	public SimpleGuiFormat loadFromDataFolder(File pluginDataFolder, String fileName)
-			throws IOException, InvalidConfigurationException {
+		 throws Exception {
 		return load(new File(pluginDataFolder, fileName), "data");
 	}
 
 	public SimpleGuiFormat loadFromDataFolder(File pluginDataFolder, String fileName, String configPath)
-			throws IOException, InvalidConfigurationException {
+		 throws Exception {
 		return load(new File(pluginDataFolder, fileName), configPath);
 	}
 
-	public SimpleGuiFormat load(File file) throws IOException, InvalidConfigurationException {
+	public SimpleGuiFormat load(File file) throws Exception {
 		return load(file, "data");
 	}
 
-	public SimpleGuiFormat load(File file, String configPath) throws IOException, InvalidConfigurationException {
-		YamlConfiguration config = new YamlConfiguration();
-		config = new YamlConfiguration();
-		config.load(file);
-		List<Map<String, Object>> data = (List<Map<String, Object>>) config.getList(configPath);
-		this.data.add(data);
+	public SimpleGuiFormat load(File file, String configPath) throws Exception {
+		return load(file, configPath, LoaderRegister.getLoader(file));
+	}
+	
+	public SimpleGuiFormat load(File file, Loader loader) throws Exception {
+		return load(file, "data", loader);
+	}
+	
+	public SimpleGuiFormat load(File file, String configPath, Loader loader) throws Exception {
+		this.data.add(loader.readData(file, configPath));
 		return this;
 	}
 
@@ -234,8 +256,6 @@ public class SimpleGuiFormat {
 				}
 				i = bracketEnd;
 				buf += String.valueOf((Object) OperationParser.getFinalOperation(this, bracketBuf).resolveFor(player));
-			} else if (c == '}' && lastEscapeIndex != (i - 1)) {
-				
 			} else if (c == '\\' && lastEscapeIndex != (i - 1)) {
 				lastEscapeIndex = i;
 			} else {
@@ -487,7 +507,7 @@ public class SimpleGuiFormat {
 		List<Property> properties = new ArrayList<Property>();
 		if (object.containsKey("properties")) {
 			Object prop = object.get("properties");
-			if (properties instanceof List) {
+			if (prop instanceof List) {
 				List<Object> propertiesList = (List<Object>) prop;
 				for (Object obj : propertiesList) {
 					if (obj instanceof Map) {
@@ -495,8 +515,20 @@ public class SimpleGuiFormat {
 						Property pr = new Property(this,
 								propertyMap.containsKey("name") ? (String) propertyMap.get("name") : null, propertyMap);
 						properties.add(pr);
+					} else if (obj instanceof String) {
+						properties.add(new Property(this, (String) obj, new HashMap<String, Object>() {
+							{
+								put("name", (String) obj);
+							}
+						}));
 					}
 				}
+			} else if (prop instanceof String) {
+				properties.add(new Property(this, (String) prop, new HashMap<String, Object>() {
+					{
+						put("name", (String) prop);
+					}
+				}));
 			}
 		}
 		List<ItemStack> animation = null;
