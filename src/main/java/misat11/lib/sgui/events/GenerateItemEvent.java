@@ -30,6 +30,7 @@ public class GenerateItemEvent extends Event {
 		return info;
 	}
 	
+	@Deprecated
 	public ItemInfo getOriginalInfo() {
 		return info.getOriginal();
 	}

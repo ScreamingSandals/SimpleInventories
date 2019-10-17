@@ -55,6 +55,7 @@ public class PreActionEvent extends Event implements Cancellable {
 		return this.item;
 	}
 	
+	@Deprecated
 	public ItemInfo getOriginalItem() {
 		return this.item.getOriginal();
 	}

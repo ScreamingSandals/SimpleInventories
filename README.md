@@ -1,5 +1,7 @@
 # SimpleGuiFormat
 
+##### For contributors: please don't remove deprecated methods, variables and constructors! Most of these are used internally or usage is just dangerous without experiences.
+
 Simple Gui Format used for formatting guis for Spigot minigames!
 
 [![Build Status](https://jenkins.mtorus.cz:443/view/Minecraft%20plugins/job/SimpleGuiFormat/badge/icon?style=flat-square)](https://jenkins.mtorus.cz:443/view/Minecraft%20plugins/job/SimpleGuiFormat/)
@@ -19,7 +21,7 @@ Look into our wiki: https://github.com/Misat11/SimpleGuiFormat/wiki
 <dependency>
   <groupId>misat11.lib.sgui</groupId>
   <artifactId>SimpleGuiFormat</artifactId>
-  <version>0.0.4</version>
+  <version>0.0.8</version> <!-- OR 0.0.9-snapshot4 -->
   <scope>compile</scope>
 </dependency>
 ```

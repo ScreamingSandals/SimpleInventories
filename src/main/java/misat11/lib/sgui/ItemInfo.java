@@ -73,7 +73,7 @@ public class ItemInfo {
 	}
 
 	public MapReader getReader(Player owner) {
-		return new MapReader(format, data, owner);
+		return new MapReader(format, data, owner, null);
 	}
 
 	public List<ItemStack> getAnimation() {

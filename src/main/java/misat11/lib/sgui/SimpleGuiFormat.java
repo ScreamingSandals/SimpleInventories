@@ -21,6 +21,7 @@ import misat11.lib.sgui.loaders.Loader;
 import misat11.lib.sgui.loaders.LoaderRegister;
 import misat11.lib.sgui.operations.OperationParser;
 import misat11.lib.sgui.operations.conditions.Condition;
+import misat11.lib.sgui.placeholders.AdvancedPlaceholderParser;
 import misat11.lib.sgui.placeholders.PAPIPlaceholderParser;
 import misat11.lib.sgui.placeholders.PermissionPlaceholderParser;
 import misat11.lib.sgui.placeholders.PlaceholderConstantParser;
@@ -54,6 +55,7 @@ public class SimpleGuiFormat {
 	private boolean showPageNumber = true;
 
 	private Map<String, PlaceholderParser> placeholders = new HashMap<>();
+	private Map<String, AdvancedPlaceholderParser> advancedPlaceholders = new HashMap<>();
 
 	// FROM CREATOR
 	private final Map<ItemInfo, Map<Integer, List<ItemInfo>>> infoByAbsolutePosition = new HashMap<ItemInfo, Map<Integer, List<ItemInfo>>>();
@@ -82,6 +84,7 @@ public class SimpleGuiFormat {
 		initPlaceholders();		
 		
 		this.placeholders.putAll(options.getPlaceholders());
+		this.advancedPlaceholders.putAll(options.getAdvancedPlaceholders());
 	}
 
 	/* 
@@ -230,7 +233,21 @@ public class SimpleGuiFormat {
 		return true;
 	}
 
+	@Deprecated
+	public boolean registerPlaceholder(String name, AdvancedPlaceholderParser parser) {
+		if (name.contains(".") || name.contains(":") || name.contains("%") || name.contains(" ")) {
+			return false;
+		}
+		advancedPlaceholders.put(name, parser);
+		return true;
+	}
+	
+	@Deprecated
 	public String processPlaceholders(Player player, String text) {
+		return processPlaceholders(player, text, null);
+	}
+
+	public String processPlaceholders(Player player, String text, PlayerItemInfo info) {
 		char[] characters = text.toCharArray();
 		int lastEscapeIndex = -2;
 		String buf = "";
@@ -277,7 +294,9 @@ public class SimpleGuiFormat {
 				}
 			}
 			String key = args[0];
-			if (placeholders.containsKey(key)) {
+			if (advancedPlaceholders.containsKey(key) && info != null) {
+				matcher.appendReplacement(sb, advancedPlaceholders.get(key).processPlaceholder(key, player, info, gargs));
+			} else if (placeholders.containsKey(key)) {
 				matcher.appendReplacement(sb, placeholders.get(key).processPlaceholder(key, player, gargs));
 			}
 		}

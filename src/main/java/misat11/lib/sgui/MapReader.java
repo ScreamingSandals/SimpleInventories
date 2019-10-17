@@ -16,11 +16,18 @@ public class MapReader {
 	private Map<String, Object> map;
 	private SimpleGuiFormat format;
 	private Player player;
+	private PlayerItemInfo info;
 
+	@Deprecated
 	public MapReader(SimpleGuiFormat format, Map<String, Object> map, Player player) {
+		this(format, map, player, null);
+	}
+
+	public MapReader(SimpleGuiFormat format, Map<String, Object> map, Player player, PlayerItemInfo info) {
 		this.map = map;
 		this.format = format;
 		this.player = player;
+		this.info = info;
 	}
 	
 	public SimpleGuiFormat getFormat() {
@@ -211,7 +218,7 @@ public class MapReader {
 		if (obj instanceof List) {
 			List<Map<String, Object>> mapList = (List<Map<String, Object>>) obj;
 			for (Map<String, Object> map : mapList) {
-				newMapList.add(new MapReader(format, map, player));
+				newMapList.add(new MapReader(format, map, player, info));
 			}
 		}
 		return newMapList;
@@ -227,7 +234,7 @@ public class MapReader {
 	
 	private Object convert(Object obj) {
 		if (obj instanceof String) {
-			obj = format.processPlaceholders(player, (String) obj);
+			obj = format.processPlaceholders(player, (String) obj, info);
 			if (((String) obj).startsWith("(cast to ItemStack)")) {
 				obj = ShortStackParser.parseShortStack((String) obj);
 			}
@@ -253,12 +260,12 @@ public class MapReader {
 			if (stack.hasItemMeta()) {
 				ItemMeta meta = stack.getItemMeta();
 				if (meta.hasDisplayName()) {
-					meta.setDisplayName(format.processPlaceholders(player, meta.getDisplayName()));
+					meta.setDisplayName(format.processPlaceholders(player, meta.getDisplayName(), info));
 				}
 				if (meta.hasLore()) {
 					List<String> lore = new ArrayList<String>();
 					for (String str : meta.getLore()) {
-						lore.add(format.processPlaceholders(player, str));
+						lore.add(format.processPlaceholders(player, str, info));
 					}
 					meta.setLore(lore);
 				}

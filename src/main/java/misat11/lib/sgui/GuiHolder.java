@@ -94,22 +94,24 @@ public class GuiHolder implements InventoryHolder {
 			ItemStack stack = item.getItem();
 
 			ItemStack cloned = stack.clone();
+
+			PlayerItemInfo playersInfo = new PlayerItemInfo(player, item, cloned, item.isVisible(), item.isDisabled());
+			
 			if (cloned.hasItemMeta()) {
 				ItemMeta meta = cloned.getItemMeta();
 				if (meta.hasDisplayName()) {
-					meta.setDisplayName(format.processPlaceholders(player, meta.getDisplayName()));
+					meta.setDisplayName(format.processPlaceholders(player, meta.getDisplayName(), playersInfo));
 				}
 				if (meta.hasLore()) {
 					List<String> lore = new ArrayList<>();
 					for (String str : meta.getLore()) {
-						lore.add(format.processPlaceholders(player, str));
+						lore.add(format.processPlaceholders(player, str, playersInfo));
 					}
 					meta.setLore(lore);
 				}
 				cloned.setItemMeta(meta);
+				playersInfo.setStack(cloned);
 			}
-
-			PlayerItemInfo playersInfo = new PlayerItemInfo(player, item, cloned, item.isVisible(), item.isDisabled());
 
 			GenerateItemEvent event = new GenerateItemEvent(this.format, playersInfo, player);
 			Bukkit.getPluginManager().callEvent(event);

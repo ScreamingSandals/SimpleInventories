@@ -113,7 +113,7 @@ public class PlayerItemInfo {
 	}
 	
 	public MapReader getReader() {
-		return new MapReader(original.getFormat(), data, player);
+		return new MapReader(original.getFormat(), data, player, this);
 	}
 	
 	public boolean hasId() {
@@ -144,7 +144,7 @@ public class PlayerItemInfo {
 		return original.getFormat();
 	}
 	
-	/* Returned map should be readed with MapReader */
+	/* Returned map should be read with MapReader */
 	public Map<Condition, Map<String, Object>> getConditions() {
 		return original.getConditions();
 	}

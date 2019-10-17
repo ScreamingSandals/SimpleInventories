@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import misat11.lib.sgui.placeholders.AdvancedPlaceholderParser;
 import misat11.lib.sgui.placeholders.PlaceholderConstantParser;
 import misat11.lib.sgui.placeholders.PlaceholderParser;
 
@@ -31,6 +32,7 @@ public class Options {
 	private Plugin animationPlugin = null;
 	private String prefix = "Inventory";
 	private Map<String, PlaceholderParser> placeholders = new HashMap<>();
+	private Map<String, AdvancedPlaceholderParser> advancedPlaceholders = new HashMap<>();
 	// Render
 	private int rows = ROWS;
 	private int items_on_row = ITEMS_ON_ROW;
@@ -165,6 +167,10 @@ public class Options {
 	public Map<String, PlaceholderParser> getPlaceholders() {
 		return placeholders;
 	}
+	
+	public Map<String, AdvancedPlaceholderParser> getAdvancedPlaceholders() {
+		return advancedPlaceholders;
+	}
 
 	public boolean registerPlaceholder(String name, String value) {
 		return registerPlaceholder(name, new PlaceholderConstantParser(value));
@@ -175,6 +181,14 @@ public class Options {
 			return false;
 		}
 		placeholders.put(name, parser);
+		return true;
+	}
+
+	public boolean registerPlaceholder(String name, AdvancedPlaceholderParser parser) {
+		if (name.contains(".") || name.contains(":") || name.contains("%") || name.contains(" ")) {
+			return false;
+		}
+		advancedPlaceholders.put(name, parser);
 		return true;
 	}
 

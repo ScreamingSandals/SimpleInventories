@@ -24,8 +24,13 @@ public class Property {
 		this.propertyName = propertyName;
 	}
 	
+	@Deprecated
 	public MapReader getReader(Player player) {
-		return new MapReader(format, propertyData, player);
+		return new MapReader(format, propertyData, player, null);
+	}
+	
+	public MapReader getReader(Player player, PlayerItemInfo info) {
+		return new MapReader(format, propertyData, player, info);
 	}
 	
 	@Deprecated

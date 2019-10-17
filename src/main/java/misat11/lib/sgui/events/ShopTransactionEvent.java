@@ -36,12 +36,12 @@ public class ShopTransactionEvent extends Event implements Cancellable {
 		if (this.stack.hasItemMeta()) {
 			ItemMeta meta = this.stack.getItemMeta();
 			if (meta.hasDisplayName()) {
-				meta.setDisplayName(format.processPlaceholders(player, meta.getDisplayName()));
+				meta.setDisplayName(format.processPlaceholders(player, meta.getDisplayName(), item));
 			}
 			if (meta.hasLore()) {
 				List<String> lore = new ArrayList<String>();
 				for (String str : meta.getLore()) {
-					lore.add(format.processPlaceholders(player, str));
+					lore.add(format.processPlaceholders(player, str, item));
 				}
 				meta.setLore(lore);
 			}
@@ -68,6 +68,7 @@ public class ShopTransactionEvent extends Event implements Cancellable {
 		return this.item;
 	}
 	
+	@Deprecated
 	public ItemInfo getOriginalItem() {
 		return this.item.getOriginal();
 	}

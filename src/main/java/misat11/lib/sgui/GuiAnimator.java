@@ -36,12 +36,12 @@ public class GuiAnimator extends BukkitRunnable {
 				if (anim.hasItemMeta()) {
 					ItemMeta meta = anim.getItemMeta();
 					if (meta.hasDisplayName()) {
-						meta.setDisplayName(this.holder.getFormat().processPlaceholders(this.holder.getPlayer(), meta.getDisplayName()));
+						meta.setDisplayName(this.holder.getFormat().processPlaceholders(this.holder.getPlayer(), meta.getDisplayName(), info));
 					}
 					if (meta.hasLore()) {
 						List<String> lore = new ArrayList<String>();
 						for (String str : meta.getLore()) {
-							lore.add(this.holder.getFormat().processPlaceholders(this.holder.getPlayer(), str));
+							lore.add(this.holder.getFormat().processPlaceholders(this.holder.getPlayer(), str, info));
 						}
 						meta.setLore(lore);
 					}
