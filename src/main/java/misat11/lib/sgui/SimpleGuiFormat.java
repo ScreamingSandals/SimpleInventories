@@ -1,7 +1,6 @@
 package misat11.lib.sgui;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,8 +10,6 @@ import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -404,7 +401,7 @@ public class SimpleGuiFormat {
 						}
 					}
 				} else if ("cosmetic".equalsIgnoreCase(clone)) {
-					object.put("stack", new ItemStack(Material.AIR)); // Apply correct ItemStack in StaticGuiCreator
+					object.put("stack", this.cosmeticItem.clone());
 				} else if (clone.startsWith("§")) {
 					ItemInfo cloned = ids.get(clone.substring(1));
 					if (cloned != null) {
@@ -583,6 +580,42 @@ public class SimpleGuiFormat {
 			f_disabled_map.put("disabled", true);
 			conditions.put(f_disabled_cond, f_disabled_map);
 		}
+		
+		if (object.containsKey("price") && !object.containsKey("price-type")) {
+			Object f_price = object.get("price");
+			String price = f_price.toString().trim();
+			int index = price.toLowerCase().indexOf("of");
+			if (index > 0 && price.length() > (index + 2)) {
+				try {
+					double pr = Double.parseDouble(price.substring(0, index).trim());
+					String price_type = price.substring(index + 2).trim();
+					
+					object.put("price", pr);
+					object.put("price-type", price_type);
+				} catch (Throwable t) {
+				}
+			} else {
+				String pr = "";
+				String price_type = "";
+				for (int i = 0; i < price.length(); i++) {
+					char c = price.charAt(i);
+					if (Character.isDigit(c) || c == '.') {
+						pr += c;
+					} else {
+						price_type = price.substring(i).trim();
+						break;
+					}
+				}
+				try {
+					if (!pr.isEmpty()) {
+						object.put("price", Double.parseDouble(pr));
+						object.put("price-type", price_type);
+					}
+				} catch (Throwable t) {
+				}
+			}
+		}
+		
 
 		ItemInfo info = new ItemInfo(this, parent, stack.clone(), positionC, visible, disabled, id, properties, object,
 				animation, conditions);

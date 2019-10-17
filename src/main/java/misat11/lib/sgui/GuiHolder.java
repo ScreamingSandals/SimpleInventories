@@ -92,15 +92,6 @@ public class GuiHolder implements InventoryHolder {
 
 		for (ItemInfo item : items) {
 			ItemStack stack = item.getItem();
-			MapReader reader = item.getReader(player);
-			if (reader.containsKey("clone")) {
-				String clone = reader.getString("clone");
-				if (clone != null) {
-					if ("cosmetic".equalsIgnoreCase(clone)) {
-						stack = this.format.getCosmeticItem();
-					}
-				}
-			}
 
 			ItemStack cloned = stack.clone();
 			if (cloned.hasItemMeta()) {
