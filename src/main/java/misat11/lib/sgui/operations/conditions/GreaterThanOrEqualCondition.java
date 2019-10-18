@@ -2,6 +2,7 @@ package misat11.lib.sgui.operations.conditions;
 
 import org.bukkit.entity.Player;
 
+import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.SimpleGuiFormat;
 
 public class GreaterThanOrEqualCondition extends AbstractCondition {
@@ -11,9 +12,9 @@ public class GreaterThanOrEqualCondition extends AbstractCondition {
 	}
 
 	@Override
-	protected boolean process(Player player, Object obj1, Object obj2) {
-		return new GreaterThanCondition(format, obj1, obj2).process(player)
-				|| new EqualsCondition(format, obj1, obj2).process(player);
+	protected boolean process(Player player, Object obj1, Object obj2, PlayerItemInfo info) {
+		return new GreaterThanCondition(format, obj1, obj2).process(player, info)
+				|| new EqualsCondition(format, obj1, obj2).process(player, info);
 	}
 
 }

@@ -2,6 +2,7 @@ package misat11.lib.sgui.operations.conditions;
 
 import org.bukkit.entity.Player;
 
+import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.SimpleGuiFormat;
 
 public class NotEqualCondition extends EqualsCondition {
@@ -11,8 +12,8 @@ public class NotEqualCondition extends EqualsCondition {
 	}
 
 	@Override
-	protected boolean process(Player player, Object obj1, Object obj2) {
-		return !super.process(player, obj1, obj2);
+	protected boolean process(Player player, Object obj1, Object obj2, PlayerItemInfo info) {
+		return !super.process(player, obj1, obj2, info);
 	}
 
 }

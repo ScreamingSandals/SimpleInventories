@@ -11,17 +11,17 @@ import org.bukkit.inventory.ItemStack;
 import misat11.lib.sgui.ShortStackParser;
 
 public class FormatBuilder {
-	private final List<Map<String, Object>> result;
+	private final List<Object> result;
 	
 	public FormatBuilder() {
 		this(new ArrayList<>());
 	}	
 	
-	public FormatBuilder(List<Map<String, Object>> result) {
+	public FormatBuilder(List<Object> result) {
 		this.result = result;
 	}
 	
-	public List<Map<String, Object>> getResult() {
+	public List<Object> getResult() {
 		return this.result;
 	}
 	

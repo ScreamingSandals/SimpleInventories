@@ -2,6 +2,7 @@ package misat11.lib.sgui.operations.arithmetic;
 
 import org.bukkit.entity.Player;
 
+import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.SimpleGuiFormat;
 import misat11.lib.sgui.operations.Operation;
 
@@ -17,20 +18,20 @@ public abstract class AbstractArithmetic implements Operation {
 	}
 	
 	@Override
-	public Object resolveFor(Player player) {
+	public Object resolveFor(Player player, PlayerItemInfo info) {
 		Object ob1 = this.obj1;
 		Object ob2 = this.obj2;
 		if (ob1 instanceof Operation) {
-			ob1 = ((Operation) ob1).resolveFor(player);
+			ob1 = ((Operation) ob1).resolveFor(player, info);
 		}
 		if (ob2 instanceof Operation) {
-			ob2 = ((Operation) ob2).resolveFor(player);
+			ob2 = ((Operation) ob2).resolveFor(player, info);
 		}
 		if (ob1 instanceof String) {
-			ob1 = format.processPlaceholders(player, (String) ob1);
+			ob1 = format.processPlaceholders(player, (String) ob1, info);
 		}
 		if (ob2 instanceof String) {
-			ob2 = format.processPlaceholders(player, (String) ob2);
+			ob2 = format.processPlaceholders(player, (String) ob2, info);
 		}
 		if (ob1 instanceof String) {
 			try {

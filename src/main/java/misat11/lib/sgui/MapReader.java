@@ -41,7 +41,7 @@ public class MapReader {
 	public MapReader getMap(String key) {
 		Object obj = map.get(key);
 		if (obj instanceof Map) {
-			return new MapReader(format, (Map<String, Object>) obj, player);
+			return new MapReader(format, (Map<String, Object>) obj, player, info);
 		}
 		return null;
 	}
@@ -52,10 +52,7 @@ public class MapReader {
 	
 	public String getString(String key, String def) {
 		Object obj = get(key);
-		if (obj instanceof String) {
-			return (String) obj;
-		}
-		return def;
+		return obj != null ? obj.toString() : def;
 	}
 	
 	private Number getNumber(String key, Number def) {
@@ -69,7 +66,7 @@ public class MapReader {
 			} catch (NumberFormatException e) {
 				// Object isn't number, try to use aritmetic
 				try {
-					Object ob = OperationParser.getFinalOperation(format, s).resolveFor(player);
+					Object ob = OperationParser.getFinalOperation(format, s).resolveFor(player, info);
 					if (ob instanceof Number) {
 						return (Number) ob;
 					} else if (ob instanceof String) {
@@ -157,7 +154,7 @@ public class MapReader {
 	public boolean getBoolean(String key, boolean def) {
 		Object obj = get(key);
 		if (obj instanceof String) {
-			return OperationParser.getFinalCondition(format, (String) obj).process(player);
+			return OperationParser.getFinalCondition(format, (String) obj).process(player, info);
 		}
 		if (obj instanceof Boolean) {
 			return (Boolean) obj;

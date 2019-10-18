@@ -2,6 +2,7 @@ package misat11.lib.sgui.operations.conditions;
 
 import org.bukkit.entity.Player;
 
+import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.SimpleGuiFormat;
 import misat11.lib.sgui.operations.Operation;
 
@@ -17,25 +18,25 @@ public abstract class AbstractCondition implements Condition {
 	}
 
 	@Override
-	public boolean process(Player player) {
+	public boolean process(Player player, PlayerItemInfo info) {
 		Object ob1 = this.obj1;
 		Object ob2 = this.obj2;
 		if (ob1 instanceof Operation) {
-			ob1 = ((Operation) ob1).resolveFor(player);
+			ob1 = ((Operation) ob1).resolveFor(player, info);
 		}
 		if (ob2 instanceof Operation) {
-			ob2 = ((Operation) ob2).resolveFor(player);
+			ob2 = ((Operation) ob2).resolveFor(player, info);
 		}
 		if (ob1 instanceof String) {
-			ob1 = format.processPlaceholders(player, (String) ob1);
+			ob1 = format.processPlaceholders(player, (String) ob1, info);
 		}
 		if (ob2 instanceof String) {
-			ob2 = format.processPlaceholders(player, (String) ob2);
+			ob2 = format.processPlaceholders(player, (String) ob2, info);
 		}
-		return process(player, ob1, ob2);
+		return process(player, ob1, ob2, info);
 	}
 
-	protected abstract boolean process(Player player, Object obj1, Object obj2);
+	protected abstract boolean process(Player player, Object obj1, Object obj2, PlayerItemInfo info);
 
 	@Override
 	public String toString() {

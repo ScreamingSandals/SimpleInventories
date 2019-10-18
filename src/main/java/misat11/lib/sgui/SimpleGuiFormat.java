@@ -27,6 +27,7 @@ import misat11.lib.sgui.placeholders.PermissionPlaceholderParser;
 import misat11.lib.sgui.placeholders.PlaceholderConstantParser;
 import misat11.lib.sgui.placeholders.PlaceholderParser;
 import misat11.lib.sgui.placeholders.PlayerPlaceholderParser;
+import misat11.lib.sgui.placeholders.ThisPlaceholderParser;
 import misat11.lib.sgui.placeholders.WorldPlaceholderParser;
 
 public class SimpleGuiFormat {
@@ -38,7 +39,7 @@ public class SimpleGuiFormat {
 	private int render_header_row_start = Options.RENDER_HEADER_START;
 	private int render_footer_row_start = Options.RENDER_FOOTER_START;
 
-	private final List<List<Map<String, Object>>> data = new ArrayList<List<Map<String, Object>>>();
+	private final List<List<Object>> data = new ArrayList<List<Object>>();
 	private final List<ItemInfo> generatedData = new ArrayList<ItemInfo>();
 
 	private int lastpos = 0;
@@ -53,6 +54,7 @@ public class SimpleGuiFormat {
 	private boolean genericShopPriceTypeRequired = false;
 	
 	private boolean showPageNumber = true;
+	private boolean allowAccessToConsole = false;
 
 	private Map<String, PlaceholderParser> placeholders = new HashMap<>();
 	private Map<String, AdvancedPlaceholderParser> advancedPlaceholders = new HashMap<>();
@@ -80,6 +82,7 @@ public class SimpleGuiFormat {
 		this.render_footer_row_start = options.getRender_footer_start();
 		this.render_start_offset = options.getRender_offset();
 		this.showPageNumber = options.isShowPageNumber();
+		this.allowAccessToConsole = options.isAllowAccessToConsole();
 		
 		initPlaceholders();		
 		
@@ -105,12 +108,60 @@ public class SimpleGuiFormat {
 	}
 	
 	private void initPlaceholders() {
+		/* STANDARD PLACEHOLDERS */
 		placeholders.put("player", new PlayerPlaceholderParser());
 		placeholders.put("permission", new PermissionPlaceholderParser());
 		placeholders.put("world", new WorldPlaceholderParser());
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			placeholders.put("papi", new PAPIPlaceholderParser());
 		}
+		
+		/* ADVANCED PLACEHOLDERS */
+		AdvancedPlaceholderParser thisParser = new ThisPlaceholderParser();
+		advancedPlaceholders.put("this", thisParser);
+		advancedPlaceholders.put("self", thisParser);
+	}
+	
+	public SimpleGuiFormat carrigeReturn() {
+		this.lastpos -= (lastpos - items_on_row) % items_on_row;
+		return this;
+	}
+	
+	public SimpleGuiFormat lineBreak() {
+		this.lastpos += (items_on_row - (lastpos % items_on_row));
+		return this;
+	}
+	
+	public SimpleGuiFormat pageBreak() {
+		this.lastpos += (getItemsOnPage() - (lastpos % getItemsOnPage()));
+		return this;
+	}
+	
+	public SimpleGuiFormat jump(int number) {
+		this.lastpos += number;
+		if (this.lastpos < 0) {
+			this.lastpos = 0;
+		}
+		return this;
+	}
+	
+	public SimpleGuiFormat absolute(int position) {
+		this.lastpos = position;
+		return this;
+	}
+	
+	public SimpleGuiFormat column(Column column) {
+		return column(column.convert(items_on_row));
+	}
+	
+	public SimpleGuiFormat column(int column) {
+		this.lastpos = (this.lastpos - (this.lastpos % items_on_row)) + column;
+		return this;
+	}
+	
+	public SimpleGuiFormat row(int row) {
+		this.lastpos = this.lastpos - (this.lastpos % getItemsOnPage()) + ((row - 1) * items_on_row) + (this.lastpos % items_on_row);
+		return this;
 	}
 	
 	public SimpleGuiFormat clearInput() {
@@ -128,8 +179,12 @@ public class SimpleGuiFormat {
 		this.lastPageNumbers.clear();
 		return this;
 	}
+	
+	public List<Object> cloneCurrentInput() {
+		return new ArrayList<>(data);
+	}
 
-	public SimpleGuiFormat load(List<Map<String, Object>> data) {
+	public SimpleGuiFormat load(List<Object> data) {
 		this.data.add(data);
 		return this;
 	}
@@ -215,7 +270,7 @@ public class SimpleGuiFormat {
 		return this.pluginForRunnables;
 	}
 
-	public List<List<Map<String, Object>>> getData() {
+	public List<List<Object>> getData() {
 		return this.data;
 	}
 
@@ -269,7 +324,7 @@ public class SimpleGuiFormat {
 					}
 				}
 				i = bracketEnd;
-				buf += String.valueOf((Object) OperationParser.getFinalOperation(this, bracketBuf).resolveFor(player));
+				buf += String.valueOf((Object) OperationParser.getFinalOperation(this, bracketBuf).resolveFor(player, info));
 			} else if (c == '\\' && lastEscapeIndex != (i - 1)) {
 				lastEscapeIndex = i;
 			} else {
@@ -305,8 +360,8 @@ public class SimpleGuiFormat {
 	}
 
 	public SimpleGuiFormat generateData() {
-		for (List<Map<String, Object>> list : data) {
-			for (Map<String, Object> object : list) {
+		for (List<Object> list : data) {
+			for (Object object : list) {
 				lastpos = generateItem(null, object, lastpos);
 			}
 		}
@@ -333,7 +388,45 @@ public class SimpleGuiFormat {
 		return this;
 	}
 
-	private int generateItem(ItemInfo parent, Map<String, Object> object, int lastpos) {
+	private int generateItem(ItemInfo parent, Object original, int lastpos) {
+		Map<String, Object> object = new HashMap<>();
+		if (original instanceof Map) {
+			object.putAll((Map<String, Object>) original);
+		} else {
+			String obj = original.toString();
+			char[] characters = obj.toCharArray();
+			int lastEscapeIndex = -2;
+			boolean buildingString = false;
+			boolean buildingStack = true;
+			String buf = "";
+			for (int i = 0; i < characters.length; i++) {
+				char c = characters[i];
+			    if (c == '\\' && lastEscapeIndex != (i - 1)) {
+			    } else if (buildingString) {
+					if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
+						buildingString = false;
+					} else {
+						buf += c;
+					}
+			    } else if (buildingStack && buf.endsWith("for")){
+			    	buildingStack = false;
+			    	buf = buf.substring(0, buf.length() - 3).trim();
+			    	object.put("stack", buf);
+			    	buf = "";
+				} else if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
+					buildingString = true;
+					lastEscapeIndex = i;
+				} else {
+					buf += c;
+				}
+			}
+			if (buildingStack) {
+				object.put("stack", buf.trim());
+			} else {
+				object.put("price", buf.trim());
+			}
+		}
+		
 		if (object.containsKey("insert")) {
 			Object obj = object.get("insert");
 			if (obj instanceof String && obj != null) {
@@ -639,8 +732,8 @@ public class SimpleGuiFormat {
 		ItemInfo info = new ItemInfo(this, parent, stack.clone(), positionC, visible, disabled, id, properties, object,
 				animation, conditions);
 		if (object.containsKey("items")) {
-			List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
-			for (Map<String, Object> itemObject : items) {
+			List<Object> items = (List<Object>) object.get("items");
+			for (Object itemObject : items) {
 				info.lastpos = generateItem(info, itemObject, info.lastpos);
 			}
 		} else if (object.containsKey("book")) {

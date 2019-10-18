@@ -33,6 +33,7 @@ public class Options {
 	private String prefix = "Inventory";
 	private Map<String, PlaceholderParser> placeholders = new HashMap<>();
 	private Map<String, AdvancedPlaceholderParser> advancedPlaceholders = new HashMap<>();
+	private boolean allowAccessToConsole = false;
 	// Render
 	private int rows = ROWS;
 	private int items_on_row = ITEMS_ON_ROW;
@@ -198,5 +199,13 @@ public class Options {
 
 	public void setShowPageNumber(boolean showPageNumber) {
 		this.showPageNumber = showPageNumber;
+	}
+
+	public boolean isAllowAccessToConsole() {
+		return allowAccessToConsole;
+	}
+
+	public void setAllowAccessToConsole(boolean allowAccessToConsole) {
+		this.allowAccessToConsole = allowAccessToConsole;
 	}
 }

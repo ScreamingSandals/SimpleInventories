@@ -37,7 +37,7 @@ public class PlayerItemInfo {
 		Map<Condition, Map<String, Object>> conditions = original.getConditions();
 		for (Map.Entry<Condition, Map<String, Object>> entry : conditions.entrySet()) {
 			Condition cond = entry.getKey();
-			if (cond.process(player)) {
+			if (cond.process(player, this)) {
 				for (Map.Entry<String, Object> change : entry.getValue().entrySet()) {
 					this.data.put(change.getKey(), change.getValue());
 					if (change.getKey().equals("visible")) {

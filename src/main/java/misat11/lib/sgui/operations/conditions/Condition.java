@@ -2,12 +2,13 @@ package misat11.lib.sgui.operations.conditions;
 
 import org.bukkit.entity.Player;
 
+import misat11.lib.sgui.PlayerItemInfo;
 import misat11.lib.sgui.operations.Operation;
 
 public interface Condition extends Operation {
-	default Object resolveFor(Player player) {
-		return process(player);
+	default Object resolveFor(Player player, PlayerItemInfo info) {
+		return process(player, info);
 	}
 	
-	public boolean process(Player player);
+	public boolean process(Player player, PlayerItemInfo info);
 }

@@ -97,9 +97,13 @@ public class ShortStackParser {
 					damage = Integer.parseInt(splitByColon[1]);
 				}
 			} else if (i == 1) {
-				amount = Integer.parseInt(argument);
+				if (!argument.equals("")) {
+					amount = Integer.parseInt(argument);
+				}
 			} else if (i == 2) {
-				displayName = argument;
+				if (!argument.equals("")) {
+					displayName = argument;
+				}
 			} else {
 				lore.add(argument);
 			}
