@@ -21,11 +21,12 @@ public class ItemInfo {
 	private ItemStack book;
 	private SimpleGuiFormat format;
 	private Map<Condition, Map<String, Object>> conditions;
+	private Origin origin;
 	public int lastpos = 0;
 
 	public ItemInfo(SimpleGuiFormat format, ItemInfo parent, ItemStack item, int position, boolean visible,
 			boolean disabled, String id, List<Property> properties, Map<String, Object> data, List<ItemStack> animation,
-			Map<Condition, Map<String, Object>> conditions) {
+			Map<Condition, Map<String, Object>> conditions, Origin origin) {
 		this.format = format;
 		this.parent = parent;
 		this.item = item;
@@ -37,6 +38,7 @@ public class ItemInfo {
 		this.data = data;
 		this.animation = animation;
 		this.conditions = conditions;
+		this.origin = origin;
 	}
 
 	public int getPosition() {
@@ -114,6 +116,10 @@ public class ItemInfo {
 	
 	public Map<Condition, Map<String, Object>> getConditions() {
 		return conditions;
+	}
+	
+	public Origin getOrigin() {
+		return origin;
 	}
 
 }

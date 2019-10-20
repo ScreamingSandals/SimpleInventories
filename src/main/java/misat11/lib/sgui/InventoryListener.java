@@ -17,6 +17,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public class InventoryListener implements Listener {
 
@@ -121,8 +122,8 @@ public class InventoryListener implements Listener {
 				return;
 			}
 
+			MapReader originalData = playersItem.getReader();
 			if (format.isGenericShopEnabled()) {
-				MapReader originalData = playersItem.getReader();
 				if (format.isPriceTypeRequired()) {
 					if (originalData.containsKey("price") && originalData.containsKey("price-type")) {
 						int price = originalData.getInt("price");
@@ -150,6 +151,41 @@ public class InventoryListener implements Listener {
 							holder.repaint();
 						}
 						return;
+					}
+				}
+			}
+			
+			if (originalData.containsKey("execute")) {
+				Object obj = originalData.get("execute");
+				if (obj instanceof List) {
+					List<String> list = (List<String>) obj;
+					for (String str : list) {
+						str = str.trim();
+						if (str.startsWith("console:")) {
+							str = str.substring(7).trim();
+							if (format.isAllowedToExecuteConsoleCommands()) {
+								Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
+							}
+						} else {
+							if (str.startsWith("player:")) {
+								str = str.substring(6).trim();
+							}
+							Bukkit.getServer().dispatchCommand(player, str);
+						}
+					}
+				} else {
+					String str = obj.toString();
+					str = str.trim();
+					if (str.startsWith("console:")) {
+						str = str.substring(7).trim();
+						if (format.isAllowedToExecuteConsoleCommands()) {
+							Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
+						}
+					} else {
+						if (str.startsWith("player:")) {
+							str = str.substring(6).trim();
+						}
+						Bukkit.getServer().dispatchCommand(player, str);
 					}
 				}
 			}

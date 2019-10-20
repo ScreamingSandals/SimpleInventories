@@ -39,7 +39,7 @@ public class SimpleGuiFormat {
 	private int render_header_row_start = Options.RENDER_HEADER_START;
 	private int render_footer_row_start = Options.RENDER_FOOTER_START;
 
-	private final List<List<Object>> data = new ArrayList<List<Object>>();
+	private final List<Origin> data = new ArrayList<Origin>();
 	private final List<ItemInfo> generatedData = new ArrayList<ItemInfo>();
 
 	private int lastpos = 0;
@@ -185,12 +185,18 @@ public class SimpleGuiFormat {
 	}
 
 	public SimpleGuiFormat load(List<Object> data) {
-		this.data.add(data);
+		this.data.add(new Origin(data));
+		return this;
+	}
+
+	public SimpleGuiFormat load(Origin origin) {
+		this.data.add(origin);
 		return this;
 	}
 	
 	public SimpleGuiFormat load(FormatBuilder builder) {
-		return load(builder.getResult());
+		this.data.add(new Origin(builder, builder.getResult()));
+		return this;
 	}
 
 	public SimpleGuiFormat load(String fileName)  throws Exception {
@@ -270,7 +276,7 @@ public class SimpleGuiFormat {
 		return this.pluginForRunnables;
 	}
 
-	public List<List<Object>> getData() {
+	public List<Origin> getData() {
 		return this.data;
 	}
 
@@ -360,9 +366,9 @@ public class SimpleGuiFormat {
 	}
 
 	public SimpleGuiFormat generateData() {
-		for (List<Object> list : data) {
-			for (Object object : list) {
-				lastpos = generateItem(null, object, lastpos);
+		for (Origin origin : data) {
+			for (Object object : origin.getContent()) {
+				lastpos = generateItem(null, object, lastpos, origin);
 			}
 		}
 
@@ -388,7 +394,7 @@ public class SimpleGuiFormat {
 		return this;
 	}
 
-	private int generateItem(ItemInfo parent, Object original, int lastpos) {
+	private int generateItem(ItemInfo parent, Object original, int lastpos, Origin origin) {
 		Map<String, Object> object = new HashMap<>();
 		if (original instanceof Map) {
 			object.putAll((Map<String, Object>) original);
@@ -435,7 +441,7 @@ public class SimpleGuiFormat {
 					if (object.containsKey("items")) {
 						List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
 						for (Map<String, Object> itemObject : items) {
-							this.lastpos = generateItem(null, itemObject, this.lastpos);
+							this.lastpos = generateItem(null, itemObject, this.lastpos, origin);
 						}
 					}
 					return parent == null ? this.lastpos : lastpos;
@@ -445,7 +451,7 @@ public class SimpleGuiFormat {
 						if (object.containsKey("items")) {
 							List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
 							for (Map<String, Object> itemObject : items) {
-								inserted.lastpos = generateItem(inserted, itemObject, inserted.lastpos);
+								inserted.lastpos = generateItem(inserted, itemObject, inserted.lastpos, origin);
 							}
 						}
 						return parent == inserted ? inserted.lastpos : lastpos;
@@ -730,11 +736,11 @@ public class SimpleGuiFormat {
 		
 
 		ItemInfo info = new ItemInfo(this, parent, stack.clone(), positionC, visible, disabled, id, properties, object,
-				animation, conditions);
+				animation, conditions, origin);
 		if (object.containsKey("items")) {
 			List<Object> items = (List<Object>) object.get("items");
 			for (Object itemObject : items) {
-				info.lastpos = generateItem(info, itemObject, info.lastpos);
+				info.lastpos = generateItem(info, itemObject, info.lastpos, origin);
 			}
 		} else if (object.containsKey("book")) {
 			List<Map<String, Object>> pages = (List<Map<String, Object>>) object.get("book");
@@ -848,5 +854,9 @@ public class SimpleGuiFormat {
 			}
 		}
 		return null;
+	}
+	
+	public boolean isAllowedToExecuteConsoleCommands() {
+		return this.allowAccessToConsole;
 	}
 }

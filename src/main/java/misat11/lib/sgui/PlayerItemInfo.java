@@ -148,4 +148,8 @@ public class PlayerItemInfo {
 	public Map<Condition, Map<String, Object>> getConditions() {
 		return original.getConditions();
 	}
+	
+	public Origin getOrigin() {
+		return original.getOrigin();
+	}
 }

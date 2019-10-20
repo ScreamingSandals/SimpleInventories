@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import misat11.lib.sgui.Origin;
+
 public interface Loader {
-	public List<Object> readData(File file, String configPath) throws Exception;
+	public Origin readData(File file, String configPath) throws Exception;
 }
