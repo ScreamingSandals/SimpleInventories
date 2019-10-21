@@ -21,17 +21,19 @@ import misat11.lib.sgui.operations.conditions.AndCondition;
 import misat11.lib.sgui.operations.conditions.BooleanCondition;
 import misat11.lib.sgui.operations.conditions.Condition;
 import misat11.lib.sgui.operations.conditions.EqualsCondition;
+import misat11.lib.sgui.operations.conditions.FullEqualsCondition;
 import misat11.lib.sgui.operations.conditions.GreaterThanCondition;
 import misat11.lib.sgui.operations.conditions.GreaterThanOrEqualCondition;
 import misat11.lib.sgui.operations.conditions.NegationCondition;
 import misat11.lib.sgui.operations.conditions.NotEqualCondition;
+import misat11.lib.sgui.operations.conditions.NotFullEqualsCondition;
 import misat11.lib.sgui.operations.conditions.OrCondition;
 
 public class OperationParser {
 
 	public static final List<String> STRING_BEGIN_END = Arrays.asList("\"", "'");
 	// All possible binary operators
-	public static final List<String> DUAL_OPERATORS = Arrays.asList("==", "!=", ">", "<", ">=", "<=", "&&", "||", "+",
+	public static final List<String> DUAL_OPERATORS = Arrays.asList("==", "===", "!=", "!==", "<>", ">", "<", ">=", "<=", "&&", "||", "+",
 			"-", "*", "/", "%", "&", "|", "^", "<<", ">>", ">>>");
 	// All possible unary operators
 	public static final List<String> SINGLE_OPERATORS = Arrays.asList("!", "~");
@@ -51,7 +53,7 @@ public class OperationParser {
 		PRIORITIES.add(Arrays.asList("+", "-")); // 11
 		PRIORITIES.add(Arrays.asList("<<", ">>", ">>>")); // 10
 		PRIORITIES.add(Arrays.asList(">", "<", ">=", "<=")); // 9
-		PRIORITIES.add(Arrays.asList("==", "!=")); // 8
+		PRIORITIES.add(Arrays.asList("==", "!=", "<>", "===", "!==")); // 8
 		PRIORITIES.add(Arrays.asList("&")); // 7
 		PRIORITIES.add(Arrays.asList("^")); // 6
 		PRIORITIES.add(Arrays.asList("|")); // 5
@@ -91,7 +93,8 @@ public class OperationParser {
 		String buildingStringWith = "";
 		for (int i = 0; i < chars.length; i++) {
 			String c = String.valueOf(chars[i]);
-			String pair = c + ((i != (chars.length - 1)) ? chars[i + 1] : "");
+			String pair = c + ((i < (chars.length - 1)) ? chars[i + 1] : "");
+			String triplet = pair + ((i < (chars.length - 2)) ? chars[i + 2] : "");
 			if (ESCAPE_SYMBOLS.contains(c) && lastIndexOfEscape != (i - 1)) {
 				lastIndexOfEscape = i;
 			} else if (buildingString) {
@@ -120,7 +123,7 @@ public class OperationParser {
 				// String beginning
 				buildingString = true;
 				buildingStringWith = c;
-			} else if ((DUAL_OPERATORS.contains(c) || DUAL_OPERATORS.contains(pair)) && lastIndexOfEscape != (i - 1)) {
+			} else if ((DUAL_OPERATORS.contains(c) || DUAL_OPERATORS.contains(pair) || DUAL_OPERATORS.contains(triplet)) && lastIndexOfEscape != (i - 1)) {
 				// Dual operator
 				if (!operand.equals("")) {
 					firstResult.add(new Operand(operand.trim()));
@@ -133,7 +136,10 @@ public class OperationParser {
 					finalizeStringAfterBuild = false;
 					continue;
 				}
-				if (DUAL_OPERATORS.contains(pair)) {
+				if (DUAL_OPERATORS.contains(triplet)) {
+					i += 2;
+					firstResult.add(new Operator(triplet, true));
+				} else if (DUAL_OPERATORS.contains(pair)) {
 					i++; // Skip next character
 					firstResult.add(new Operator(pair, true));
 				} else {
@@ -293,8 +299,13 @@ public class OperationParser {
 		switch (lastOperation.string) {
 		case "==":
 			return new EqualsCondition(format, lastOperand, operand);
+		case "===":
+			return new FullEqualsCondition(format, lastOperand, operand);
 		case "!=":
+		case "<>":
 			return new NotEqualCondition(format, lastOperand, operand);
+		case "!==":
+			return new NotFullEqualsCondition(format, lastOperand, operand);
 		case "<=":
 			return new GreaterThanOrEqualCondition(format, operand, lastOperand);
 		case ">=":

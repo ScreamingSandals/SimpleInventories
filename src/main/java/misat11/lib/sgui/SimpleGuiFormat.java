@@ -561,6 +561,8 @@ public class SimpleGuiFormat {
 			Object st = object.get("stack");
 			if (st instanceof ItemStack) {
 				stack = (ItemStack) st;
+			} else if (st instanceof Map) {
+				stack = SguiStackParser.parseSguiStack((Map<String, Object>) st);
 			} else if (st instanceof String) {
 				stack = ShortStackParser.parseShortStack((String) st);
 			}

@@ -203,6 +203,8 @@ public class MapReader {
 		Object obj = get(key);
 		if (obj instanceof ItemStack) {
 			return (ItemStack) obj;
+		} else if (obj instanceof Map) {
+			return SguiStackParser.parseSguiStack((Map<String, Object>) obj);
 		} else if (obj instanceof String) {
 			return ShortStackParser.parseShortStack((String) obj);
 		}
@@ -246,11 +248,21 @@ public class MapReader {
 		}
 		if (obj instanceof Map) {
 			Map<String, Object> map = (Map<String, Object>) obj;
-			Map<String, Object> nmap = new HashMap<>();
-			for (Map.Entry<String, Object> entry : map.entrySet()) {
-				nmap.put(entry.getKey(), convert(entry.getValue()));
+			boolean casted = false;
+			if (map.containsKey("cast")) {
+				String cast = map.get("cast").toString().toLowerCase();
+				if (cast.endsWith("itemstack")) {
+					obj = SguiStackParser.parseSguiStack(map);
+					casted = true;
+				}
 			}
-			obj = nmap;
+			if (!casted) {
+				Map<String, Object> nmap = new HashMap<>();
+				for (Map.Entry<String, Object> entry : map.entrySet()) {
+					nmap.put(entry.getKey(), convert(entry.getValue()));
+				}
+				obj = nmap;
+			}
 		}
 		if (obj instanceof ItemStack) {
 			ItemStack stack = (ItemStack) obj;
