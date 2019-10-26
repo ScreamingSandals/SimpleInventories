@@ -6,8 +6,10 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.Repairable;
 
 public class SguiStackParser {
 	@SuppressWarnings({ "unchecked", "deprecation" })
@@ -55,6 +57,45 @@ public class SguiStackParser {
 			meta.setDisplayName(str);
 		}
 		
+		if (obj.containsKey("loc-name")) {
+			String str = obj.get("loc-name").toString();
+			try {
+				meta.setLocalizedName(str);
+			} catch (Throwable t) {
+			}
+		}
+		
+		if (obj.containsKey("custom-model-data") && obj.get("custom-model-data") instanceof Number) {
+			try {
+				meta.setCustomModelData(((Number) obj.get("custom-model-data")).intValue());
+			} catch (Throwable t) {
+			}
+		}
+		
+		if (obj.containsKey("repair-cost") && meta instanceof Repairable) {
+			String str = obj.get("repair-cost").toString();
+			try {
+				((Repairable) meta).setRepairCost(Integer.parseInt(str));
+			} catch (Throwable t) {
+			}
+		}
+
+		if (obj.containsKey("ItemFlags") && obj.get("ItemFlags") instanceof List) {
+			for (String str : (List<String>) obj.get("ItemFlags")) {
+				try {
+					meta.addItemFlags(ItemFlag.valueOf(str));
+				} catch (Throwable t) {
+				}
+			}
+		}
+		
+		if (obj.containsKey("Unbreakable")) {
+			try {
+				meta.setUnbreakable(Boolean.parseBoolean(obj.get("Unbreakable").toString()));
+			} catch (Throwable t) {
+			}
+		}
+		
 		if (obj.containsKey("lore")) {
 			List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
 			
@@ -89,10 +130,10 @@ public class SguiStackParser {
 					Enchantment ench = Enchantment.getByName(ob);
 					int i = 1;
 					try {
-						i = (int) entry.getValue();
+						i = ((Number) entry.getValue()).intValue();
 					} catch (Throwable t) {
 					}
-					if (ench != null && meta.hasEnchant(ench)) {
+					if (ench != null && !meta.hasEnchant(ench)) {
 						meta.addEnchant(ench, i, true);
 					}
 				}
