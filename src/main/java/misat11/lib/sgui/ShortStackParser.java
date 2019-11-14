@@ -54,7 +54,7 @@ public class ShortStackParser {
 		}
 
 		Material mat = Material.AIR;
-		int damage = 0;
+		short damage = 0;
 		int amount = 1;
 		String displayName = null;
 		List<String> lore = new ArrayList<String>();
@@ -62,40 +62,9 @@ public class ShortStackParser {
 		for (int i = 0; i < arguments.size(); i++) {
 			String argument = arguments.get(i);
 			if (i == 0) {
-				String[] splitByColon = argument.split(":");
-				mat = Material.matchMaterial(splitByColon[0]);
-				if (mat == null) {
-					// try legacy
-					try {
-						Material.matchMaterial(splitByColon[0], true);
-					} catch (Throwable t) {
-					}
-				}
-				if (mat == null) {
-					// maybe it's id?
-					try {
-						int legacyId = Integer.parseInt(splitByColon[0]);
-						
-						for (Material mater : Material.values()) {
-							try {
-								if (mater.getId() == legacyId) {
-									mat = mater;
-								}
-							} catch (Throwable t) {
-								// This material is not legacy
-							}
-						}
-					} catch (Throwable t) {
-						// this is not id
-					}
-				}
-				if (mat == null) {
-					// this is nothing, let it be air
-					mat = Material.AIR;
-				}
-				if (splitByColon.length > 1) {
-					damage = Integer.parseInt(splitByColon[1]);
-				}
+				MaterialSearchEngine.Result res = MaterialSearchEngine.find(argument);
+				mat = res.getMaterial();
+				damage = res.getDamage();
 			} else if (i == 1) {
 				if (!argument.equals("")) {
 					amount = Integer.parseInt(argument);
@@ -109,7 +78,7 @@ public class ShortStackParser {
 			}
 		}
 
-		ItemStack stack = new ItemStack(mat, amount, (short) damage);
+		ItemStack stack = new ItemStack(mat, amount, damage);
 		if (mat != Material.AIR) {
 			ItemMeta meta = stack.getItemMeta();
 			if (displayName != null && !displayName.equals("")) {
