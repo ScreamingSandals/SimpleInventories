@@ -64,6 +64,7 @@ public class SimpleGuiFormat {
 	private final Map<ItemInfo, Integer> lastPageNumbers = new HashMap<ItemInfo, Integer>();
 	private final String prefix;
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
+	private boolean warnedAboutOldFormat = false;
 	
 	public SimpleGuiFormat(Options options) {
 		this.prefix = options.getPrefix();
@@ -561,6 +562,10 @@ public class SimpleGuiFormat {
 			Object st = object.get("stack");
 			if (st instanceof ItemStack) {
 				stack = (ItemStack) st;
+				if (!warnedAboutOldFormat) {
+					warnedAboutOldFormat = true;
+					Bukkit.getLogger().warning("[SimpleGuiFormat] Using standard bukkit's config serializer with SimpleGuiFormat is deprecated! Please update your configuration");
+				}
 			} else if (st instanceof Map) {
 				stack = SguiStackParser.parseSguiStack((Map<String, Object>) st);
 			} else if (st instanceof String) {
@@ -655,6 +660,12 @@ public class SimpleGuiFormat {
 			for (Object ani : anim) {
 				if (ani instanceof ItemStack) {
 					animation.add((ItemStack) ani);
+					if (!warnedAboutOldFormat) {
+						warnedAboutOldFormat = true;
+						Bukkit.getLogger().warning("[SimpleGuiFormat] Using standard bukkit's config serializer with SimpleGuiFormat is deprecated! Please update your configuration");
+					}
+				} else if (ani instanceof Map) {
+					stack = SguiStackParser.parseSguiStack((Map<String, Object>) ani);
 				} else if (ani instanceof String) {
 					animation.add(ShortStackParser.parseShortStack((String) ani));
 				}
