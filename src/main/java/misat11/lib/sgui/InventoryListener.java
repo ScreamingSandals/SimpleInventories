@@ -61,7 +61,10 @@ public class InventoryListener implements Listener {
 				if (back.equals(cur) && slot == format.getRenderHeaderStart()) {
 					if (parent != null) {
 						ItemInfo parentOfParent = parent.getParent();
-						int pageOfParent = (parent.getPosition() / format.getItemsOnPage());
+						int pageOfParent = 0;
+						if (parent.isWritten()) {
+							pageOfParent = (parent.getPosition() / format.getItemsOnPage());
+						}
 						new GuiHolder(player, format, parentOfParent, pageOfParent);
 					}
 				} else if (pageBack.equals(cur) && slot == format.getRenderFooterStart()) {
@@ -123,6 +126,20 @@ public class InventoryListener implements Listener {
 			}
 
 			MapReader originalData = playersItem.getReader();
+			if (originalData.containsKey("locate")) {
+				String locate = originalData.getString("locate");
+				if (locate.startsWith("§")) {
+					ItemInfo info = format.findItemInfoById(locate);
+					if (info != null && format.getDynamicInfo().containsKey(info)) {
+						new GuiHolder(player, format, info, 0);
+						return;
+					}
+				} else if (locate.equalsIgnoreCase("main")) {
+					new GuiHolder(player, format, null, 0);
+					return;
+				}
+			}
+			
 			if (format.isGenericShopEnabled()) {
 				if (format.isPriceTypeRequired()) {
 					if (originalData.containsKey("price") && originalData.containsKey("price-type")) {

@@ -22,11 +22,12 @@ public class ItemInfo {
 	private SimpleGuiFormat format;
 	private Map<Condition, Map<String, Object>> conditions;
 	private Origin origin;
+	private boolean written;
 	public int lastpos = 0;
 
 	public ItemInfo(SimpleGuiFormat format, ItemInfo parent, ItemStack item, int position, boolean visible,
 			boolean disabled, String id, List<Property> properties, Map<String, Object> data, List<ItemStack> animation,
-			Map<Condition, Map<String, Object>> conditions, Origin origin) {
+			Map<Condition, Map<String, Object>> conditions, Origin origin, boolean written) {
 		this.format = format;
 		this.parent = parent;
 		this.item = item;
@@ -39,6 +40,7 @@ public class ItemInfo {
 		this.animation = animation;
 		this.conditions = conditions;
 		this.origin = origin;
+		this.written = written;
 	}
 
 	public int getPosition() {
@@ -120,6 +122,10 @@ public class ItemInfo {
 	
 	public Origin getOrigin() {
 		return origin;
+	}
+	
+	public boolean isWritten() {
+		return written;
 	}
 
 }

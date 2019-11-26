@@ -374,6 +374,9 @@ public class SimpleGuiFormat {
 		}
 
 		for (ItemInfo info : this.generatedData) {
+			if (!info.isWritten()) {
+				continue;
+			}
 			if (!infoByAbsolutePosition.containsKey(info.getParent())) {
 				infoByAbsolutePosition.put(info.getParent(), new HashMap<Integer, List<ItemInfo>>());
 			}
@@ -436,7 +439,7 @@ public class SimpleGuiFormat {
 		
 		if (object.containsKey("insert")) {
 			Object obj = object.get("insert");
-			if (obj instanceof String && obj != null) {
+			if (obj instanceof String) {
 				String insert = (String) obj;
 				if ("main".equalsIgnoreCase(insert)) {
 					if (object.containsKey("items")) {
@@ -458,6 +461,39 @@ public class SimpleGuiFormat {
 						return parent == inserted ? inserted.lastpos : lastpos;
 					}
 				}
+			} else if (obj instanceof List) {
+				boolean yes_main = false;
+				boolean yes_inserted = false;
+				for (Object ob : (List<Object>) obj) {
+					if (ob instanceof String) {
+						String insert = (String) ob;
+						if ("main".equalsIgnoreCase(insert)) {
+							if (object.containsKey("items")) {
+								List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
+								for (Map<String, Object> itemObject : items) {
+									this.lastpos = generateItem(null, itemObject, this.lastpos, origin);
+								}
+							}
+							if (!yes_main) {
+								yes_main = parent == null;
+							}
+						} else if (insert.startsWith("§")) {
+							ItemInfo inserted = ids.get(insert.substring(1));
+							if (inserted != null) {
+								if (object.containsKey("items")) {
+									List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
+									for (Map<String, Object> itemObject : items) {
+										inserted.lastpos = generateItem(inserted, itemObject, inserted.lastpos, origin);
+									}
+								}
+								if (!yes_inserted) {
+									yes_inserted = parent == inserted;
+								}
+							}
+						}
+					}
+				}
+				return yes_main ? this.lastpos : yes_inserted ? parent.lastpos : lastpos;
 			}
 		}
 
@@ -562,10 +598,10 @@ public class SimpleGuiFormat {
 			Object st = object.get("stack");
 			if (st instanceof ItemStack) {
 				stack = (ItemStack) st;
-				if (!warnedAboutOldFormat) {
+				/*if (!warnedAboutOldFormat) {
 					warnedAboutOldFormat = true;
 					Bukkit.getLogger().warning("[SimpleGuiFormat] Using standard bukkit's config serializer with SimpleGuiFormat is deprecated! Please update your configuration");
-				}
+				}*/
 			} else if (st instanceof Map) {
 				stack = SguiStackParser.parseSguiStack((Map<String, Object>) st);
 			} else if (st instanceof String) {
@@ -660,10 +696,10 @@ public class SimpleGuiFormat {
 			for (Object ani : anim) {
 				if (ani instanceof ItemStack) {
 					animation.add((ItemStack) ani);
-					if (!warnedAboutOldFormat) {
+					/*if (!warnedAboutOldFormat) {
 						warnedAboutOldFormat = true;
 						Bukkit.getLogger().warning("[SimpleGuiFormat] Using standard bukkit's config serializer with SimpleGuiFormat is deprecated! Please update your configuration");
-					}
+					}*/
 				} else if (ani instanceof Map) {
 					stack = SguiStackParser.parseSguiStack((Map<String, Object>) ani);
 				} else if (ani instanceof String) {
@@ -748,8 +784,9 @@ public class SimpleGuiFormat {
 		}
 		
 
+		boolean write = object.containsKey("write") ? Boolean.parseBoolean("write") : true;
 		ItemInfo info = new ItemInfo(this, parent, stack.clone(), positionC, visible, disabled, id, properties, object,
-				animation, conditions, origin);
+				animation, conditions, origin, write);
 		if (object.containsKey("items")) {
 			List<Object> items = (List<Object>) object.get("items");
 			for (Object itemObject : items) {
@@ -785,7 +822,9 @@ public class SimpleGuiFormat {
 		if (pagebreakC < 2 && linebreakC < 2) {
 			nextPosition++;
 		}
-		lastpos = nextPosition;
+		if (write) {
+			lastpos = nextPosition;
+		}
 		return lastpos;
 	}
 
@@ -871,5 +910,12 @@ public class SimpleGuiFormat {
 	
 	public boolean isAllowedToExecuteConsoleCommands() {
 		return this.allowAccessToConsole;
+	}
+	
+	public ItemInfo findItemInfoById(String id) {
+		if (id.startsWith("§")) {
+			id = id.substring(1);
+		}
+		return this.ids.get(id);
 	}
 }
