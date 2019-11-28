@@ -1,7 +1,9 @@
 package misat11.lib.sgui;
 
 import java.io.File;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +33,7 @@ import misat11.lib.sgui.placeholders.ThisPlaceholderParser;
 import misat11.lib.sgui.placeholders.WorldPlaceholderParser;
 
 public class SimpleGuiFormat {
-	
+
 	private int items_on_row = Options.ITEMS_ON_ROW;
 	private int rows = Options.ROWS;
 	private int render_start_offset = Options.RENDER_OFFSET;
@@ -52,7 +54,7 @@ public class SimpleGuiFormat {
 
 	private boolean genericShopEnabled = false;
 	private boolean genericShopPriceTypeRequired = false;
-	
+
 	private boolean showPageNumber = true;
 	private boolean allowAccessToConsole = false;
 
@@ -64,8 +66,10 @@ public class SimpleGuiFormat {
 	private final Map<ItemInfo, Integer> lastPageNumbers = new HashMap<ItemInfo, Integer>();
 	private final String prefix;
 	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
-	private boolean warnedAboutOldFormat = false;
+	private final List<Map.Entry<String, List<Object>>> insertingBuffer = new ArrayList<>();
 	
+	private static final List<String> POSITION_PROPERTIES = Arrays.asList("row", "column", "skip", "linebreak", "pagebreak", "absolute");
+
 	public SimpleGuiFormat(Options options) {
 		this.prefix = options.getPrefix();
 		this.backItem = options.getBackItem().clone();
@@ -84,30 +88,32 @@ public class SimpleGuiFormat {
 		this.render_start_offset = options.getRender_offset();
 		this.showPageNumber = options.isShowPageNumber();
 		this.allowAccessToConsole = options.isAllowAccessToConsole();
-		
-		initPlaceholders();		
-		
+
+		initPlaceholders();
+
 		this.placeholders.putAll(options.getPlaceholders());
 		this.advancedPlaceholders.putAll(options.getAdvancedPlaceholders());
 	}
 
-	/* 
+	/*
 	 * Use new constructor!
+	 * 
 	 * @deprecated Old constructor
+	 * 
 	 * @see #SimpleGuiFormat(Options)
 	 */
 	@Deprecated
 	public SimpleGuiFormat(String prefix, ItemStack backItem, ItemStack pageBackItem, ItemStack pageForwardItem,
-			ItemStack cosmeticItem) {
+		ItemStack cosmeticItem) {
 		this.prefix = prefix;
 		this.backItem = backItem.clone();
 		this.pageBackItem = pageBackItem.clone();
 		this.pageForwardItem = pageForwardItem.clone();
 		this.cosmeticItem = cosmeticItem.clone();
-		
+
 		initPlaceholders();
 	}
-	
+
 	private void initPlaceholders() {
 		/* STANDARD PLACEHOLDERS */
 		placeholders.put("player", new PlayerPlaceholderParser());
@@ -116,28 +122,28 @@ public class SimpleGuiFormat {
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			placeholders.put("papi", new PAPIPlaceholderParser());
 		}
-		
+
 		/* ADVANCED PLACEHOLDERS */
 		AdvancedPlaceholderParser thisParser = new ThisPlaceholderParser();
 		advancedPlaceholders.put("this", thisParser);
 		advancedPlaceholders.put("self", thisParser);
 	}
-	
+
 	public SimpleGuiFormat carrigeReturn() {
 		this.lastpos -= (lastpos - items_on_row) % items_on_row;
 		return this;
 	}
-	
+
 	public SimpleGuiFormat lineBreak() {
 		this.lastpos += (items_on_row - (lastpos % items_on_row));
 		return this;
 	}
-	
+
 	public SimpleGuiFormat pageBreak() {
 		this.lastpos += (getItemsOnPage() - (lastpos % getItemsOnPage()));
 		return this;
 	}
-	
+
 	public SimpleGuiFormat jump(int number) {
 		this.lastpos += number;
 		if (this.lastpos < 0) {
@@ -145,32 +151,33 @@ public class SimpleGuiFormat {
 		}
 		return this;
 	}
-	
+
 	public SimpleGuiFormat absolute(int position) {
 		this.lastpos = position;
 		return this;
 	}
-	
+
 	public SimpleGuiFormat column(Column column) {
 		return column(column.convert(items_on_row));
 	}
-	
+
 	public SimpleGuiFormat column(int column) {
 		this.lastpos = (this.lastpos - (this.lastpos % items_on_row)) + column;
 		return this;
 	}
-	
+
 	public SimpleGuiFormat row(int row) {
-		this.lastpos = this.lastpos - (this.lastpos % getItemsOnPage()) + ((row - 1) * items_on_row) + (this.lastpos % items_on_row);
+		this.lastpos = this.lastpos - (this.lastpos % getItemsOnPage()) + ((row - 1) * items_on_row)
+			+ (this.lastpos % items_on_row);
 		return this;
 	}
-	
+
 	public SimpleGuiFormat clearInput() {
 		this.data.clear();
 		this.previous = null;
 		return this;
 	}
-	
+
 	public SimpleGuiFormat purgeData() {
 		this.clearInput();
 		this.ids.clear();
@@ -180,7 +187,7 @@ public class SimpleGuiFormat {
 		this.lastPageNumbers.clear();
 		return this;
 	}
-	
+
 	public List<Object> cloneCurrentInput() {
 		return new ArrayList<>(data);
 	}
@@ -194,27 +201,26 @@ public class SimpleGuiFormat {
 		this.data.add(origin);
 		return this;
 	}
-	
+
 	public SimpleGuiFormat load(FormatBuilder builder) {
 		this.data.add(new Origin(builder, builder.getResult()));
 		return this;
 	}
 
-	public SimpleGuiFormat load(String fileName)  throws Exception {
+	public SimpleGuiFormat load(String fileName) throws Exception {
 		return load(new File(fileName), "data");
 	}
 
-	public SimpleGuiFormat load(String fileName, String configPath)  throws Exception {
+	public SimpleGuiFormat load(String fileName, String configPath) throws Exception {
 		return load(new File(fileName), configPath);
 	}
 
-	public SimpleGuiFormat loadFromDataFolder(File pluginDataFolder, String fileName)
-		 throws Exception {
+	public SimpleGuiFormat loadFromDataFolder(File pluginDataFolder, String fileName) throws Exception {
 		return load(new File(pluginDataFolder, fileName), "data");
 	}
 
 	public SimpleGuiFormat loadFromDataFolder(File pluginDataFolder, String fileName, String configPath)
-		 throws Exception {
+		throws Exception {
 		return load(new File(pluginDataFolder, fileName), configPath);
 	}
 
@@ -225,11 +231,11 @@ public class SimpleGuiFormat {
 	public SimpleGuiFormat load(File file, String configPath) throws Exception {
 		return load(file, configPath, LoaderRegister.getLoader(file));
 	}
-	
+
 	public SimpleGuiFormat load(File file, Loader loader) throws Exception {
 		return load(file, "data", loader);
 	}
-	
+
 	public SimpleGuiFormat load(File file, String configPath, Loader loader) throws Exception {
 		this.data.add(loader.readData(file, configPath));
 		return this;
@@ -258,7 +264,7 @@ public class SimpleGuiFormat {
 		this.genericShopPriceTypeRequired = priceTypeRequired;
 		return this;
 	}
-	
+
 	@Deprecated
 	public SimpleGuiFormat disableGenericShop() {
 		this.genericShopEnabled = false;
@@ -303,7 +309,7 @@ public class SimpleGuiFormat {
 		advancedPlaceholders.put(name, parser);
 		return true;
 	}
-	
+
 	@Deprecated
 	public String processPlaceholders(Player player, String text) {
 		return processPlaceholders(player, text, null);
@@ -331,16 +337,17 @@ public class SimpleGuiFormat {
 					}
 				}
 				i = bracketEnd;
-				buf += String.valueOf((Object) OperationParser.getFinalOperation(this, bracketBuf).resolveFor(player, info));
+				buf += String
+					.valueOf((Object) OperationParser.getFinalOperation(this, bracketBuf).resolveFor(player, info));
 			} else if (c == '\\' && lastEscapeIndex != (i - 1)) {
 				lastEscapeIndex = i;
 			} else {
 				buf += c;
 			}
 		}
-		
+
 		text = buf;
-		
+
 		Pattern pat = Pattern.compile("%[^%]+%");
 		Matcher matcher = pat.matcher(text);
 		StringBuffer sb = new StringBuffer();
@@ -357,7 +364,8 @@ public class SimpleGuiFormat {
 			}
 			String key = args[0];
 			if (advancedPlaceholders.containsKey(key) && info != null) {
-				matcher.appendReplacement(sb, advancedPlaceholders.get(key).processPlaceholder(key, player, info, gargs));
+				matcher.appendReplacement(sb,
+					advancedPlaceholders.get(key).processPlaceholder(key, player, info, gargs));
 			} else if (placeholders.containsKey(key)) {
 				matcher.appendReplacement(sb, placeholders.get(key).processPlaceholder(key, player, gargs));
 			}
@@ -411,18 +419,18 @@ public class SimpleGuiFormat {
 			String buf = "";
 			for (int i = 0; i < characters.length; i++) {
 				char c = characters[i];
-			    if (c == '\\' && lastEscapeIndex != (i - 1)) {
-			    } else if (buildingString) {
+				if (c == '\\' && lastEscapeIndex != (i - 1)) {
+				} else if (buildingString) {
 					if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
 						buildingString = false;
 					} else {
 						buf += c;
 					}
-			    } else if (buildingStack && buf.endsWith("for")){
-			    	buildingStack = false;
-			    	buf = buf.substring(0, buf.length() - 3).trim();
-			    	object.put("stack", buf);
-			    	buf = "";
+				} else if (buildingStack && buf.endsWith("for")) {
+					buildingStack = false;
+					buf = buf.substring(0, buf.length() - 3).trim();
+					object.put("stack", buf);
+					buf = "";
 				} else if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
 					buildingString = true;
 					lastEscapeIndex = i;
@@ -436,30 +444,35 @@ public class SimpleGuiFormat {
 				object.put("price", buf.trim());
 			}
 		}
-		
+
 		if (object.containsKey("insert")) {
 			Object obj = object.get("insert");
 			if (obj instanceof String) {
 				String insert = (String) obj;
 				if ("main".equalsIgnoreCase(insert)) {
 					if (object.containsKey("items")) {
-						List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
-						for (Map<String, Object> itemObject : items) {
+						List<Object> items = (List<Object>) object.get("items");
+						for (Object itemObject : items) {
 							this.lastpos = generateItem(null, itemObject, this.lastpos, origin);
 						}
 					}
 					return parent == null ? this.lastpos : lastpos;
 				} else if (insert.startsWith("§")) {
 					ItemInfo inserted = ids.get(insert.substring(1));
-					if (inserted != null) {
-						if (object.containsKey("items")) {
-							List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
-							for (Map<String, Object> itemObject : items) {
+					if (object.containsKey("items")) {
+						List<Object> items = (List<Object>) object.get("items");
+						if (inserted != null) {
+							for (Object itemObject : items) {
 								inserted.lastpos = generateItem(inserted, itemObject, inserted.lastpos, origin);
 							}
+							return parent == inserted ? inserted.lastpos : lastpos;
+						} else {
+							insertingBuffer.add(new AbstractMap.SimpleEntry<String, List<Object>>(
+								insert.substring(1), items));
+							return lastpos;
 						}
-						return parent == inserted ? inserted.lastpos : lastpos;
 					}
+
 				}
 			} else if (obj instanceof List) {
 				boolean yes_main = false;
@@ -469,8 +482,8 @@ public class SimpleGuiFormat {
 						String insert = (String) ob;
 						if ("main".equalsIgnoreCase(insert)) {
 							if (object.containsKey("items")) {
-								List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
-								for (Map<String, Object> itemObject : items) {
+								List<Object> items = (List<Object>) object.get("items");
+								for (Object itemObject : items) {
 									this.lastpos = generateItem(null, itemObject, this.lastpos, origin);
 								}
 							}
@@ -479,15 +492,18 @@ public class SimpleGuiFormat {
 							}
 						} else if (insert.startsWith("§")) {
 							ItemInfo inserted = ids.get(insert.substring(1));
-							if (inserted != null) {
-								if (object.containsKey("items")) {
-									List<Map<String, Object>> items = (List<Map<String, Object>>) object.get("items");
-									for (Map<String, Object> itemObject : items) {
+							if (object.containsKey("items")) {
+								List<Object> items = (List<Object>) object.get("items");
+								if (inserted != null) {
+									for (Object itemObject : items) {
 										inserted.lastpos = generateItem(inserted, itemObject, inserted.lastpos, origin);
 									}
-								}
-								if (!yes_inserted) {
-									yes_inserted = parent == inserted;
+									if (!yes_inserted) {
+										yes_inserted = parent == inserted;
+									}
+								} else {
+									insertingBuffer.add(new AbstractMap.SimpleEntry<String, List<Object>>(
+										insert.substring(1), items));
 								}
 							}
 						}
@@ -512,8 +528,8 @@ public class SimpleGuiFormat {
 						} else if ("override".equalsIgnoreCase(cloneMethod)) {
 							cloneOverride = true;
 						} else if ("increment".equalsIgnoreCase(cloneMethod)
-								|| "increment-default".equalsIgnoreCase(cloneMethod)
-								|| "increment-missing".equalsIgnoreCase(cloneMethod)) {
+							|| "increment-default".equalsIgnoreCase(cloneMethod)
+							|| "increment-missing".equalsIgnoreCase(cloneMethod)) {
 							cloneListIncrement = true;
 						} else if ("increment-override".equalsIgnoreCase(cloneMethod)) {
 							cloneOverride = true;
@@ -598,10 +614,6 @@ public class SimpleGuiFormat {
 			Object st = object.get("stack");
 			if (st instanceof ItemStack) {
 				stack = (ItemStack) st;
-				/*if (!warnedAboutOldFormat) {
-					warnedAboutOldFormat = true;
-					Bukkit.getLogger().warning("[SimpleGuiFormat] Using standard bukkit's config serializer with SimpleGuiFormat is deprecated! Please update your configuration");
-				}*/
 			} else if (st instanceof Map) {
 				stack = SguiStackParser.parseSguiStack((Map<String, Object>) st);
 			} else if (st instanceof String) {
@@ -635,7 +647,8 @@ public class SimpleGuiFormat {
 			positionC += (getItemsOnPage() - (positionC % getItemsOnPage()));
 		}
 		if (object.containsKey("row")) {
-			positionC = positionC - (positionC % getItemsOnPage()) + (((int) object.get("row") - 1) * items_on_row) + (positionC % items_on_row);
+			positionC = positionC - (positionC % getItemsOnPage()) + (((int) object.get("row") - 1) * items_on_row)
+				+ (positionC % items_on_row);
 		}
 		if (object.containsKey("column")) {
 			Object cl = object.get("column");
@@ -671,7 +684,7 @@ public class SimpleGuiFormat {
 					if (obj instanceof Map) {
 						Map<String, Object> propertyMap = (Map<String, Object>) obj;
 						Property pr = new Property(this,
-								propertyMap.containsKey("name") ? (String) propertyMap.get("name") : null, propertyMap);
+							propertyMap.containsKey("name") ? (String) propertyMap.get("name") : null, propertyMap);
 						properties.add(pr);
 					} else if (obj instanceof String) {
 						properties.add(new Property(this, (String) obj, new HashMap<String, Object>() {
@@ -696,10 +709,6 @@ public class SimpleGuiFormat {
 			for (Object ani : anim) {
 				if (ani instanceof ItemStack) {
 					animation.add((ItemStack) ani);
-					/*if (!warnedAboutOldFormat) {
-						warnedAboutOldFormat = true;
-						Bukkit.getLogger().warning("[SimpleGuiFormat] Using standard bukkit's config serializer with SimpleGuiFormat is deprecated! Please update your configuration");
-					}*/
 				} else if (ani instanceof Map) {
 					stack = SguiStackParser.parseSguiStack((Map<String, Object>) ani);
 				} else if (ani instanceof String) {
@@ -747,7 +756,7 @@ public class SimpleGuiFormat {
 			f_disabled_map.put("disabled", true);
 			conditions.put(f_disabled_cond, f_disabled_map);
 		}
-		
+
 		if (object.containsKey("price") && !object.containsKey("price-type")) {
 			Object f_price = object.get("price");
 			String price = f_price.toString().trim();
@@ -756,7 +765,7 @@ public class SimpleGuiFormat {
 				try {
 					double pr = Double.parseDouble(price.substring(0, index).trim());
 					String price_type = price.substring(index + 2).trim();
-					
+
 					object.put("price", pr);
 					object.put("price-type", price_type);
 				} catch (Throwable t) {
@@ -782,11 +791,21 @@ public class SimpleGuiFormat {
 				}
 			}
 		}
-		
 
 		boolean write = object.containsKey("write") ? Boolean.parseBoolean("write") : true;
 		ItemInfo info = new ItemInfo(this, parent, stack.clone(), positionC, visible, disabled, id, properties, object,
-				animation, conditions, origin, write);
+			animation, conditions, origin, write);
+		if (id != null && !insertingBuffer.isEmpty()) {
+			for (Map.Entry<String, List<Object>> entry : new ArrayList<>(insertingBuffer)) {
+				if (entry.getKey().equals(id)) {
+					insertingBuffer.remove(entry);
+					for (Object itemObject : entry.getValue()) {
+						info.lastpos = generateItem(info, itemObject, info.lastpos, origin);
+					}
+					
+				}
+			}
+		}
 		if (object.containsKey("items")) {
 			List<Object> items = (List<Object>) object.get("items");
 			for (Object itemObject : items) {
@@ -825,12 +844,35 @@ public class SimpleGuiFormat {
 		if (write) {
 			lastpos = nextPosition;
 		}
+		if (object.containsKey("times")) {
+			Map<String, Object> nobject = new HashMap<>(object);
+			int times = ((Number) nobject.get("times")).intValue();
+			if (times > 1) {
+				if (nobject.containsKey("times-methods")) {
+					List<String> methods = (List<String>) nobject.get("time-methods");
+					for (String method : methods) {
+						if (method.equalsIgnoreCase("cancel-positioning")) {
+							for (String property : POSITION_PROPERTIES) {
+								if (nobject.containsKey(property)) {
+									nobject.remove(property);
+								}
+							}
+						} else if (method.equalsIgnoreCase("no-id")) {
+							if (nobject.containsKey("id")) {
+								nobject.remove("id");
+							}
+						}
+					}
+				}
+				nobject.put("times", times - 1);
+				lastpos = generateItem(parent, nobject, lastpos, origin);
+			}
+		}
 		return lastpos;
 	}
 
 	private boolean isPositionProperty(String key) {
-		return key.equals("row") || key.equals("column") || key.equals("skip") || key.equals("linebreak")
-				|| key.equals("pagebreak");
+		return POSITION_PROPERTIES.contains(key);
 	}
 
 	public Map<ItemInfo, Map<Integer, List<ItemInfo>>> getDynamicInfo() {
@@ -860,35 +902,35 @@ public class SimpleGuiFormat {
 	public ItemStack getCosmeticItem() {
 		return cosmeticItem;
 	}
-	
+
 	public int getItemsOnPage() {
 		return items_on_row * rows;
 	}
-	
+
 	public int getItemsOnRow() {
 		return items_on_row;
 	}
-	
+
 	public int getRows() {
 		return rows;
 	}
-	
+
 	public int getRenderRows() {
 		return render_actual_rows;
 	}
-	
+
 	public int getRenderHeaderStart() {
 		return render_header_row_start;
 	}
-	
+
 	public int getRenderFooterStart() {
 		return render_footer_row_start;
 	}
-	
+
 	public int getRenderOffset() {
 		return render_start_offset;
 	}
-	
+
 	public boolean getShowPageNumber() {
 		return showPageNumber;
 	}
@@ -897,7 +939,7 @@ public class SimpleGuiFormat {
 		new GuiHolder(player, this, null, 0);
 		return this;
 	}
-	
+
 	public GuiHolder getCurrentGuiHolder(Player player) {
 		Inventory top = player.getOpenInventory().getTopInventory();
 		if (top != null) {
@@ -907,11 +949,11 @@ public class SimpleGuiFormat {
 		}
 		return null;
 	}
-	
+
 	public boolean isAllowedToExecuteConsoleCommands() {
 		return this.allowAccessToConsole;
 	}
-	
+
 	public ItemInfo findItemInfoById(String id) {
 		if (id.startsWith("§")) {
 			id = id.substring(1);
