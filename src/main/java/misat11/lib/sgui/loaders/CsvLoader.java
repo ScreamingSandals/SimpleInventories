@@ -16,6 +16,8 @@ public class CsvLoader implements Loader {
 	@Override
 	public Origin readData(File file, String configPath) throws Exception {
 		List<Object> list = new ArrayList<>();
+		
+		// TODO: create own light weight parser (this parser is too big)
 		CsvParserSettings settings = new CsvParserSettings();
 		settings.detectFormatAutomatically();
 		

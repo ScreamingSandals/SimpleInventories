@@ -428,13 +428,14 @@ public class SimpleGuiFormat {
 					building = 0;
 				}
 				if (c == '\\' && lastEscapeIndex != (i - 1)) {
+					lastEscapeIndex = i;
 				} else if (buildingString) {
 					if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
 						buildingString = false;
 					} else {
 						buf += c;
 					}
-				} else if (building < 3 && buf.endsWith("repeat")) {
+				} else if (building < 2 && buf.endsWith("repeat")) {
 					buf = buf.substring(0, buf.length() - 6).trim();
 					if (building == 0) {
 						if (buf.equalsIgnoreCase("cosmetic")) {
@@ -445,7 +446,7 @@ public class SimpleGuiFormat {
 					} else {
 						object.put("price", buf);
 					}
-					building = 3;
+					building = 2;
 					buf = "";
 				} else if (building == 0 && buf.endsWith("for")) {
 					building = 1;
@@ -927,8 +928,24 @@ public class SimpleGuiFormat {
 			int times = ((Number) nobject.get("times")).intValue();
 			if (times > 1) {
 				if (nobject.containsKey("times-methods")) {
-					List<String> methods = (List<String>) nobject.get("time-methods");
-					for (String method : methods) {
+					Object met = nobject.get("times-methods");
+					if (met instanceof List) {
+						List<String> methods = (List<String>) met;
+						for (String method : methods) {
+							if (method.equalsIgnoreCase("cancel-positioning")) {
+								for (String property : POSITION_PROPERTIES) {
+									if (nobject.containsKey(property)) {
+										nobject.remove(property);
+									}
+								}
+							} else if (method.equalsIgnoreCase("no-id")) {
+								if (nobject.containsKey("id")) {
+									nobject.remove("id");
+								}
+							}
+						}
+					} else {
+						String method = met.toString();
 						if (method.equalsIgnoreCase("cancel-positioning")) {
 							for (String property : POSITION_PROPERTIES) {
 								if (nobject.containsKey(property)) {
