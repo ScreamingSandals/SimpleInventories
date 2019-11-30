@@ -128,7 +128,7 @@ public class InventoryListener implements Listener {
 			MapReader originalData = playersItem.getReader();
 			if (originalData.containsKey("locate")) {
 				String locate = originalData.getString("locate");
-				if (locate.startsWith("§")) {
+				if (locate.startsWith("§") || locate.startsWith("$")) {
 					ItemInfo info = format.findItemInfoById(locate);
 					if (info != null && format.getDynamicInfo().containsKey(info)) {
 						new GuiHolder(player, format, info, 0);

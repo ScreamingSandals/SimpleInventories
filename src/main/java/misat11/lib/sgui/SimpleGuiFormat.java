@@ -185,6 +185,7 @@ public class SimpleGuiFormat {
 		this.lastpos = 0;
 		this.infoByAbsolutePosition.clear();
 		this.lastPageNumbers.clear();
+		this.insertingBuffer.clear();
 		return this;
 	}
 
@@ -415,10 +416,17 @@ public class SimpleGuiFormat {
 			char[] characters = obj.toCharArray();
 			int lastEscapeIndex = -2;
 			boolean buildingString = false;
-			boolean buildingStack = true;
+			int building = -1;
 			String buf = "";
 			for (int i = 0; i < characters.length; i++) {
 				char c = characters[i];
+				if (building == -1) {
+					if (c == '@') {
+						object.put("include", obj.substring(1));
+						break;
+					}
+					building = 0;
+				}
 				if (c == '\\' && lastEscapeIndex != (i - 1)) {
 				} else if (buildingString) {
 					if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
@@ -426,10 +434,27 @@ public class SimpleGuiFormat {
 					} else {
 						buf += c;
 					}
-				} else if (buildingStack && buf.endsWith("for")) {
-					buildingStack = false;
+				} else if (building < 3 && buf.endsWith("repeat")) {
+					buf = buf.substring(0, buf.length() - 6).trim();
+					if (building == 0) {
+						if (buf.equalsIgnoreCase("cosmetic")) {
+							object.put("stack", cosmeticItem.clone());
+						} else {
+							object.put("stack", buf);
+						}
+					} else {
+						object.put("price", buf);
+					}
+					building = 3;
+					buf = "";
+				} else if (building == 0 && buf.endsWith("for")) {
+					building = 1;
 					buf = buf.substring(0, buf.length() - 3).trim();
-					object.put("stack", buf);
+					if (buf.equalsIgnoreCase("cosmetic")) {
+						object.put("stack", cosmeticItem.clone());
+					} else {
+						object.put("stack", buf);
+					}
 					buf = "";
 				} else if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
 					buildingString = true;
@@ -438,11 +463,64 @@ public class SimpleGuiFormat {
 					buf += c;
 				}
 			}
-			if (buildingStack) {
-				object.put("stack", buf.trim());
-			} else {
+			if (building == 0) {
+				buf = buf.trim();
+				if (buf.equalsIgnoreCase("cosmetic")) {
+					object.put("stack", cosmeticItem.clone());
+				} else {
+					object.put("stack", buf);
+				}
+			} else if (building == 1) {
 				object.put("price", buf.trim());
+			} else if (building == 2) {
+				try {
+					object.put("times", Integer.parseInt(buf.trim()));
+				} catch (Throwable t) {
+				}
 			}
+		}
+		
+		if (object.containsKey("include")) {
+			// [loader]:[data]@[path]
+			// Example: yml:shop3@shops.yml
+			// Another example: csv@shop.csv
+			
+			String path = object.get("include").toString();
+			String data = "data";
+			String loaderType = null;
+			
+			String[] splitByAt = path.split("@", 2);
+			if (splitByAt.length == 2) {
+				loaderType = splitByAt[0];
+				path = splitByAt[1];
+				String[] second_split = loaderType.split(":", 2);
+				if (second_split.length == 2) {
+					loaderType = second_split[0];
+					data = second_split[1];
+				}
+			}
+			if (loaderType != null) {
+				loaderType = loaderType.trim();
+			}
+			data = data.trim();
+			
+			File file = new File(path);
+			try {
+				Loader loader;
+				if (loaderType == null || "".equals(loaderType)) {
+					loader = LoaderRegister.getLoader(file);
+				} else {
+					loader = LoaderRegister.getLoader(loaderType);
+				}
+				Origin or = loader.readData(file, data);
+				List<Object> items = or.getContent();
+				for (Object item : items) {
+					lastpos = generateItem(parent, item, lastpos, or);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return lastpos;
 		}
 
 		if (object.containsKey("insert")) {
@@ -457,7 +535,7 @@ public class SimpleGuiFormat {
 						}
 					}
 					return parent == null ? this.lastpos : lastpos;
-				} else if (insert.startsWith("§")) {
+				} else if (insert.startsWith("§") || insert.startsWith("$")) {
 					ItemInfo inserted = ids.get(insert.substring(1));
 					if (object.containsKey("items")) {
 						List<Object> items = (List<Object>) object.get("items");
@@ -490,7 +568,7 @@ public class SimpleGuiFormat {
 							if (!yes_main) {
 								yes_main = parent == null;
 							}
-						} else if (insert.startsWith("§")) {
+						} else if (insert.startsWith("§") || insert.startsWith("$")) {
 							ItemInfo inserted = ids.get(insert.substring(1));
 							if (object.containsKey("items")) {
 								List<Object> items = (List<Object>) object.get("items");
@@ -573,7 +651,7 @@ public class SimpleGuiFormat {
 					}
 				} else if ("cosmetic".equalsIgnoreCase(clone)) {
 					object.put("stack", this.cosmeticItem.clone());
-				} else if (clone.startsWith("§")) {
+				} else if (clone.startsWith("§") || clone.startsWith("$")) {
 					ItemInfo cloned = ids.get(clone.substring(1));
 					if (cloned != null) {
 						for (Map.Entry<String, Object> entry : cloned.getData().entrySet()) {
@@ -955,7 +1033,7 @@ public class SimpleGuiFormat {
 	}
 
 	public ItemInfo findItemInfoById(String id) {
-		if (id.startsWith("§")) {
+		if (id.startsWith("§") || id.startsWith("$")) {
 			id = id.substring(1);
 		}
 		return this.ids.get(id);
