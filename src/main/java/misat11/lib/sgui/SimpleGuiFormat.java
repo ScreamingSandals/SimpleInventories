@@ -481,6 +481,32 @@ public class SimpleGuiFormat {
 			}
 		}
 		
+		/* In future there will be better way how to do this! we don't recommended to use hacks if there's another way*/
+		if (object.containsKey("guihack")) {
+			String hack = object.get("guihack").toString();
+			if (hack.equalsIgnoreCase("noheader")) {
+				render_header_row_start = 55;
+				render_start_offset = 0;
+				if (rows < 6) {
+					rows++;
+				}
+			} else if (hack.equalsIgnoreCase("nofooter")) {
+				render_footer_row_start = 55;
+				if (rows < 6) {
+					rows++;
+				}
+			} else if (hack.equalsIgnoreCase("noheaderfooter")) {
+				render_header_row_start = 55;
+				render_footer_row_start = 55;
+				if (rows < 5) {
+					rows += 2;
+				} else if (rows < 6) {
+					rows++;
+				}
+			}
+			return lastpos;
+		}
+		
 		if (object.containsKey("include")) {
 			// [loader]:[data]@[path]
 			// Example: yml:shop3@shops.yml
