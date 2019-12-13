@@ -45,7 +45,14 @@ public class PlayerItemInfo {
 					} else if (change.getKey().equals("disabled")) {
 						this.disabled = (boolean) change.getValue();
 					} else if (change.getKey().equals("stack")) {
-						this.stack = (ItemStack) change.getValue();
+						Object st = change.getValue();
+						if (st instanceof ItemStack) {
+							this.stack = (ItemStack) st;
+						} else if (st instanceof Map) {
+							this.stack = SguiStackParser.parseSguiStack((Map<String, Object>) st);
+						} else if (st instanceof String) {
+							this.stack = ShortStackParser.parseShortStack((String) st);
+						}
 					} else if (change.getKey().equals("animation")) {
 						animation = new ArrayList<ItemStack>();
 						for (Object anim : (List<Object>) change.getValue()) {

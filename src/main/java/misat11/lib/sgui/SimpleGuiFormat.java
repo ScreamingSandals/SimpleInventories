@@ -25,10 +25,12 @@ import misat11.lib.sgui.operations.OperationParser;
 import misat11.lib.sgui.operations.conditions.Condition;
 import misat11.lib.sgui.placeholders.AdvancedPlaceholderParser;
 import misat11.lib.sgui.placeholders.PAPIPlaceholderParser;
+import misat11.lib.sgui.placeholders.PagePlaceholderParser;
 import misat11.lib.sgui.placeholders.PermissionPlaceholderParser;
 import misat11.lib.sgui.placeholders.PlaceholderConstantParser;
 import misat11.lib.sgui.placeholders.PlaceholderParser;
 import misat11.lib.sgui.placeholders.PlayerPlaceholderParser;
+import misat11.lib.sgui.placeholders.RuntimeDefinedPlaceholder;
 import misat11.lib.sgui.placeholders.ThisPlaceholderParser;
 import misat11.lib.sgui.placeholders.WorldPlaceholderParser;
 
@@ -127,6 +129,7 @@ public class SimpleGuiFormat {
 		AdvancedPlaceholderParser thisParser = new ThisPlaceholderParser();
 		advancedPlaceholders.put("this", thisParser);
 		advancedPlaceholders.put("self", thisParser);
+		advancedPlaceholders.put("page", new PagePlaceholderParser());
 	}
 
 	public SimpleGuiFormat carrigeReturn() {
@@ -412,71 +415,78 @@ public class SimpleGuiFormat {
 		if (original instanceof Map) {
 			object.putAll((Map<String, Object>) original);
 		} else {
-			String obj = original.toString();
-			char[] characters = obj.toCharArray();
-			int lastEscapeIndex = -2;
-			boolean buildingString = false;
-			int building = -1;
-			String buf = "";
-			for (int i = 0; i < characters.length; i++) {
-				char c = characters[i];
-				if (building == -1) {
-					if (c == '@') {
-						object.put("include", obj.substring(1));
-						break;
-					}
-					building = 0;
+			String obj = original.toString().trim();
+			if (obj.startsWith("define")) {
+				String[] definition = obj.split(" ", 2);
+				if (definition.length == 2) {
+					object.put("define", definition[1]);
 				}
-				if (c == '\\' && lastEscapeIndex != (i - 1)) {
-					lastEscapeIndex = i;
-				} else if (buildingString) {
-					if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
-						buildingString = false;
-					} else {
-						buf += c;
+			} else {
+				char[] characters = obj.toCharArray();
+				int lastEscapeIndex = -2;
+				boolean buildingString = false;
+				int building = -1;
+				String buf = "";
+				for (int i = 0; i < characters.length; i++) {
+					char c = characters[i];
+					if (building == -1) {
+						if (c == '@') {
+							object.put("include", obj.substring(1));
+							break;
+						}
+						building = 0;
 					}
-				} else if (building < 2 && buf.endsWith("repeat")) {
-					buf = buf.substring(0, buf.length() - 6).trim();
-					if (building == 0) {
+					if (c == '\\' && lastEscapeIndex != (i - 1)) {
+						lastEscapeIndex = i;
+					} else if (buildingString) {
+						if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
+							buildingString = false;
+						} else {
+							buf += c;
+						}
+					} else if (building < 2 && buf.endsWith("repeat")) {
+						buf = buf.substring(0, buf.length() - 6).trim();
+						if (building == 0) {
+							if (buf.equalsIgnoreCase("cosmetic")) {
+								object.put("stack", cosmeticItem.clone());
+							} else {
+								object.put("stack", buf);
+							}
+						} else {
+							object.put("price", buf);
+						}
+						building = 2;
+						buf = "";
+					} else if (building == 0 && buf.endsWith("for")) {
+						building = 1;
+						buf = buf.substring(0, buf.length() - 3).trim();
 						if (buf.equalsIgnoreCase("cosmetic")) {
 							object.put("stack", cosmeticItem.clone());
 						} else {
 							object.put("stack", buf);
 						}
+						buf = "";
+					} else if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
+						buildingString = true;
+						lastEscapeIndex = i;
 					} else {
-						object.put("price", buf);
+						buf += c;
 					}
-					building = 2;
-					buf = "";
-				} else if (building == 0 && buf.endsWith("for")) {
-					building = 1;
-					buf = buf.substring(0, buf.length() - 3).trim();
+				}
+				if (building == 0) {
+					buf = buf.trim();
 					if (buf.equalsIgnoreCase("cosmetic")) {
 						object.put("stack", cosmeticItem.clone());
 					} else {
 						object.put("stack", buf);
 					}
-					buf = "";
-				} else if ((c == '"' || c == '\'') && lastEscapeIndex != (i - 1)) {
-					buildingString = true;
-					lastEscapeIndex = i;
-				} else {
-					buf += c;
-				}
-			}
-			if (building == 0) {
-				buf = buf.trim();
-				if (buf.equalsIgnoreCase("cosmetic")) {
-					object.put("stack", cosmeticItem.clone());
-				} else {
-					object.put("stack", buf);
-				}
-			} else if (building == 1) {
-				object.put("price", buf.trim());
-			} else if (building == 2) {
-				try {
-					object.put("times", Integer.parseInt(buf.trim()));
-				} catch (Throwable t) {
+				} else if (building == 1) {
+					object.put("price", buf.trim());
+				} else if (building == 2) {
+					try {
+						object.put("times", Integer.parseInt(buf.trim()));
+					} catch (Throwable t) {
+					}
 				}
 			}
 		}
@@ -498,11 +508,48 @@ public class SimpleGuiFormat {
 			} else if (hack.equalsIgnoreCase("noheaderfooter")) {
 				render_header_row_start = 55;
 				render_footer_row_start = 55;
+				render_start_offset = 0;
 				if (rows < 5) {
 					rows += 2;
 				} else if (rows < 6) {
 					rows++;
 				}
+			}
+			return lastpos;
+		}
+		
+		if (object.containsKey("define")) {
+			String definition = object.get("define").toString();
+			String[] defsplit = definition.split(" as ", 2);
+			String key = defsplit[0].trim();
+			if (key.startsWith("%")) {
+				key = key.substring(1);
+			}
+			if (key.endsWith("%")) {
+				key = key.substring(0, key.length() - 1);
+			}
+			String[] placeholderFormat = key.split("(?<!\\.)\\.(?!\\.)", 2);
+			key = placeholderFormat[0];
+			String placeholderArguments = placeholderFormat.length == 1 ? "" : placeholderFormat[1];
+			if (placeholders.containsKey(key)) {
+				Bukkit.getLogger().severe("[SimpleGuiFormat] Placeholder " + key + " is already defined as non-dynamic placeholder!");
+				return lastpos;
+			}
+			if (!advancedPlaceholders.containsKey(key)) {
+				advancedPlaceholders.put(key, new RuntimeDefinedPlaceholder());
+			}
+			AdvancedPlaceholderParser parser = advancedPlaceholders.get(key);
+			if (parser instanceof RuntimeDefinedPlaceholder) {
+				if (defsplit.length == 2) {
+					RuntimeDefinedPlaceholder rdp = (RuntimeDefinedPlaceholder) parser;
+					if (!placeholderArguments.isEmpty()) {
+						rdp.register(placeholderArguments, defsplit[1].trim());
+					} else {
+						rdp.putDefault(defsplit[1].trim());
+					}
+				}
+			} else {
+				Bukkit.getLogger().severe("[SimpleGuiFormat] Placeholder " + key + " is already defined as non-dynamic advanced placeholder!");
 			}
 			return lastpos;
 		}

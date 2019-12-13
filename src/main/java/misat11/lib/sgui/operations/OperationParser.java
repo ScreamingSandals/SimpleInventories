@@ -202,7 +202,7 @@ public class OperationParser {
 									operations.add(lastOperand);
 								} else if (lastOperand instanceof Operand) {
 									if (!operations.get(operations.size() - 1).equals(lastOperand)) {
-										operations.add(lastOperand);
+										operations.add(((Operand) lastOperand).string);
 									}
 								} else if (operations.get(operations.size() - 1) != lastOperand) {
 									operations.add(lastOperand);
@@ -272,6 +272,9 @@ public class OperationParser {
 			}
 
 			if (lastOperand != null && !operations.contains(lastOperand)) {
+				if (lastOperand instanceof Operand) {
+					lastOperand = ((Operand) lastOperand).string;
+				}
 				operations.add(lastOperand);
 			}
 
