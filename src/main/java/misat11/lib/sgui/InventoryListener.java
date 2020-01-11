@@ -240,7 +240,7 @@ public class InventoryListener implements Listener {
 	private static Class<?> getNMSClass(String nmsClassString) {
 		try {
 			return Class.forName("net.minecraft.server." + version + "." + nmsClassString);
-		} catch (ClassNotFoundException ignore) {
+		} catch (Throwable ignore) {
 		}
 		return null;
 	}
