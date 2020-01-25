@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>misat11.lib.sgui</groupId>
 	<artifactId>SimpleGuiFormat</artifactId>
-	<version>0.0.10-snap6</version>
+	<version>0.0.10-snap7</version>
 	<packaging>jar</packaging>
 
 	<repositories>
