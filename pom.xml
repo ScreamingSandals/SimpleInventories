@@ -2,52 +2,34 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>misat11.lib.sgui</groupId>
-	<artifactId>SimpleGuiFormat</artifactId>
-	<version>0.0.10-snap7</version>
-	<packaging>jar</packaging>
+	<groupId>org.screamingsandals.simpleguiformat</groupId>
+	<artifactId>SimpleGuiFormat-parent</artifactId>
+	<version>1</version>
+	<packaging>pom</packaging>
 
 	<repositories>
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-		</repository>
-		<repository>
-			<id>placeholderapi</id>
-			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-		</repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>http://repo.extendedclip.com/scoreboard/repositories/placeholderapi/</url>
+        </repository>
 	</repositories>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<sgui.version>1.0.0-SNAPSHOT</sgui.version>
+        <paper.version>1.15.2-R0.1-SNAPSHOT</paper.version>
+        <placeholderapi.version>2.10.4</placeholderapi.version>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.14.4-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>4.1.42.Final</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>me.clip</groupId>
-			<artifactId>placeholderapi</artifactId>
-			<version>2.10.3</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.univocity</groupId>
-			<artifactId>univocity-parsers</artifactId>
-			<version>2.8.3</version>
-		</dependency>
-	</dependencies>
+    <modules>
+        <module>core</module>
+        <module>plugin</module>
+    </modules>
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -61,26 +43,6 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<relocations>
-								<relocation>
-									<pattern>com.univocity</pattern>
-									<shadedPattern>${project.groupId}.univocity</shadedPattern>
-								</relocation>
-							</relocations>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
