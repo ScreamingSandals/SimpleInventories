@@ -12,6 +12,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.screamingsandals.simpleguiformat.SimpleGuiFormat;
 import org.screamingsandals.simpleguiformat.events.CloseInventoryEvent;
 import org.screamingsandals.simpleguiformat.events.PostActionEvent;
@@ -26,6 +27,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class InventoryListener implements Listener {
+	
+	/**
+	 * This method will register listeners for using SimpleGuiFormat library. This method you must call in onEnable function.
+	 * 
+	 * @param plugin Plugin that should own this listener
+	 */
+	public static void init(Plugin plugin) {
+		Bukkit.getPluginManager().registerEvents(new InventoryListener(), plugin);
+	}
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {

@@ -11,6 +11,12 @@
 	<version>${sgui.version}</version>
 
 	<dependencies>
+        <dependency>
+            <groupId>com.destroystokyo.paper</groupId>
+            <artifactId>paper-api</artifactId>
+            <version>${paper.version}</version>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.screamingsandals.simpleguiformat</groupId>
 			<artifactId>SimpleGuiFormat-Core</artifactId>
