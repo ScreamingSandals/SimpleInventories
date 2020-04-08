@@ -36,12 +36,15 @@ public class InventoryListener implements Listener {
 		Inventory primaryInventory = e.getInventory();
 		if (primaryInventory.getHolder() instanceof GuiHolder) {
 			Player player = (Player) e.getWhoClicked();
-			e.setCancelled(true);
 			Inventory inventory = getInventory(e.getView(), e.getRawSlot()); 
 			if (!primaryInventory.equals(inventory)) { // check if inventory with GuiHolder and clicked inventory is
 														// same
+				if (e.getClick().isShiftClick() || e.getClick().isKeyboardClick() || e.getClick().isCreativeAction()) {
+					e.setCancelled(true);
+				}
 				return;
 			}
+			e.setCancelled(true);
 			GuiHolder holder = (GuiHolder) inventory.getHolder();
 			ItemInfo parent = holder.getParent();
 			int page = holder.getPage();
