@@ -84,7 +84,7 @@ public class SimpleInventoriesPlugin extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		PluginCommand command = getCommand("sgui");
+		PluginCommand command = getCommand("simpleinventories");
 		command.setExecutor(null);
 		command.setTabCompleter(null);
 		
