@@ -1,10 +1,10 @@
 # SimpleInventories
 
-SimpleInventories used are small library for making guis in minecraft! It's also available as plugin.
+SimpleInventories used is small library for making guis in minecraft! It's also available as plugin.
 
-[![Build Status](https://jenkins.mtorus.cz:443/job/SimpleGuiFormat/badge/icon?style=flat-square)](https://jenkins.mtorus.cz:443/job/SimpleGuiFormat/)
+[![Build Status](https://jenkins.mtorus.cz:443/job/SimpleInventories/badge/icon?style=flat-square)](https://jenkins.mtorus.cz:443/job/SimpleInventories/)
 
-Look into our wiki: https://github.com/ScreamingSandals/SimpleGuiFormat/wiki
+Look into our wiki: https://github.com/ScreamingSandals/SimpleInventories/wiki
 
 ## How to use
 1. Import maven repository
