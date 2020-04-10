@@ -4,7 +4,3 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.10.4'
     compileOnly 'io.netty:netty-all:4.1.42.Final'
 }
-
-shadowJar {
-   relocate 'com.univocity', 'org.screamingsandals.simpleinventories.univocity'
-}

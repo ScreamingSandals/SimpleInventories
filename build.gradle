@@ -4,6 +4,8 @@ Always use gradle shadow
 
 defaultTasks 'clean', 'shadow', 'publishToMavenLocal'
 
+import org.apache.tools.ant.filters.*
+
 allprojects {
     group = 'org.screamingsandals.simpleinventories'
     version = '1.0.0-SNAPSHOT'
@@ -35,15 +37,25 @@ subprojects {
         maven {
             url = uri('https://repo.extendedclip.com/content/repositories/placeholderapi/')
         }
-        
-        publishing {
-        	publications {
-            	maven(MavenPublication) {
-            		from components.java
-            	}
+    }
+
+	shadowJar {
+	   relocate 'com.univocity', 'org.screamingsandals.simpleinventories.univocity'
+	}
+    
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
             }
         }
     }
+    
+	processResources {
+	    filter ReplaceTokens, tokens: [
+	        "version": project.property("version")
+	    ]
+	}
 
     sourceCompatibility = '1.8'
 }
