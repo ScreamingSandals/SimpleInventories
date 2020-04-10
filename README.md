@@ -4,9 +4,9 @@
 
 Simple Gui Format used for formatting guis for Spigot minigames!
 
-[![Build Status](https://jenkins.mtorus.cz:443/view/Minecraft%20plugins/job/SimpleGuiFormat/badge/icon?style=flat-square)](https://jenkins.mtorus.cz:443/view/Minecraft%20plugins/job/SimpleGuiFormat/)
+[![Build Status](https://jenkins.mtorus.cz:443/job/SimpleGuiFormat/badge/icon?style=flat-square)](https://jenkins.mtorus.cz:443/job/SimpleGuiFormat/)
 
-Look into our wiki: https://github.com/Misat11/SimpleGuiFormat/wiki
+Look into our wiki: https://github.com/ScreamingSandals/SimpleGuiFormat/wiki
 
 ## How to use
 1. Import maven repository
@@ -19,9 +19,9 @@ Look into our wiki: https://github.com/Misat11/SimpleGuiFormat/wiki
 2. Include dependency
 ```xml
 <dependency>
-  <groupId>misat11.lib.sgui</groupId>
-  <artifactId>SimpleGuiFormat</artifactId>
-  <version>0.0.8</version> <!-- OR 0.0.9-snapshot4 -->
+  <groupId>org.screamingsandals.simpleguiformat</groupId>
+  <artifactId>SSimpleGuiFormat-Core</artifactId>
+  <version>LATEST_VERSION_HERE</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -33,11 +33,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import misat11.lib.sgui.SimpleGuiFormat;
-import misat11.lib.sgui.InventoryListener;
-import misat11.lib.sgui.events.GenerateItemEvent;
-import misat11.lib.sgui.events.PostActionEvent;
-import misat11.lib.sgui.events.PreActionEvent;
+import org.screamingsandals.simpleguiformat.SimpleGuiFormat;
+import org.screamingsandals.simpleguiformat.events.GenerateItemEvent;
+import org.screamingsandals.simpleguiformat.events.PostActionEvent;
+import org.screamingsandals.simpleguiformat.events.PreActionEvent;
+import org.screamingsandals.simpleguiformat.inventory.Options;
+import org.screamingsandals.simpleguiformat.listeners.InventoryListener;
 
 public class Sample extends JavaPlugin implements Listener {
 
@@ -45,8 +46,7 @@ public class Sample extends JavaPlugin implements Listener {
 
     public void onEnable() {
     
-        InventoryListener listener = new InventoryListener(); // for all guis
-        Bukkit.getServer().getPluginManager().registerEvents(listener, this); // Needed for navigate in inventory
+        InventoryListener.init(this); // needed for all inventories
 
         // here do some things to load the configuration
 
@@ -54,17 +54,23 @@ public class Sample extends JavaPlugin implements Listener {
         ItemStack pageBackItem = someItemStack2; // here load item for page back
         ItemStack pageForwardItem = someItemStack3; // here load item for page forward
         ItemStack cosmeticItem = someItemStack4; // here load cosmetics on first and last line
-
-        List<Map<String, Object>> data = myBestConfiguration; // here load your configuration
+        
+        // now load options
+        Options options = new Options();
+        
+        options.setBackItem(backItem);
+        options.setPageBackItem(pageBackItem);
+        options.setPageForwardItem(pageForwardItem);
+        options.setCosmeticItem(cosmeticItem);
 
         // now we must create gui from configuration
 
-        format = new SimpleGuiFormat(nameOfYourInventory, backItem, pageBackItem, pageForwardItem, cosmeticItem);
-        format.load(data);
+        format = new SimpleGuiFormat(options);
+        format.loadFromDataFolder(getDataFolder(), "myAwesomeGui.yml");
 
-        Bukkit.getServer().getPluginManager().registerEvents(this, this); // Needed for onclick action
+        Bukkit.getServer().getPluginManager().registerEvents(this, this); // You must register your own custom events before gui is generated
 
-        format.generateData();
+        format.generateData(); // now generate gui
     }
 
     @EventHandler
@@ -125,8 +131,8 @@ public class Sample extends JavaPlugin implements Listener {
           <configuration>
             <relocations>
               <relocation>
-                <pattern>misat11.lib</pattern>
-                <shadedPattern>yourcustompackage.lib</shadedPattern>
+                <pattern>org.screamingsandals.simpleguiformat</pattern>
+                <shadedPattern>${project.groupId}.sgui</shadedPattern>
               </relocation>
             </relocations>
           </configuration>

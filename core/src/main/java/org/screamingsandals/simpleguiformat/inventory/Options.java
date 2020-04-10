@@ -2,13 +2,16 @@ package org.screamingsandals.simpleguiformat.inventory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.screamingsandals.simpleguiformat.placeholders.AdvancedPlaceholderParser;
 import org.screamingsandals.simpleguiformat.placeholders.PlaceholderConstantParser;
 import org.screamingsandals.simpleguiformat.placeholders.PlaceholderParser;
+import org.screamingsandals.simpleguiformat.utils.StackParser;
 
 public class Options {
 
@@ -206,5 +209,42 @@ public class Options {
 
 	public void setAllowAccessToConsole(boolean allowAccessToConsole) {
 		this.allowAccessToConsole = allowAccessToConsole;
+	}
+	
+	public static Options deserialize(ConfigurationSection map, Plugin plugin) {
+		Options options = new Options();
+	
+		entry(map, "backItem", entry -> options.setBackItem(StackParser.parse(entry)));
+		entry(map, "pageBackItem", entry -> options.setPageBackItem(StackParser.parse(entry)));
+		entry(map, "pageForwardItem", entry -> options.setPageForwardItem(StackParser.parse(entry)));
+		entry(map, "cosmeticItem", entry -> options.setCosmeticItem(StackParser.parse(entry)));
+		
+		entry(map, "genericShop", entry -> options.setGenericShop((boolean) entry));
+		entry(map, "genericShopPriceTypeRequired", entry -> options.setGenericShopPriceTypeRequired((boolean) entry));
+		entry(map, "animationsEnabled", entry -> options.setAnimationsEnabled((boolean) entry, plugin));
+		entry(map, "showPageNumber", entry -> options.setShowPageNumber((boolean) entry));
+		entry(map, "prefix", entry -> options.setPrefix(entry.toString()));
+		entry(map, "allowAccessToConsole", entry -> options.setAllowAccessToConsole((boolean) entry));
+		
+		// DANGER
+		entry(map, "rows", entry -> options.setRows(((Number) entry).intValue()));
+		entry(map, "render_actual_rows", entry -> options.setRender_actual_rows(((Number) entry).intValue()));
+		entry(map, "render_offset", entry -> options.setRender_offset(((Number) entry).intValue()));
+		entry(map, "render_header_start", entry -> options.setRender_header_start(((Number) entry).intValue()));
+		entry(map, "render_footer_start", entry -> options.setRender_footer_start(((Number) entry).intValue()));
+		
+		// MOST DANGER
+		entry(map, "items_on_row", entry -> options.setItems_on_row(((Number) entry).intValue()));
+		
+		return options;
+	}
+	
+	private static void entry(ConfigurationSection map, String path, Consumer<Object> consumer) {
+		if (map.contains(path)) {
+			try {
+				consumer.accept(map.get(path));
+			} catch (Throwable ignored) {
+			}
+		}
 	}
 }
