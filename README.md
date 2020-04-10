@@ -1,8 +1,6 @@
-# SimpleGuiFormat
+# SimpleInventories
 
-##### For contributors: please don't remove deprecated methods, variables and constructors! Most of these are used internally or usage is just dangerous without experiences.
-
-Simple Gui Format used for formatting guis for Spigot minigames!
+SimpleInventories used are small library for making guis in minecraft! It's also available as plugin.
 
 [![Build Status](https://jenkins.mtorus.cz:443/job/SimpleGuiFormat/badge/icon?style=flat-square)](https://jenkins.mtorus.cz:443/job/SimpleGuiFormat/)
 
@@ -19,8 +17,8 @@ Look into our wiki: https://github.com/ScreamingSandals/SimpleGuiFormat/wiki
 2. Include dependency
 ```xml
 <dependency>
-  <groupId>org.screamingsandals.simpleguiformat</groupId>
-  <artifactId>SSimpleGuiFormat-Core</artifactId>
+  <groupId>org.screamingsandals.simpleinventories</groupId>
+  <artifactId>SimpleInventories-Core</artifactId>
   <version>LATEST_VERSION_HERE</version>
   <scope>compile</scope>
 </dependency>
@@ -33,16 +31,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import org.screamingsandals.simpleguiformat.SimpleGuiFormat;
-import org.screamingsandals.simpleguiformat.events.GenerateItemEvent;
-import org.screamingsandals.simpleguiformat.events.PostActionEvent;
-import org.screamingsandals.simpleguiformat.events.PreActionEvent;
-import org.screamingsandals.simpleguiformat.inventory.Options;
-import org.screamingsandals.simpleguiformat.listeners.InventoryListener;
+import org.screamingsandals.simpleinventories.SimpleInventories;
+import org.screamingsandals.simpleinventories.events.GenerateItemEvent;
+import org.screamingsandals.simpleinventories.events.PostActionEvent;
+import org.screamingsandals.simpleinventories.events.PreActionEvent;
+import org.screamingsandals.simpleinventories.inventory.Options;
+import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 
 public class Sample extends JavaPlugin implements Listener {
 
-    public SimpleGuiFormat format;
+    public SimpleInventories format;
 
     public void onEnable() {
     
@@ -65,7 +63,7 @@ public class Sample extends JavaPlugin implements Listener {
 
         // now we must create gui from configuration
 
-        format = new SimpleGuiFormat(options);
+        format = new SimpleInventories(options);
         format.loadFromDataFolder(getDataFolder(), "myAwesomeGui.yml");
 
         Bukkit.getServer().getPluginManager().registerEvents(this, this); // You must register your own custom events before gui is generated
@@ -131,8 +129,8 @@ public class Sample extends JavaPlugin implements Listener {
           <configuration>
             <relocations>
               <relocation>
-                <pattern>org.screamingsandals.simpleguiformat</pattern>
-                <shadedPattern>${project.groupId}.sgui</shadedPattern>
+                <pattern>org.screamingsandals.simpleinventories</pattern>
+                <shadedPattern>${project.groupId}.si</shadedPattern>
               </relocation>
             </relocations>
           </configuration>

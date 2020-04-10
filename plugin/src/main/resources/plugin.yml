@@ -1,13 +1,13 @@
-name: SimpleGuiFormat
-main: org.screamingsandals.simpleguiformat.plugin.SimpleGuiPlugin
+name: SimpleInventories
+main: org.screamingsandals.simpleinventories.plugin.SimpleInventoriesPlugin
 version: ${project.version}
 author: ScreamingSandals <Misat11, Ceph>
 api-version: 1.13
 load: POSTWORLD
 
 commands:
-   sgui:
-    description: Command of SimpleGuiFormat
-    usage: /sgui [subcommand]
-    aliases: "simpleguiformat"
+   simpleinventories:
+    description: Command of SimpleInventories
+    usage: /simpleinventories [subcommand]
+    aliases: "si"
       

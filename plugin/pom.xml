@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.screamingsandals.simpleguiformat</groupId>
-		<artifactId>SimpleGuiFormat-parent</artifactId>
+		<groupId>org.screamingsandals.simpleinventories</groupId>
+		<artifactId>SimpleInventories-parent</artifactId>
 		<version>1</version>
 	</parent>
-	<artifactId>SimpleGuiFormat-Plugin</artifactId>
+	<artifactId>SimpleInventories-Plugin</artifactId>
 	<version>${sgui.version}</version>
 
 	<dependencies>
@@ -18,8 +18,8 @@
             <scope>provided</scope>
         </dependency>
 		<dependency>
-			<groupId>org.screamingsandals.simpleguiformat</groupId>
-			<artifactId>SimpleGuiFormat-Core</artifactId>
+			<groupId>org.screamingsandals.simpleinventories</groupId>
+			<artifactId>SimpleInventories-Core</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>

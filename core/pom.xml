@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.screamingsandals.simpleguiformat</groupId>
-		<artifactId>SimpleGuiFormat-parent</artifactId>
+		<groupId>org.screamingsandals.simpleinventories</groupId>
+		<artifactId>SimpleInventories-parent</artifactId>
 		<version>1</version>
 	</parent>
-	<artifactId>SimpleGuiFormat-Core</artifactId>
+	<artifactId>SimpleInventories-Core</artifactId>
 	<version>${sgui.version}</version>
 
 	<dependencies>
