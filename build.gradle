@@ -35,6 +35,14 @@ subprojects {
         maven {
             url = uri('https://repo.extendedclip.com/content/repositories/placeholderapi/')
         }
+        
+        publishing {
+        	publications {
+            	maven(MavenPublication) {
+            		from components.java
+            	}
+            }
+        }
     }
 
     sourceCompatibility = '1.8'
