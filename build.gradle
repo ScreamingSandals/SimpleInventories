@@ -2,8 +2,6 @@
 	Always use gradle shadow
 */
 
-println(project.getProperty("screamingRepository"))
-
 if (project.hasProperty("screamingRepository")) {
 	defaultTasks 'clean', 'shadow', 'publishToMavenLocal', 'publish'
 } else {
@@ -65,13 +63,14 @@ subprojects {
                 	}
                 }
             }
-            if (project.hasProperty("screamingRepository")) {
-	            repositories {
-                   maven {
-                 	  url = project.getProperty("screamingRepository") 
-	               }
-	        	}   
-	         }
+	    }
+        
+        if (project.hasProperty("screamingRepository")) {
+	       repositories {
+              maven {
+              	  url = project.getProperty("screamingRepository") 
+	          }
+	      	}   
 
         }
     }
