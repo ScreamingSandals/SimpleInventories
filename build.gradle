@@ -2,6 +2,8 @@
 	Always use gradle shadow
 */
 
+println(project.getProperty("screamingRepository"))
+
 if (project.hasProperty("screamingRepository")) {
 	defaultTasks 'clean', 'shadow', 'publishToMavenLocal', 'publish'
 } else {
