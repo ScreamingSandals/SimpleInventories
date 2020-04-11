@@ -5,6 +5,9 @@
 defaultTasks 'clean', 'shadow', 'publishToMavenLocal'
 
 import org.apache.tools.ant.filters.*
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Element;
+
 
 allprojects {
     group = 'org.screamingsandals.simpleinventories'
@@ -48,12 +51,20 @@ subprojects {
             maven(MavenPublication) {
                 from components.java
                 pom.withXml {
-                	org.w3c.dom.NodeList list = asElement().getElementsByTagName("dependency")
+                	NodeList list = asElement().getElementsByTagName("dependency")
                 	for (int i = 0; i < list.getLength(); i++) {
-                		((org.w3c.dom.Element) list.item(i)).getElementsByTagName('scope').item(0).setTextContent("provided")
+                		((Element) list.item(i)).getElementsByTagName('scope').item(0).setTextContent("provided")
                 	}
                 }
             }
+            if (project.hasProperty("screamingRepository")) {
+	            repositories {
+                   maven {
+                 	  url = project.getProperty("screamingRepository") 
+	               }
+	        	}   
+	         }
+
         }
     }
     
