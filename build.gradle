@@ -2,7 +2,13 @@
 	Always use gradle shadow
 */
 
-defaultTasks 'clean', 'shadow', 'publishToMavenLocal'
+if (project.hasProperty("screamingRepository")) {
+	defaultTasks 'clean', 'shadow', 'publishToMavenLocal', 'publish'
+} else {
+	defaultTasks 'clean', 'shadow', 'publishToMavenLocal'
+}
+
+
 
 import org.apache.tools.ant.filters.*
 import org.w3c.dom.NodeList;
