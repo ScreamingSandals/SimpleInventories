@@ -42,6 +42,14 @@ subprojects {
 	shadowJar {
 	   relocate 'com.univocity', 'org.screamingsandals.simpleinventories.univocity'
 	}
+	
+	publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+            }
+        }
+    }
     
 	processResources {
 	    filter ReplaceTokens, tokens: [
