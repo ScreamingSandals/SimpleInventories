@@ -1,4 +1,19 @@
 dependencies {
     implementation project(':SimpleInventories-Core')
-    compileOnly 'com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT'
+}
+
+tasks.spigotPluginYaml.enabled = true
+
+spigot {
+	name = 'SimpleInventories'
+    authors = ['ScreamingSandals']
+    apiVersion = '1.13'
+    load = POST_WORLD
+    commands {
+        simpleinventories {
+            aliases = ['si']
+            description = 'Command of SimpleInventories'
+            usage = '/simpleinventories [subcommand]'
+        }
+    }
 }

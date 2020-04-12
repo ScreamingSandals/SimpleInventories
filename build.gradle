@@ -27,6 +27,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
+        classpath 'kr.entree:spigradle:1.2.4'
     }
 }
 
@@ -35,6 +36,7 @@ subprojects {
 	apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'java'
     apply plugin: 'maven-publish'
+    apply plugin: 'kr.entree.spigradle'
 
     repositories {
         mavenCentral()
@@ -48,6 +50,14 @@ subprojects {
             url = uri('https://repo.extendedclip.com/content/repositories/placeholderapi/')
         }
     }
+    
+    dependencies {
+    	compileOnly paper('1.15.2')    
+    	compileOnly lombok()
+    }
+    
+    /* Use this with true in build.gradle of plugin */
+    tasks.spigotPluginYaml.enabled = false
 
 	shadowJar {
 	   relocate 'com.univocity', 'org.screamingsandals.simpleinventories.univocity'
@@ -79,7 +89,7 @@ subprojects {
                 	while (iterator.hasNext()) {
                 		ExternalModuleDependency dependency = iterator.next()
                 		String str = dependency.getGroup() + ":" + dependency.getName()
-                		if (!usedArtifacts.contains(str)) {
+                		if (!usedArtifacts.contains(str) && !dependency.getName().equals("spigradle")) {
 							usedArtifacts.add(str)
 							Element node = document.createElement("dependency")
 							Element groupId = document.createElement("groupId")
