@@ -13,6 +13,7 @@ if (project.hasProperty("screamingRepository")) {
 import org.apache.tools.ant.filters.*
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
+import org.w3c.dom.Document;
 
 
 allprojects {
@@ -57,10 +58,46 @@ subprojects {
             maven(MavenPublication) {
                 from components.java
                 pom.withXml {
+                	List<String> usedArtifacts = new ArrayList<>();
+                	
                 	NodeList list = asElement().getElementsByTagName("dependency")
                 	for (int i = 0; i < list.getLength(); i++) {
-                		((Element) list.item(i)).getElementsByTagName('scope').item(0).setTextContent("provided")
+                		Element element = list.item(i)
+                		String str = element.getElementsByTagName('groupId').item(0).getTextContent()
+                		str += ":" + element.getElementsByTagName('artifactId').item(0).getTextContent()
+                		if (!usedArtifacts.contains(str)) {
+                		   usedArtifacts.add(str)
+                		}
+                		
+                		element.getParentNode().removeChild(element)
                 	}
+                	
+                	Element dependencyList = asElement().getElementsByTagName("dependencies").item(0)
+                	Document document = dependencyList.getOwnerDocument()
+                	
+                	Iterator iterator = project.configurations.collectMany { it.allDependencies }.findAll { it instanceof ExternalModuleDependency }.iterator()
+                	while (iterator.hasNext()) {
+                		ExternalModuleDependency dependency = iterator.next()
+                		String str = dependency.getGroup() + ":" + dependency.getName()
+                		if (!usedArtifacts.contains(str)) {
+							usedArtifacts.add(str)
+							Element node = document.createElement("dependency")
+							Element groupId = document.createElement("groupId")
+							groupId.appendChild(document.createTextNode(dependency.getGroup()))
+							node.appendChild(groupId);
+							Element artifactId = document.createElement("artifactId")
+							artifactId.appendChild(document.createTextNode(dependency.getName()))
+							node.appendChild(artifactId);
+							Element version = document.createElement("version")
+							version.appendChild(document.createTextNode(dependency.getVersion()))
+							node.appendChild(version);
+							Element scope = document.createElement("scope")
+							scope.appendChild(document.createTextNode("provided"))
+							node.appendChild(scope);
+							dependencyList.appendChild(node)
+                		}
+                	}
+
                 }
             }
 	    }
