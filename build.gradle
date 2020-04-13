@@ -1,20 +1,4 @@
-/*
-	Always use gradle shadow
-*/
-
-if (project.hasProperty("screamingRepository")) {
-	defaultTasks 'clean', 'shadow', 'publishToMavenLocal', 'publish'
-} else {
-	defaultTasks 'clean', 'shadow', 'publishToMavenLocal'
-}
-
-
-
-import org.apache.tools.ant.filters.*
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
-import org.w3c.dom.Document;
-
+defaultTasks 'screamCompile'
 
 allprojects {
     group = 'org.screamingsandals.simpleinventories'
@@ -24,108 +8,29 @@ allprojects {
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url = 'https://repo.screamingsandals.org'
+        }
     }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:5.2.0'
-        classpath 'kr.entree:spigradle:1.2.4'
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.0'
     }
 }
 
 subprojects {
-
-	apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'java'
-    apply plugin: 'maven-publish'
-    apply plugin: 'kr.entree.spigradle'
+    apply plugin: 'org.screamingsandals.gradle.builder'
 
     repositories {
-        mavenCentral()
-        mavenLocal()
-        
-        maven {
-            url = uri('https://papermc.io/repo/repository/maven-public/')
-        }
-
-        maven {
-            url = uri('https://repo.extendedclip.com/content/repositories/placeholderapi/')
-        }
+        maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
     }
     
     dependencies {
-    	compileOnly paper('1.15.2')    
-    	compileOnly lombok()
+    	compileOnly paper()
     }
-    
-    /* Use this with true in build.gradle of plugin */
-    tasks.spigotPluginYaml.enabled = false
 
 	shadowJar {
 	   relocate 'com.univocity', 'org.screamingsandals.simpleinventories.univocity'
-	}
-	
-	publishing {
-        publications {
-            maven(MavenPublication) {
-                from components.java
-                pom.withXml {
-                	List<String> usedArtifacts = new ArrayList<>();
-                	
-                	NodeList list = asElement().getElementsByTagName("dependency")
-                	for (int i = 0; i < list.getLength(); i++) {
-                		Element element = list.item(i)
-                		String str = element.getElementsByTagName('groupId').item(0).getTextContent()
-                		str += ":" + element.getElementsByTagName('artifactId').item(0).getTextContent()
-                		if (!usedArtifacts.contains(str)) {
-                		   usedArtifacts.add(str)
-                		}
-                		
-                		element.getParentNode().removeChild(element)
-                	}
-                	
-                	Element dependencyList = asElement().getElementsByTagName("dependencies").item(0)
-                	Document document = dependencyList.getOwnerDocument()
-                	
-                	Iterator iterator = project.configurations.collectMany { it.allDependencies }.findAll { it instanceof ExternalModuleDependency }.iterator()
-                	while (iterator.hasNext()) {
-                		ExternalModuleDependency dependency = iterator.next()
-                		String str = dependency.getGroup() + ":" + dependency.getName()
-                		if (!usedArtifacts.contains(str) && !dependency.getName().equals("spigradle")) {
-							usedArtifacts.add(str)
-							Element node = document.createElement("dependency")
-							Element groupId = document.createElement("groupId")
-							groupId.appendChild(document.createTextNode(dependency.getGroup()))
-							node.appendChild(groupId);
-							Element artifactId = document.createElement("artifactId")
-							artifactId.appendChild(document.createTextNode(dependency.getName()))
-							node.appendChild(artifactId);
-							Element version = document.createElement("version")
-							version.appendChild(document.createTextNode(dependency.getVersion()))
-							node.appendChild(version);
-							Element scope = document.createElement("scope")
-							scope.appendChild(document.createTextNode("provided"))
-							node.appendChild(scope);
-							dependencyList.appendChild(node)
-                		}
-                	}
-
-                }
-            }
-	    }
-        
-        if (project.hasProperty("screamingRepository")) {
-	       repositories {
-              maven {
-              	  url = project.getProperty("screamingRepository") 
-	          }
-	      	}   
-
-        }
-    }
-    
-	processResources {
-	    filter ReplaceTokens, tokens: [
-	        "version": project.property("version")
-	    ]
 	}
 
     sourceCompatibility = '1.8'
