@@ -5,19 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
+@AllArgsConstructor
 public class FormatBuilder {
 	private final List<Object> result;
 	
 	public FormatBuilder() {
 		this(new ArrayList<>());
-	}	
-	
-	public FormatBuilder(List<Object> result) {
-		this.result = result;
 	}
 	
 	public List<Object> getResult() {
@@ -47,13 +45,10 @@ public class FormatBuilder {
 		result.add(map);
 		return new Item(map);
 	}
-	
+
+	@AllArgsConstructor
 	public static class Item {
 		private Map<String, Object> map;
-		
-		private Item(Map<String, Object> map) {
-			this.map = map;
-		}
 		
 		public Item set(String key, Object value) {
 			this.map.put(key, value);

@@ -1,5 +1,7 @@
 package org.screamingsandals.simpleinventories.events;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -10,57 +12,21 @@ import org.screamingsandals.simpleinventories.SimpleInventories;
 import org.screamingsandals.simpleinventories.item.ItemInfo;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 
+@Getter
+@RequiredArgsConstructor
 public class PostActionEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
-	private Player player = null;
-	private SimpleInventories format = null;
-	private Inventory inv = null;
-	private ItemInfo parent = null;
-	private PlayerItemInfo item = null;
+	private final Player player;
+	private final SimpleInventories format;
+	private final Inventory inv;
+	private final ItemInfo parent;
+	private final PlayerItemInfo item;
 	private boolean cancel = false;
-	private ClickType clickType = null;
-
-	public PostActionEvent(Player player, SimpleInventories format, Inventory inv, ItemInfo parent, PlayerItemInfo item, ClickType clickType) {
-		this.player = player;
-		this.format = format;
-		this.inv = inv;
-		this.parent = parent;
-		this.item = item;
-		this.clickType = clickType;
-	}
+	private final ClickType clickType;
 
 	public static HandlerList getHandlerList() {
 		return PostActionEvent.handlers;
-	}
-
-	public Player getPlayer() {
-		return this.player;
-	}
-	
-	public SimpleInventories getFormat() {
-		return this.format;
-	}
-	
-	public Inventory getInventory() {
-		return this.inv;
-	}
-	
-	public ItemInfo getParent() {
-		return this.parent;
-	}
-	
-	public PlayerItemInfo getItem() {
-		return this.item;
-	}
-	
-	@Deprecated
-	public ItemInfo getOriginalItem() {
-		return this.item.getOriginal();
-	}
-	
-	public ClickType getClickType() {
-		return this.clickType;
 	}
 
 	@Override

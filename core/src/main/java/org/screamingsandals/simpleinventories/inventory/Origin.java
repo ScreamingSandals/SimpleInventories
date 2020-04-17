@@ -3,8 +3,10 @@ package org.screamingsandals.simpleinventories.inventory;
 import java.io.File;
 import java.util.List;
 
+import lombok.Getter;
 import org.screamingsandals.simpleinventories.builder.FormatBuilder;
 
+@Getter
 public class Origin {
 
 	private File file = null;
@@ -27,22 +29,6 @@ public class Origin {
 		this.builder = builder;
 		this.content = content;
 		this.type = Type.BUILDER;
-	}
-	
-	public Type getType() {
-		return this.type;
-	}
-	
-	public FormatBuilder getBuilder() {
-		return this.builder;
-	}
-	
-	public File getFile() {
-		return this.file;
-	}
-	
-	public List<Object> getContent() {
-		return this.content;
 	}
 	
 	public static enum Type {

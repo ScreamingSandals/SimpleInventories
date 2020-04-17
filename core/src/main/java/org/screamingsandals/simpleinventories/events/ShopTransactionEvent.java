@@ -3,6 +3,8 @@ package org.screamingsandals.simpleinventories.events;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -15,17 +17,18 @@ import org.screamingsandals.simpleinventories.item.ItemInfo;
 import org.screamingsandals.simpleinventories.item.ItemProperty;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 
+@Getter
 public class ShopTransactionEvent extends Event implements Cancellable {
 
 	private static final HandlerList handlers = new HandlerList();
-	private Player player = null;
-	private SimpleInventories format = null;
-	private int price = 0;
-	private String type = null;
-	private ItemStack stack = null;
-	private PlayerItemInfo item = null;
+	private final Player player;
+	private final SimpleInventories format;
+	private final int price;
+	private final String type;
+	private final ItemStack stack;
+	private final PlayerItemInfo item;
 	private boolean cancel = false;
-	private ClickType clickType = null;
+	private final ClickType clickType;
 
 	public ShopTransactionEvent(Player player, SimpleInventories format, PlayerItemInfo item, int price, String type, ClickType clickType) {
 		this.player = player;
@@ -53,39 +56,6 @@ public class ShopTransactionEvent extends Event implements Cancellable {
 
 	public static HandlerList getHandlerList() {
 		return ShopTransactionEvent.handlers;
-	}
-
-	public Player getPlayer() {
-		return this.player;
-	}
-	
-	public SimpleInventories getFormat() {
-		return this.format;
-	}
-	
-	public PlayerItemInfo getItem() {
-		return this.item;
-	}
-	
-	@Deprecated
-	public ItemInfo getOriginalItem() {
-		return this.item.getOriginal();
-	}
-	
-	public int getPrice() {
-		return this.price;
-	}
-	
-	public String getType() {
-		return this.type;
-	}
-	
-	public ItemStack getStack() {
-		return this.stack;
-	}
-	
-	public ClickType getClickType() {
-		return this.clickType;
 	}
 	
 	public boolean hasPlayerInInventory() {
