@@ -150,7 +150,12 @@ public class StackParser {
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static ItemStack parseLongStack(Map<String, Object> obj) {
-		ItemStack stack = parseShortStack((String) obj.get("type"));
+		ItemStack stack;
+		if (obj.get("type") instanceof Material) {
+			stack = new ItemStack((Material) obj.get("type"));
+		} else {
+			stack = parseShortStack(obj.get("type").toString());
+		}
 		
 		if (stack.getType() == Material.AIR) {
 			return stack;

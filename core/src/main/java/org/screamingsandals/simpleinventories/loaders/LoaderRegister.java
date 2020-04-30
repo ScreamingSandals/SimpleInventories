@@ -19,6 +19,10 @@ public final class LoaderRegister {
 		
 		REGISTER.put(".csv", csv);
 		REGISTER.put(".txt", csv);
+
+		Loader groovy = new GroovyLoader();
+
+		REGISTER.put(".groovy", groovy);
 	}
 
 	public static Loader getLoader(String extension) {
