@@ -42,7 +42,7 @@ public class GroovyLoader implements Loader {
 
         Binding binding = new Binding();
         MainGroovyBuilder builder = new MainGroovyBuilder();
-        binding.setVariable("builder", builder);
+        binding.setVariable("inventory", builder);
         GroovyScriptEngine engine = new GroovyScriptEngine(new URL[] {file.getParentFile().toURI().toURL()});
 
         engine.run(file.getName(), binding);

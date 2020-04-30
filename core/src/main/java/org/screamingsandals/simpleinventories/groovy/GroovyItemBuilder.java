@@ -31,20 +31,28 @@ public class GroovyItemBuilder extends GroovyBuilder {
         internalCallClosure(closure, new GroovyStackBuilder((Map<String, Object>) itemMap.get("stack")));
     }
 
-    public void addProperty(String name) {
-        addProperty(new HashMap<String, Object>() {
+    public GroovyStackBuilder getStack() {
+        return new GroovyStackBuilder((Map<String, Object>) itemMap.get("stack"));
+    }
+
+    public void price(String price) {
+        itemMap.put("price", price);
+    }
+
+    public void property(String name) {
+        property(new HashMap<String, Object>() {
             {
                 put("name", name);
             }
         });
     }
 
-    public void addProperty(String name, Map<String, Object> map) {
+    public void property(String name, Map<String, Object> map) {
         map.put("name", name);
-        addProperty(map);
+        property(map);
     }
 
-    public void addProperty(Map<String, Object> map) {
+    public void property(Map<String, Object> map) {
         if (!itemMap.containsKey("properties")) {
             itemMap.put("properties", new ArrayList<>());
         }

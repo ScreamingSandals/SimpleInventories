@@ -253,30 +253,56 @@ public class StackParser {
 		
 		if (obj.containsKey("enchants")) {
 			if (obj.get("enchants") instanceof List) {
-				for (String ob : (List<String>) obj.get("enchants")) {
-					if (ob.equals("SWEEPING")) {
-						ob = "SWEEPING_EDGE";
-					}
-					Enchantment ench = Enchantment.getByName(ob);
-					if (ench != null && meta.hasEnchant(ench)) {
-						meta.addEnchant(ench, 1, true);
+				for (Object en : (List<Object>) obj.get("enchants")) {
+					if (en instanceof Enchantment) {
+						Enchantment ench = (Enchantment) en;
+						if (!meta.hasEnchant(ench)) {
+							meta.addEnchant(ench, 1, true);
+						}
+					} else {
+						String ob = en.toString();
+
+						if (ob.equals("SWEEPING")) {
+							ob = "SWEEPING_EDGE";
+						}
+						Enchantment ench = Enchantment.getByName(ob);
+						if (ench != null && !meta.hasEnchant(ench)) {
+							meta.addEnchant(ench, 1, true);
+						}
 					}
 				}
 			} else if (obj.get("enchants") instanceof Map) {
-				for (Map.Entry<String, Object> entry : ((Map<String, Object>) obj.get("enchants")).entrySet()) {
-					String ob = entry.getKey();
-					if (ob.equals("SWEEPING")) {
-						ob = "SWEEPING_EDGE";
+				for (Map.Entry<Object, Object> entry : ((Map<Object, Object>) obj.get("enchants")).entrySet()) {
+					if (entry.getKey() instanceof Enchantment) {
+						Enchantment ench = (Enchantment) entry.getKey();
+						int i = 1;
+						try {
+							i = ((Number) entry.getValue()).intValue();
+						} catch (Throwable t) {
+						}
+						if (!meta.hasEnchant(ench)) {
+							meta.addEnchant(ench, i, true);
+						}
+					} else {
+						String ob = entry.getKey().toString();
+						if (ob.equals("SWEEPING")) {
+							ob = "SWEEPING_EDGE";
+						}
+						Enchantment ench = Enchantment.getByName(ob);
+						int i = 1;
+						try {
+							i = ((Number) entry.getValue()).intValue();
+						} catch (Throwable t) {
+						}
+						if (ench != null && !meta.hasEnchant(ench)) {
+							meta.addEnchant(ench, i, true);
+						}
 					}
-					Enchantment ench = Enchantment.getByName(ob);
-					int i = 1;
-					try {
-						i = ((Number) entry.getValue()).intValue();
-					} catch (Throwable t) {
-					}
-					if (ench != null && !meta.hasEnchant(ench)) {
-						meta.addEnchant(ench, i, true);
-					}
+				}
+			} else if (obj.get("enchants") instanceof Enchantment) {
+				Enchantment ench = (Enchantment) (obj.get("enchants"));
+				if (!meta.hasEnchant(ench)) {
+					meta.addEnchant(ench, 1, true);
 				}
 			} else {
 				String ob =  obj.get("enchants").toString();
