@@ -3,6 +3,7 @@ package org.screamingsandals.simpleinventories.loaders;
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.PluginClassLoader;
 import org.screamingsandals.simpleinventories.groovy.CantObtainGroovyException;
 import org.screamingsandals.simpleinventories.groovy.GroovyClassLoader;
 import org.screamingsandals.simpleinventories.groovy.MainGroovyBuilder;
@@ -30,7 +31,7 @@ public class GroovyLoader implements Loader {
 
             File groovy = new File(lib, "groovy.jar");
             if (!groovy.exists()) {
-                Bukkit.getLogger().info("Obtaining groovy.jar for your server");
+                Bukkit.getLogger().info("[SimpleInventories] Obtaining groovy.jar for your server");
 
                 Files.copy(new URL("https://repo1.maven.org/maven2/org/codehaus/groovy/groovy/3.0.3/groovy-3.0.3.jar").openStream(), Paths.get(groovy.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
 
@@ -40,14 +41,16 @@ public class GroovyLoader implements Loader {
                 throw new CantObtainGroovyException();
             }
 
+            Bukkit.getLogger().info("[SimpleInventories] Loading groovy.jar");
             GroovyClassLoader load = new GroovyClassLoader(this.getClass().getClassLoader());
             load.addJarToClasspath(groovy);
+            Bukkit.getLogger().info("[SimpleInventories] Groovy is loaded! Don't use /reload command or some of your groovy scripts will be corrupted!");
         }
 
         Binding binding = new Binding();
         MainGroovyBuilder builder = new MainGroovyBuilder();
         binding.setVariable("inventory", builder);
-        GroovyScriptEngine engine = new GroovyScriptEngine(new URL[] {file.getParentFile().toURI().toURL()});
+        GroovyScriptEngine engine = new GroovyScriptEngine(new URL[]{file.getParentFile().toURI().toURL()});
 
         engine.run(file.getName(), binding);
 

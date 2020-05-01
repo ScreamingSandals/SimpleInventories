@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -250,6 +251,9 @@ public class MapReader {
 					nmap.put(entry.getKey(), convert(entry.getValue()));
 				}
 				obj = nmap;
+				if (nmap.containsKey("==")) {
+					obj = ConfigurationSerialization.deserializeObject(nmap); // Deserialize with bukkit when loaded by groovy
+				}
 			}
 		}
 		if (obj instanceof ItemStack) {

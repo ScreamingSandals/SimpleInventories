@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -164,8 +165,6 @@ public class StackParser {
 		if (obj.containsKey("amount")) {
 			if (obj.get("amount") instanceof Number) {
 				stack.setAmount(((Number) obj.get("amount")).intValue());
-			} else {
-				
 			}
 		}
 		
@@ -185,6 +184,11 @@ public class StackParser {
 			if (obj.get("meta") instanceof ItemMeta) {
 				try {
 					stack.setItemMeta((ItemMeta) obj.get("meta"));
+				} catch (Throwable t) {
+				}
+			} else if (obj.get("meta") instanceof Map) {
+				try {
+					stack.setItemMeta((ItemMeta) ConfigurationSerialization.deserializeObject((Map<String,?>) obj.get("meta")));
 				} catch (Throwable t) {
 				}
 			}
