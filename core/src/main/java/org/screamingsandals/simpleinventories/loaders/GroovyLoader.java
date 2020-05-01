@@ -50,6 +50,7 @@ public class GroovyLoader implements Loader {
         Binding binding = new Binding();
         MainGroovyBuilder builder = new MainGroovyBuilder();
         binding.setVariable("inventory", builder);
+        binding.setVariable("section", configPath);
         GroovyScriptEngine engine = new GroovyScriptEngine(new URL[]{file.getParentFile().toURI().toURL()});
 
         engine.run(file.getName(), binding);

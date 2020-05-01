@@ -55,6 +55,13 @@ public class Configurator {
         				put("options", new HashMap<>());
         			}
         		});
+                put("sample.groovy", new HashMap<String, Object>() {
+                    {
+                        put("file", "sample.groovy");
+                        put("section", "data");
+                        put("options", new HashMap<>());
+                    }
+                });
         	}
         });
         
