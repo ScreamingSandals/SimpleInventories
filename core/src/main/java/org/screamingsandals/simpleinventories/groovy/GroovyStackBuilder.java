@@ -1,15 +1,16 @@
 package org.screamingsandals.simpleinventories.groovy;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
+@Getter
 public class GroovyStackBuilder {
     private final Map<String, Object> stack;
 
@@ -81,5 +82,25 @@ public class GroovyStackBuilder {
 
         Map<Object, Object> map = (Map<Object, Object>) stack.get("enchants");
         map.put(enchant, level);
+    }
+
+    public void enchant(Map<Object, Integer> map) {
+        map.forEach((key, value) -> {
+            if (key instanceof Enchantment) {
+                enchant((Enchantment) key, value);
+            } else {
+                enchant(key.toString(), value);
+            }
+        });
+    }
+
+    public void enchant(List<Object> list) {
+        list.forEach(enchant -> {
+            if (enchant instanceof Enchantment) {
+                enchant((Enchantment) enchant);
+            } else {
+                enchant(enchant.toString());
+            }
+        });
     }
 }

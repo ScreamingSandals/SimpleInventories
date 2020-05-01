@@ -10,9 +10,11 @@ import org.screamingsandals.simpleinventories.inventory.Origin;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Collections;
 
 public class GroovyLoader implements Loader {
     @Override
@@ -31,6 +33,8 @@ public class GroovyLoader implements Loader {
                 Bukkit.getLogger().info("Obtaining groovy.jar for your server");
 
                 Files.copy(new URL("https://repo1.maven.org/maven2/org/codehaus/groovy/groovy/3.0.3/groovy-3.0.3.jar").openStream(), Paths.get(groovy.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
+
+                Files.write(Paths.get(new File("lib/groovy.version").getAbsolutePath()), Collections.singletonList("3.0.3"), StandardCharsets.UTF_8);
             }
             if (!groovy.exists()) {
                 throw new CantObtainGroovyException();

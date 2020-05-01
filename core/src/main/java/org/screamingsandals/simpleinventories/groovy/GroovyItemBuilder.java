@@ -4,10 +4,9 @@ import groovy.lang.Closure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static org.screamingsandals.simpleinventories.groovy.GroovyUtils.internalCallClosure;
 
 @Getter
 @AllArgsConstructor
@@ -28,15 +27,23 @@ public class GroovyItemBuilder extends GroovyBuilder {
     }
 
     public void stack(Closure<GroovyStackBuilder> closure) {
-        internalCallClosure(closure, new GroovyStackBuilder((Map<String, Object>) itemMap.get("stack")));
+        internalCallClosure(closure, getStack());
     }
 
     public GroovyStackBuilder getStack() {
+        if (!itemMap.containsKey("stack")) {
+            itemMap.put("stack", new HashMap<>());
+        }
+
         return new GroovyStackBuilder((Map<String, Object>) itemMap.get("stack"));
     }
 
     public void price(String price) {
         itemMap.put("price", price);
+    }
+
+    public void priceType(String priceType) {
+        itemMap.put("price-type", priceType);
     }
 
     public void property(String name) {
@@ -59,6 +66,107 @@ public class GroovyItemBuilder extends GroovyBuilder {
 
         List<Object> list = (List<Object>) itemMap.get("properties");
 
+        if (!list.contains(map)) {
+            list.add(map);
+        }
+    }
+
+    public void absolute(int absolute) {
+        itemMap.put("absolute", absolute);
+    }
+
+    public void clone(String link) {
+        itemMap.put("clone", link);
+    }
+
+    public void cloneMethod(String cloneMethod) {
+        itemMap.put("clone-method", cloneMethod);
+    }
+
+    public void column(int number) {
+        itemMap.put("column", number);
+    }
+
+    public void column(String colName) {
+        itemMap.put("column", colName);
+    }
+
+    public void disabled(boolean disabled) {
+        itemMap.put("disabled", disabled);
+    }
+
+    public void disabled(String condition) {
+        itemMap.put("disabled", condition);
+    }
+
+    public void id(String id) {
+        itemMap.put("id", id);
+    }
+
+    public void linebreak(String linebreak) {
+        itemMap.put("linebreak", linebreak);
+    }
+
+    public void pagebreak(String pagebreak) {
+        itemMap.put("pagebreak", pagebreak);
+    }
+
+    public void row(int row) {
+        itemMap.put("row", row);
+    }
+
+    public void skip(int skip) {
+        itemMap.put("skip", skip);
+    }
+
+    public void times(int times) {
+        itemMap.put("times", times);
+    }
+
+    public void timesMethods(String method) {
+        timesMethods(Collections.singletonList(method));
+    }
+
+    public void timesMethods(List<String> methods) {
+        itemMap.put("times-methods", methods);
+    }
+
+    public void visible(boolean visible) {
+        itemMap.put("visible", visible);
+    }
+
+    public void visible(String condition) {
+        itemMap.put("visible", condition);
+    }
+
+    public void write(boolean write) {
+        itemMap.put("write", write);
+    }
+
+    public GroovyAnimationBuilder getAnimation() {
+        if (!itemMap.containsKey("animation")) {
+            itemMap.put("animation", new ArrayList<>());
+        }
+
+        return new GroovyAnimationBuilder((List<Object>) itemMap.get("animation"));
+    }
+
+    public void animation(Closure<GroovyAnimationBuilder> closure) {
+        internalCallClosure(closure, getAnimation());
+    }
+
+    /* Minigames only, do nothing with other plugins */
+    public void upgrade(Map<String, Object> map) {
+        if (!itemMap.containsKey("upgrade")) {
+            itemMap.put("upgrade", new HashMap<>());
+        }
+
+        Map<String, Object> upgrades = (Map<String, Object>) itemMap.get("upgrade");
+        if (!upgrades.containsKey("entities")) {
+            upgrades.put("entities", new ArrayList<>());
+        }
+
+        List<Object> list = (List<Object>) upgrades.get("entities");
         if (!list.contains(map)) {
             list.add(map);
         }

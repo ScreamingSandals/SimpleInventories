@@ -10,8 +10,8 @@ Look into our wiki: https://github.com/ScreamingSandals/SimpleInventories/wiki
 1. Import maven repository
 ```xml
 <repository>
-  <id>mtorus-repo</id>
-  <url>https://jenkins.mtorus.cz/plugin/repository/everything/</url>
+  <id>screaming-repo</id>
+  <url>https://repo.screamingsandals.org/</url>
 </repository>
 ```
 2. Include dependency
