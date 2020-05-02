@@ -16,7 +16,7 @@ public enum DependencyHelper {
         try {
             Class.forName(checkClass);
         } catch (ClassNotFoundException exception) {
-            new DependencyLoader(dependencyName, dependencyURL, dependencyURLVersion).load();
+            new DependencyLoader(checkClass, dependencyName, dependencyURL, dependencyURLVersion).load();
         }
     }
 }

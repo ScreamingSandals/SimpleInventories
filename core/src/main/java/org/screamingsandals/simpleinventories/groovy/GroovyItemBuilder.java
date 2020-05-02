@@ -3,7 +3,8 @@ package org.screamingsandals.simpleinventories.groovy;
 import groovy.lang.Closure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.screamingsandals.simpleinventories.item.RenderCallback;
+import org.screamingsandals.simpleinventories.events.PostActionEvent;
+import org.screamingsandals.simpleinventories.events.PreActionEvent;
 
 import java.util.*;
 
@@ -175,6 +176,24 @@ public class GroovyItemBuilder extends GroovyBuilder {
 
         List<Object> list = (List<Object>) itemMap.get("rendercallbacks");
         list.add(new GroovyRenderCallback(closure));
+    }
+
+    public void preClick(Closure<PreActionEvent> closure) {
+        if (!itemMap.containsKey("preclickcallbacks")) {
+            itemMap.put("preclickcallbacks", new ArrayList<>());
+        }
+
+        List<Object> list = (List<Object>) itemMap.get("preclickcallbacks");
+        list.add(new GroovyPreClickCallback(closure));
+    }
+
+    public void click(Closure<PostActionEvent> closure) {
+        if (!itemMap.containsKey("postclickcallbacks")) {
+            itemMap.put("postclickcallbacks", new ArrayList<>());
+        }
+
+        List<Object> list = (List<Object>) itemMap.get("postclickcallbacks");
+        list.add(new GroovyPostClickCallback(closure));
     }
 
     /* Minigames only, do nothing with other plugins */

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,4 +66,8 @@ public interface IGroovyStackBuilder {
             }
         });
     }
+
+    void potion(String potion);
+
+    void potion(PotionType potion);
 }

@@ -23,6 +23,8 @@ import org.screamingsandals.simpleinventories.events.ShopTransactionEvent;
 import org.screamingsandals.simpleinventories.inventory.GuiHolder;
 import org.screamingsandals.simpleinventories.item.ItemInfo;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
+import org.screamingsandals.simpleinventories.item.PostClickCallback;
+import org.screamingsandals.simpleinventories.item.PreClickCallback;
 import org.screamingsandals.simpleinventories.utils.MapReader;
 
 import java.lang.reflect.InvocationTargetException;
@@ -68,6 +70,11 @@ public class InventoryListener implements Listener {
 			PreActionEvent event = new PreActionEvent(player, format, inventory, parent, playersItem, e.getClick());
 
 			Bukkit.getPluginManager().callEvent(event);
+
+			if (playersItem.getReader().containsKey("preclickcallbacks")) {
+				List<Object> preclickcallbacks = (List<Object>) playersItem.getReader().get("preclickcallbacks");
+				preclickcallbacks.forEach(callback -> ((PreClickCallback) callback).preClick(event));
+			}
 
 			if (event.isCancelled()) {
 				player.closeInventory();
@@ -230,6 +237,12 @@ public class InventoryListener implements Listener {
 
 			PostActionEvent postEvent = new PostActionEvent(player, format, inventory, parent, playersItem, e.getClick());
 			Bukkit.getPluginManager().callEvent(postEvent);
+
+
+			if (playersItem.getReader().containsKey("postclickcallbacks")) {
+				List<Object> postclickcallbacks = (List<Object>) playersItem.getReader().get("postclickcallbacks");
+				postclickcallbacks.forEach(callback -> ((PostClickCallback) callback).postClick(postEvent));
+			}
 
 			if (player.getOpenInventory().getTopInventory().getHolder() == holder) {
 				holder.repaint();

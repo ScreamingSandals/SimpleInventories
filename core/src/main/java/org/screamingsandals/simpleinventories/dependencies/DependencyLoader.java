@@ -20,6 +20,7 @@ import java.util.Collections;
 @AllArgsConstructor
 public class DependencyLoader {
 
+    private final String checkClass;
     private final String dependencyName;
     private final String dependencyURL;
     private final String dependencyURLVersion;
@@ -44,14 +45,15 @@ public class DependencyLoader {
             }
 
             Bukkit.getLogger().info("[ScreamingDependencyHelper] Loading " + dependencyName.toLowerCase() + ".jar");
+
             try {
                 Method addUrlMethod = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
                 addUrlMethod.setAccessible(true);
-                /* TODO: stop using plugin class loader to load dependencies and loads it to server (but how?) */
                 addUrlMethod.invoke(this.getClass().getClassLoader(), library.toURI().toURL());
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | MalformedURLException exception) {
                 throw new Exception("[ScreamingDependencyHelper] Can't load dependency: " + dependencyName, exception);
             }
+
             Bukkit.getLogger().info("[ScreamingDependencyHelper] " + dependencyName + " is loaded! Don't disable or reload this plugin!");
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);

@@ -12,7 +12,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 
 public class StackParser {
 	
@@ -317,6 +320,16 @@ public class StackParser {
 				if (ench != null && meta.hasEnchant(ench)) {
 					meta.addEnchant(ench, 1, true);
 				}
+			}
+		}
+
+		if (obj.containsKey("potion-type") && meta instanceof PotionMeta) {
+			Object ob = obj.get("potion-type");
+			PotionMeta potion = (PotionMeta) meta;
+			if (ob instanceof PotionType) {
+				potion.setBasePotionData(new PotionData((PotionType) ob));
+			} else {
+				potion.setBasePotionData(PotionTypeSearchEngine.find(ob.toString()));
 			}
 		}
 		

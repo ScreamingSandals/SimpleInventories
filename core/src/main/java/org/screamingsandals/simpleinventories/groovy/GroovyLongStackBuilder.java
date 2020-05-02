@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -82,5 +83,15 @@ public class GroovyLongStackBuilder implements IGroovyStackBuilder {
 
         Map<Object, Object> map = (Map<Object, Object>) stack.get("enchants");
         map.put(enchant, level);
+    }
+
+    @Override
+    public void potion(String potion) {
+        stack.put("potion-type", potion);
+    }
+
+    @Override
+    public void potion(PotionType potion) {
+        stack.put("potion-type", potion);
     }
 }
