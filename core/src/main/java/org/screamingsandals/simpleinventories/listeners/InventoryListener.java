@@ -9,6 +9,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -255,6 +257,37 @@ public class InventoryListener implements Listener {
 			}
 		}
 	}
+
+	@EventHandler
+	public void onItemDrag(InventoryDragEvent event) {
+		if (event.isCancelled() || !(event.getWhoClicked() instanceof Player)) {
+			return;
+		}
+
+		Inventory primaryInventory = event.getInventory();
+		if (primaryInventory.getHolder() instanceof GuiHolder) {
+			Player player = (Player) event.getWhoClicked();
+			for (int slot : event.getRawSlots()) {
+				Inventory inventory = getInventory(event.getView(), slot);
+				if (primaryInventory.equals(inventory)) {
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
+
+	@EventHandler
+	public void onItemMove(InventoryMoveItemEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+
+		if (event.getSource().getHolder() instanceof GuiHolder || event.getDestination().getHolder() instanceof GuiHolder) {
+			event.setCancelled(true);
+		}
+	}
+
+
 
 	private static Class<?> getNMSClass(String nmsClassString) {
 		try {

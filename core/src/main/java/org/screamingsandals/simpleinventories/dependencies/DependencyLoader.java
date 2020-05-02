@@ -52,7 +52,7 @@ public class DependencyLoader {
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | MalformedURLException exception) {
                 throw new Exception("[ScreamingDependencyHelper] Can't load dependency: " + dependencyName, exception);
             }
-            Bukkit.getLogger().info("[ScreamingDependencyHelper] " + dependencyName + " is loaded! Don't disable or reload this automatically generated plugin!");
+            Bukkit.getLogger().info("[ScreamingDependencyHelper] " + dependencyName + " is loaded! Don't disable or reload this plugin!");
         } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }

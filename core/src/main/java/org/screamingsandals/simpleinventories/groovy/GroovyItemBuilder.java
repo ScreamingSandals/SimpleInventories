@@ -3,6 +3,7 @@ package org.screamingsandals.simpleinventories.groovy;
 import groovy.lang.Closure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.screamingsandals.simpleinventories.item.RenderCallback;
 
 import java.util.*;
 
@@ -165,6 +166,15 @@ public class GroovyItemBuilder extends GroovyBuilder {
 
     public void locate(String locate) {
         itemMap.put("locate", locate);
+    }
+
+    public void render(Closure<GroovyRenderCallback.GroovyRenderBuilder> closure) {
+        if (!itemMap.containsKey("rendercallbacks")) {
+            itemMap.put("rendercallbacks", new ArrayList<>());
+        }
+
+        List<Object> list = (List<Object>) itemMap.get("rendercallbacks");
+        list.add(new GroovyRenderCallback(closure));
     }
 
     /* Minigames only, do nothing with other plugins */

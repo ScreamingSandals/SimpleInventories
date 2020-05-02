@@ -33,8 +33,6 @@ public class GroovyAnimationBuilder {
     }
 
     private void putStack(Object stack) {
-        if (!stacks.contains(stack)) {
-            stacks.add(stack);
-        }
+        stacks.add(stack);
     }
 }

@@ -4,6 +4,7 @@ import groovy.lang.Closure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.entity.Player;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.item.RenderCallback;
 import org.screamingsandals.simpleinventories.utils.StackParser;
@@ -83,6 +84,14 @@ public class GroovyRenderCallback implements RenderCallback {
 
         public String process(String raw) {
             return info.getFormat().processPlaceholders(info.getPlayer(), raw, info);
+        }
+
+        public Player getPlayer() {
+            return info.getPlayer();
+        }
+
+        public void player(Closure<Player> closure) {
+            internalCallClosure(closure, getPlayer());
         }
     }
 }
