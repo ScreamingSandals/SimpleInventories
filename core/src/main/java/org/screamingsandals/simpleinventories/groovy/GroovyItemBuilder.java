@@ -26,16 +26,16 @@ public class GroovyItemBuilder extends GroovyBuilder {
         }
     }
 
-    public void stack(Closure<GroovyStackBuilder> closure) {
+    public void stack(Closure<IGroovyStackBuilder> closure) {
         internalCallClosure(closure, getStack());
     }
 
-    public GroovyStackBuilder getStack() {
+    public IGroovyStackBuilder getStack() {
         if (!itemMap.containsKey("stack")) {
             itemMap.put("stack", new HashMap<>());
         }
 
-        return new GroovyStackBuilder((Map<String, Object>) itemMap.get("stack"));
+        return new GroovyLongStackBuilder((Map<String, Object>) itemMap.get("stack"));
     }
 
     public void price(String price) {
@@ -153,6 +153,18 @@ public class GroovyItemBuilder extends GroovyBuilder {
 
     public void animation(Closure<GroovyAnimationBuilder> closure) {
         internalCallClosure(closure, getAnimation());
+    }
+
+    public void execute(String command) {
+        execute(Collections.singletonList(command));
+    }
+
+    public void execute(List<String> commands) {
+        itemMap.put("execute", commands);
+    }
+
+    public void locate(String locate) {
+        itemMap.put("locate", locate);
     }
 
     /* Minigames only, do nothing with other plugins */

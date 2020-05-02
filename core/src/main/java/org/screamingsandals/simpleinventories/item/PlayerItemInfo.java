@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.simpleinventories.SimpleInventories;
@@ -18,6 +19,7 @@ public class PlayerItemInfo {
 	private boolean visible;
 	private boolean disabled;
 	private List<ItemStack> animation;
+	@Getter
 	private Player player;
 	private Map<String, Object> data;
 	
@@ -55,6 +57,8 @@ public class PlayerItemInfo {
 				}
 			}
 		}
+
+		original.getRenderCallbacks().forEach(callback -> callback.render(this));
 	}
 
 	/* You shouldn't work with original item! */

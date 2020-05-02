@@ -19,17 +19,17 @@ public class GroovyAnimationBuilder {
         putStack(material);
     }
 
-    public void stack(String material, Closure<GroovyStackBuilder> closure) {
+    public void stack(String material, Closure<IGroovyStackBuilder> closure) {
         Map<String, Object> map = new HashMap<>();
         map.put("type", material);
         putStack(map);
-        internalCallClosure(closure, new GroovyStackBuilder(map));
+        internalCallClosure(closure, new GroovyLongStackBuilder(map));
     }
 
-    public void stack(Closure<GroovyStackBuilder> closure) {
+    public void stack(Closure<IGroovyStackBuilder> closure) {
         Map<String, Object> map = new HashMap<>();
         putStack(map);
-        internalCallClosure(closure, new GroovyStackBuilder(map));
+        internalCallClosure(closure, new GroovyLongStackBuilder(map));
     }
 
     private void putStack(Object stack) {

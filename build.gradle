@@ -29,9 +29,5 @@ subprojects {
     	compileOnly paper()
     }
 
-	shadowJar {
-	   relocate 'com.univocity', 'org.screamingsandals.simpleinventories.univocity'
-	}
-
     sourceCompatibility = '1.8'
 }

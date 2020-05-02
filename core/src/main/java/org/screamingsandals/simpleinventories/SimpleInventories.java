@@ -25,6 +25,7 @@ import org.screamingsandals.simpleinventories.inventory.Origin;
 import org.screamingsandals.simpleinventories.item.ItemInfo;
 import org.screamingsandals.simpleinventories.item.ItemProperty;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
+import org.screamingsandals.simpleinventories.item.RenderCallback;
 import org.screamingsandals.simpleinventories.loaders.Loader;
 import org.screamingsandals.simpleinventories.loaders.LoaderRegister;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
@@ -861,9 +862,21 @@ public class SimpleInventories {
 			}
 		}
 
+		List<RenderCallback> callbacks = new ArrayList<>();
+
+		if (object.containsKey("rendercallbacks")) {
+			List<?> render = (List<?>) object.get("rendercallbacks");
+			for (Object o : render) {
+				if (o instanceof RenderCallback) {
+					callbacks.add((RenderCallback) o);
+				}
+			}
+
+		}
+
 		boolean write = object.containsKey("write") ? Boolean.parseBoolean("write") : true;
 		ItemInfo info = new ItemInfo(this, parent, stack.clone(), positionC, visible, disabled, id, properties, object,
-			animation, conditions, origin, write);
+			animation, conditions, origin, write, callbacks);
 		if (id != null && !insertingBuffer.isEmpty()) {
 			for (Map.Entry<String, List<Object>> entry : new ArrayList<>(insertingBuffer)) {
 				if (entry.getKey().equals(id)) {
