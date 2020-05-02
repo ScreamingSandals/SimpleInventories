@@ -91,4 +91,35 @@ public class SimpleInventoriesPlugin extends JavaPlugin {
 		inventories.values().forEach(Inventory::destroy);
 		inventories.clear();
 	}
+
+	public void reload() {
+		inventories.values().forEach(Inventory::destroy);
+		inventories.clear();
+
+		Configurator config = new Configurator(this);
+		config.createFiles();
+
+		ConfigurationSection inventories = config.config.getConfigurationSection("inventories");
+
+		for (String inventoryN : inventories.getKeys(false)) {
+			ConfigurationSection inventory = inventories.getConfigurationSection(inventoryN);
+
+			String file = inventory.getString("file");
+			String section = inventory.getString("section");
+			Options options = Options.deserialize(inventory.getConfigurationSection("options"), this);
+
+			Inventory inv = new Inventory(options, new File(getDataFolder(), file), section);
+
+			this.inventories.put(inventoryN.toLowerCase(), inv);
+		}
+
+		this.inventories.values().forEach(inv -> {
+			try {
+				inv.load();
+			} catch (Exception e) {
+				getLogger().severe("Your configuration is bad!");
+				e.printStackTrace();
+			}
+		});
+	}
 }

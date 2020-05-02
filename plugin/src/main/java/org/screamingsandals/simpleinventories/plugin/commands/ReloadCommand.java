@@ -1,6 +1,5 @@
 package org.screamingsandals.simpleinventories.plugin.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.screamingsandals.simpleinventories.plugin.SimpleInventoriesPlugin;
 
@@ -14,8 +13,7 @@ public class ReloadCommand extends BaseCommand {
 
     @Override
     public boolean execute(CommandSender sender, List<String> args) {
-        Bukkit.getServer().getPluginManager().disablePlugin(SimpleInventoriesPlugin.getInstance());
-        Bukkit.getServer().getPluginManager().enablePlugin(SimpleInventoriesPlugin.getInstance());
+        SimpleInventoriesPlugin.getInstance().reload();
         sender.sendMessage("Plugin reloaded!");
         return true;
     }
