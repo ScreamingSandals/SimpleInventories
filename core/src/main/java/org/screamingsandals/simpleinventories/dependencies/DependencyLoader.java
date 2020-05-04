@@ -6,11 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,7 +23,7 @@ public class DependencyLoader {
 
     public void load() {
         try {
-            File lib = new File("lib/");
+            File lib = new File("libs/");
             if (!lib.exists()) {
                 lib.mkdir();
             }
