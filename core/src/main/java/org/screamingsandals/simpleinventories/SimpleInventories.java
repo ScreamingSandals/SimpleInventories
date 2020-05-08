@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,14 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.Plugin;
 import org.screamingsandals.simpleinventories.builder.FormatBuilder;
-import org.screamingsandals.simpleinventories.inventory.Column;
-import org.screamingsandals.simpleinventories.inventory.GuiHolder;
-import org.screamingsandals.simpleinventories.inventory.Options;
-import org.screamingsandals.simpleinventories.inventory.Origin;
-import org.screamingsandals.simpleinventories.item.ItemInfo;
-import org.screamingsandals.simpleinventories.item.ItemProperty;
-import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.item.RenderCallback;
+import org.screamingsandals.simpleinventories.inventory.*;
+import org.screamingsandals.simpleinventories.item.*;
 import org.screamingsandals.simpleinventories.loaders.Loader;
 import org.screamingsandals.simpleinventories.loaders.LoaderRegister;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
@@ -78,6 +73,19 @@ public class SimpleInventories {
 	private final List<Map.Entry<String, List<Object>>> insertingBuffer = new ArrayList<>();
 	
 	private static final List<String> POSITION_PROPERTIES = Arrays.asList("row", "column", "skip", "linebreak", "pagebreak", "absolute");
+
+	@Getter
+	private List<OpenCallback> openCallbacks = new ArrayList<>();
+	@Getter
+	private List<RenderCallback> renderCallbacks = new ArrayList<>();
+	@Getter
+	private List<PreClickCallback> preClickCallbacks = new ArrayList<>();
+	@Getter
+	private List<BuyCallback> buyCallbacks = new ArrayList<>();
+	@Getter
+	private List<PostClickCallback> postClickCallbacks = new ArrayList<>();
+	@Getter
+	private List<CloseCallback> closeCallbacks = new ArrayList<>();
 
 	public SimpleInventories(Options options) {
 		this.prefix = options.getPrefix();
@@ -314,6 +322,12 @@ public class SimpleInventories {
 
 	public SimpleInventories generateData() {
 		for (Origin origin : data) {
+			this.openCallbacks.addAll(origin.getOpenCallbacks());
+			this.renderCallbacks.addAll(origin.getRenderCallbacks());
+			this.preClickCallbacks.addAll(origin.getPreClickCallbacks());
+			this.buyCallbacks.addAll(origin.getBuyCallbacks());
+			this.postClickCallbacks.addAll(origin.getPostClickCallbacks());
+			this.closeCallbacks.addAll(origin.getCloseCallbacks());
 			for (Object object : origin.getContent()) {
 				lastpos = generateItem(null, object, lastpos, origin);
 			}

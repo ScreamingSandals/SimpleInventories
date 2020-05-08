@@ -1,11 +1,11 @@
-package org.screamingsandals.simpleinventories.groovy;
+package org.screamingsandals.simpleinventories.groovy.builder;
 
 import groovy.lang.Closure;
 import org.bukkit.Material;
 
 import java.util.*;
 
-import static org.screamingsandals.simpleinventories.groovy.GroovyUtils.internalCallClosure;
+import static org.screamingsandals.simpleinventories.groovy.utils.GroovyUtils.internalCallClosure;
 
 public abstract class GroovyBuilder {
 

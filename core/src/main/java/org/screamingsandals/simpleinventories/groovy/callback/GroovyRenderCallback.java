@@ -1,17 +1,21 @@
-package org.screamingsandals.simpleinventories.groovy;
+package org.screamingsandals.simpleinventories.groovy.callback;
 
 import groovy.lang.Closure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
+import org.screamingsandals.simpleinventories.groovy.builder.GroovyAnimationBuilder;
+import org.screamingsandals.simpleinventories.groovy.builder.GroovyBukkitStackBuilder;
+import org.screamingsandals.simpleinventories.groovy.builder.GroovyLongStackBuilder;
+import org.screamingsandals.simpleinventories.groovy.builder.IGroovyStackBuilder;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.item.RenderCallback;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.util.*;
 
-import static org.screamingsandals.simpleinventories.groovy.GroovyUtils.internalCallClosure;
+import static org.screamingsandals.simpleinventories.groovy.utils.GroovyUtils.internalCallClosure;
 
 @Getter
 @AllArgsConstructor

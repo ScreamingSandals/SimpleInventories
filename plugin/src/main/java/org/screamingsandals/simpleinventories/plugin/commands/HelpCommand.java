@@ -30,12 +30,14 @@ public class HelpCommand extends BaseCommand {
 
     public void sendConsoleHelp(ConsoleCommandSender console) {
     	console.sendMessage("SimpleInventories - Help for console");
+        console.sendMessage("/si list - §cShows you all available inventories");
     	console.sendMessage("/si send <player> <inventory> - §7Opens inventory for player");
     	console.sendMessage("/si reload - §7Reloads plugin");
     }
 
     public void sendHelp(Player player) {
     	player.sendMessage("SimpleGuiFormat - Help");
+        player.sendMessage("/si list - §cShows you all available inventories");
     	player.sendMessage("/si open <inventory> - ů7Opens you an inventory");
     	
     	if (player.hasPermission(ADMIN_PERMISSION)) {

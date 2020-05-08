@@ -1,4 +1,4 @@
-package org.screamingsandals.simpleinventories.groovy;
+package org.screamingsandals.simpleinventories.groovy.utils;
 
 import groovy.lang.Closure;
 

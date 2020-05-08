@@ -1,14 +1,19 @@
-package org.screamingsandals.simpleinventories.groovy;
+package org.screamingsandals.simpleinventories.groovy.builder;
 
 import groovy.lang.Closure;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.screamingsandals.simpleinventories.events.PostActionEvent;
 import org.screamingsandals.simpleinventories.events.PreActionEvent;
+import org.screamingsandals.simpleinventories.events.ShopTransactionEvent;
+import org.screamingsandals.simpleinventories.groovy.callback.GroovyBuyCallback;
+import org.screamingsandals.simpleinventories.groovy.callback.GroovyPostClickCallback;
+import org.screamingsandals.simpleinventories.groovy.callback.GroovyPreClickCallback;
+import org.screamingsandals.simpleinventories.groovy.callback.GroovyRenderCallback;
 
 import java.util.*;
 
-import static org.screamingsandals.simpleinventories.groovy.GroovyUtils.internalCallClosure;
+import static org.screamingsandals.simpleinventories.groovy.utils.GroovyUtils.internalCallClosure;
 
 @Getter
 @AllArgsConstructor
@@ -194,6 +199,15 @@ public class GroovyItemBuilder extends GroovyBuilder {
 
         List<Object> list = (List<Object>) itemMap.get("postclickcallbacks");
         list.add(new GroovyPostClickCallback(closure));
+    }
+
+    public void buy(Closure<ShopTransactionEvent> closure) {
+        if (!itemMap.containsKey("buycallbacks")) {
+            itemMap.put("buycallbacks", new ArrayList<>());
+        }
+
+        List<Object> list = (List<Object>) itemMap.get("buycallbacks");
+        list.add(new GroovyBuyCallback(closure));
     }
 
     /* Minigames only, do nothing with other plugins */

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,8 +59,15 @@ public class SimpleInventoriesPlugin extends JavaPlugin {
 			
 			this.inventories.put(inventoryN.toLowerCase(), inv);
         }
-		
-        try {
+
+		Bukkit.getConsoleSender().sendMessage("§6=========§f=============  by ScreamingSandals <Misat11, Ceph>");
+		Bukkit.getConsoleSender()
+				.sendMessage("§6+ Simple §fInventories +  §6Version: " + getDescription().getVersion());
+		Bukkit.getConsoleSender()
+				.sendMessage("§6=========§f=============  " + (getDescription().getVersion().contains("SNAPSHOT") ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
+
+
+		try {
         	float javaVer = Float.parseFloat(System.getProperty("java.class.version"));
         	if (javaVer < 55) {
         		getLogger().warning("Future versions of plugins from ScreamingSandals will require at least Java 11. "

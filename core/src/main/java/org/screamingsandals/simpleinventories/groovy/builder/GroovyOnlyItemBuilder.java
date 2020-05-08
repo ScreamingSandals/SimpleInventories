@@ -1,4 +1,4 @@
-package org.screamingsandals.simpleinventories.groovy;
+package org.screamingsandals.simpleinventories.groovy.builder;
 
 import groovy.lang.Closure;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.screamingsandals.simpleinventories.groovy.GroovyUtils.internalCallClosure;
+import static org.screamingsandals.simpleinventories.groovy.utils.GroovyUtils.internalCallClosure;
 
 @Getter
 @AllArgsConstructor

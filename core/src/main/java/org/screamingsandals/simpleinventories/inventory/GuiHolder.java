@@ -43,6 +43,9 @@ public class GuiHolder implements InventoryHolder {
 		this.repaint();
 
 		OpenInventoryEvent event = new OpenInventoryEvent(this.player, this.format, this.inv, this.parent, this.page);
+
+		format.getOpenCallbacks().forEach(openCallback -> openCallback.open(event));
+
 		Bukkit.getPluginManager().callEvent(event);
 
 		if (event.isCancelled()) {

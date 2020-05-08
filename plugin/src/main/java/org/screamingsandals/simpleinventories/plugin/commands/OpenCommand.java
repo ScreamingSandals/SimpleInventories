@@ -1,5 +1,6 @@
 package org.screamingsandals.simpleinventories.plugin.commands;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
@@ -10,7 +11,7 @@ import org.screamingsandals.simpleinventories.plugin.SimpleInventoriesPlugin;
 public class OpenCommand extends BaseCommand {
 
 	protected OpenCommand() {
-		super("open", USE_PERMISSION, false);
+		super("open", Arrays.asList(USE_PERMISSION, ADMIN_PERMISSION), false);
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public class DependencyLoader {
 
                 Files.copy(new URL("https://repo.screamingsandals.org/org/screamingsandals/misc/" + dependencyName.toLowerCase() + "/" + dependencyVersion + "/" + dependencyName.toLowerCase() + "-" + dependencyVersion.toLowerCase() + ".jar").openStream(), Paths.get(library.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
 
-                Files.write(Paths.get(new File("lib/" + dependencyName.toLowerCase() + ".version").getAbsolutePath()), Collections.singletonList(dependencyVersion), StandardCharsets.UTF_8);
+                Files.write(Paths.get(new File(lib, dependencyName.toLowerCase() + ".version").getAbsolutePath()), Collections.singletonList(dependencyVersion), StandardCharsets.UTF_8);
             }
             if (!library.exists()) {
                 throw new Exception("[ScreamingDependencyHelper] Can't obtain dependency: " + dependencyName);

@@ -1,4 +1,4 @@
-package org.screamingsandals.simpleinventories.groovy;
+package org.screamingsandals.simpleinventories.groovy.builder;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

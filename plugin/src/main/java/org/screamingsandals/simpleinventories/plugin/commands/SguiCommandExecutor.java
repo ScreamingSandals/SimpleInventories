@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+/* TODO: Rewrite to ScreamingLib when this lib will be updated to JDK 11 */
 public class SguiCommandExecutor implements CommandExecutor, TabCompleter {
 	
     private HashMap<String, BaseCommand> commands = new HashMap<>();
@@ -18,6 +19,7 @@ public class SguiCommandExecutor implements CommandExecutor, TabCompleter {
     	registerCommand(new OpenCommand());
     	registerCommand(new ReloadCommand());
     	registerCommand(new SendCommand());
+    	registerCommand(new ListCommand());
     }
     
     private void registerCommand(BaseCommand command) {
