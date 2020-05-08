@@ -63,7 +63,7 @@ public class InventoryListener implements Listener {
 
             PreActionEvent event = new PreActionEvent(player, format, inventory, parent, playersItem, e.getClick());
 
-            if (playersItem.getReader().containsKey("preclickcallbacks")) {
+            if (playersItem != null && playersItem.getReader().containsKey("preclickcallbacks")) {
                 List<Object> preclickcallbacks = (List<Object>) playersItem.getReader().get("preclickcallbacks");
                 preclickcallbacks.forEach(callback -> ((PreClickCallback) callback).preClick(event));
             }
