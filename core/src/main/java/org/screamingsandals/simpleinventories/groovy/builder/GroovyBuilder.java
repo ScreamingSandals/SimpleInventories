@@ -67,7 +67,7 @@ public abstract class GroovyBuilder {
         });
     }
 
-    public void itemClone(String clone, Closure<GroovyOnlyItemBuilder> closure) {
+    public void itemClone(String clone, Closure<GroovyItemBuilder> closure) {
         Map<String, Object> map = new HashMap<String, Object>() {
             {
                 put("clone", clone);
@@ -81,6 +81,27 @@ public abstract class GroovyBuilder {
         putItem(new HashMap<String, Object>() {
             {
                 put("include", include);
+            }
+        });
+    }
+
+    public void hidden(String id, Closure<GroovyOnlyItemBuilder> closure) {
+        List<Object> items = new ArrayList<>();
+        putItem(new HashMap<String, Object>() {
+            {
+                put("id", id);
+                put("write", false);
+                put("items", items);
+            }
+        });
+        internalCallClosure(closure, new GroovyOnlyItemBuilder(items));
+    }
+
+    public void hidden(String id) {
+        putItem(new HashMap<String, Object>() {
+            {
+                put("id", id);
+                put("write", false);
             }
         });
     }
