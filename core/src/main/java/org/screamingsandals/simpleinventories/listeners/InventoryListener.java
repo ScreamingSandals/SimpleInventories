@@ -22,6 +22,7 @@ import org.screamingsandals.simpleinventories.item.*;
 import org.screamingsandals.simpleinventories.utils.BookUtils;
 import org.screamingsandals.simpleinventories.utils.MapReader;
 
+import java.util.Collections;
 import java.util.List;
 
 public class InventoryListener implements Listener {
@@ -165,33 +166,16 @@ public class InventoryListener implements Listener {
 
             if (originalData.containsKey("execute")) {
                 Object obj = originalData.get("execute");
-                if (obj instanceof List) {
-                    List<String> list = (List<String>) obj;
-                    for (String str : list) {
-                        str = str.trim();
-                        if (str.startsWith("console:")) {
-                            str = str.substring(7).trim();
-                            if (format.isAllowedToExecuteConsoleCommands()) {
-                                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
-                            }
-                        } else {
-                            if (str.startsWith("player:")) {
-                                str = str.substring(6).trim();
-                            }
-                            Bukkit.getServer().dispatchCommand(player, str);
-                        }
-                    }
-                } else {
-                    String str = obj.toString();
+                List<String> list = obj instanceof List ? (List<String>) obj : Collections.singletonList(obj.toString());
+                for (String str : list) {
                     str = str.trim();
                     if (str.startsWith("console:")) {
-                        str = str.substring(7).trim();
                         if (format.isAllowedToExecuteConsoleCommands()) {
-                            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str);
+                            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str.substring(8).trim());
                         }
                     } else {
                         if (str.startsWith("player:")) {
-                            str = str.substring(6).trim();
+                            str = str.substring(7).trim();
                         }
                         Bukkit.getServer().dispatchCommand(player, str);
                     }
