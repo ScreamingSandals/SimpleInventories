@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -38,13 +39,6 @@ import org.screamingsandals.simpleinventories.utils.StackParser;
 
 public class SimpleInventories {
 
-	private int items_on_row = Options.ITEMS_ON_ROW;
-	private int rows = Options.ROWS;
-	private int render_start_offset = Options.RENDER_OFFSET;
-	private int render_actual_rows = Options.RENDER_ACTUAL_ROWS;
-	private int render_header_row_start = Options.RENDER_HEADER_START;
-	private int render_footer_row_start = Options.RENDER_FOOTER_START;
-
 	private final List<Origin> data = new ArrayList<Origin>();
 	private final List<ItemInfo> generatedData = new ArrayList<ItemInfo>();
 
@@ -69,7 +63,6 @@ public class SimpleInventories {
 	private final Map<ItemInfo, Map<Integer, List<ItemInfo>>> infoByAbsolutePosition = new HashMap<ItemInfo, Map<Integer, List<ItemInfo>>>();
 	private final Map<ItemInfo, Integer> lastPageNumbers = new HashMap<ItemInfo, Integer>();
 	private final String prefix;
-	private ItemStack backItem, pageBackItem, pageForwardItem, cosmeticItem;
 	private final List<Map.Entry<String, List<Object>>> insertingBuffer = new ArrayList<>();
 	
 	private static final List<String> POSITION_PROPERTIES = Arrays.asList("row", "column", "skip", "linebreak", "pagebreak", "absolute");
@@ -87,22 +80,15 @@ public class SimpleInventories {
 	@Getter
 	private List<CloseCallback> closeCallbacks = new ArrayList<>();
 
+	@Getter
+	private LocalOptions localOptions;
+
 	public SimpleInventories(Options options) {
 		this.prefix = options.getPrefix();
-		this.backItem = options.getBackItem().clone();
-		this.pageBackItem = options.getPageBackItem().clone();
-		this.pageForwardItem = options.getPageForwardItem().clone();
-		this.cosmeticItem = options.getCosmeticItem().clone();
 		this.animationsEnabled = options.isAnimationsEnabled();
 		this.pluginForRunnables = options.getAnimationPlugin();
 		this.genericShopEnabled = options.isGenericShop();
 		this.genericShopPriceTypeRequired = options.isGenericShopPriceTypeRequired();
-		this.rows = options.getRows();
-		this.items_on_row = options.getItems_on_row();
-		this.render_actual_rows = options.getRender_actual_rows();
-		this.render_header_row_start = options.getRender_header_start();
-		this.render_footer_row_start = options.getRender_footer_start();
-		this.render_start_offset = options.getRender_offset();
 		this.showPageNumber = options.isShowPageNumber();
 		this.allowAccessToConsole = options.isAllowAccessToConsole();
 
@@ -110,6 +96,8 @@ public class SimpleInventories {
 
 		this.placeholders.putAll(options.getPlaceholders());
 		this.advancedPlaceholders.putAll(options.getAdvancedPlaceholders());
+
+		this.localOptions = new LocalOptions(options);
 	}
 
 	private void initPlaceholders() {
@@ -129,17 +117,17 @@ public class SimpleInventories {
 	}
 
 	public SimpleInventories carrigeReturn() {
-		this.lastpos -= (lastpos - items_on_row) % items_on_row;
+		this.lastpos -= (lastpos - localOptions.getItems_on_row()) % localOptions.getItems_on_row();
 		return this;
 	}
 
 	public SimpleInventories lineBreak() {
-		this.lastpos += (items_on_row - (lastpos % items_on_row));
+		this.lastpos += (localOptions.getItems_on_row() - (lastpos % localOptions.getItems_on_row()));
 		return this;
 	}
 
 	public SimpleInventories pageBreak() {
-		this.lastpos += (getItemsOnPage() - (lastpos % getItemsOnPage()));
+		this.lastpos += (localOptions.getItemsOnPage() - (lastpos % localOptions.getItemsOnPage()));
 		return this;
 	}
 
@@ -157,17 +145,17 @@ public class SimpleInventories {
 	}
 
 	public SimpleInventories column(Column column) {
-		return column(column.convert(items_on_row));
+		return column(column.convert(localOptions.getItems_on_row()));
 	}
 
 	public SimpleInventories column(int column) {
-		this.lastpos = (this.lastpos - (this.lastpos % items_on_row)) + column;
+		this.lastpos = (this.lastpos - (this.lastpos % localOptions.getItems_on_row())) + column;
 		return this;
 	}
 
 	public SimpleInventories row(int row) {
-		this.lastpos = this.lastpos - (this.lastpos % getItemsOnPage()) + ((row - 1) * items_on_row)
-			+ (this.lastpos % items_on_row);
+		this.lastpos = this.lastpos - (this.lastpos % localOptions.getItemsOnPage()) + ((row - 1) * localOptions.getItems_on_row())
+			+ (this.lastpos % localOptions.getItems_on_row());
 		return this;
 	}
 
@@ -188,7 +176,7 @@ public class SimpleInventories {
 		return this;
 	}
 
-	public List<Object> cloneCurrentInput() {
+	public List<Origin> cloneCurrentInput() {
 		return new ArrayList<>(data);
 	}
 
@@ -237,7 +225,7 @@ public class SimpleInventories {
 	}
 
 	public SimpleInventories load(File file, String configPath, Loader loader) throws Exception {
-		this.data.add(loader.readData(file, configPath));
+		this.data.add(loader.readData(file, configPath, this.localOptions));
 		return this;
 	}
 
@@ -329,7 +317,7 @@ public class SimpleInventories {
 			this.postClickCallbacks.addAll(origin.getPostClickCallbacks());
 			this.closeCallbacks.addAll(origin.getCloseCallbacks());
 			for (Object object : origin.getContent()) {
-				lastpos = generateItem(null, object, lastpos, origin);
+				lastpos = generateItem(null, object, lastpos, origin, localOptions);
 			}
 		}
 
@@ -340,7 +328,7 @@ public class SimpleInventories {
 			if (!infoByAbsolutePosition.containsKey(info.getParent())) {
 				infoByAbsolutePosition.put(info.getParent(), new HashMap<Integer, List<ItemInfo>>());
 			}
-			int page = (info.getPosition() / getItemsOnPage());
+			int page = (info.getPosition() / localOptions.getItemsOnPage());
 			Map<Integer, List<ItemInfo>> map = infoByAbsolutePosition.get(info.getParent());
 			if (!map.containsKey(page)) {
 				map.put(page, new ArrayList<>());
@@ -358,7 +346,7 @@ public class SimpleInventories {
 		return this;
 	}
 
-	private int generateItem(ItemInfo parent, Object original, int lastpos, Origin origin) {
+	private int generateItem(ItemInfo parent, Object original, int lastpos, Origin origin, LocalOptions currentOptions) {
 		Map<String, Object> object = new HashMap<>();
 		if (original instanceof Map) {
 			object.putAll((Map<String, Object>) original);
@@ -396,7 +384,7 @@ public class SimpleInventories {
 						buf = buf.substring(0, buf.length() - 6).trim();
 						if (building == 0) {
 							if (buf.equalsIgnoreCase("cosmetic")) {
-								object.put("stack", cosmeticItem.clone());
+								object.put("stack", currentOptions.getCosmeticItem().clone());
 							} else {
 								object.put("stack", buf);
 							}
@@ -409,7 +397,7 @@ public class SimpleInventories {
 						building = 1;
 						buf = buf.substring(0, buf.length() - 3).trim();
 						if (buf.equalsIgnoreCase("cosmetic")) {
-							object.put("stack", cosmeticItem.clone());
+							object.put("stack", currentOptions.getCosmeticItem().clone());
 						} else {
 							object.put("stack", buf);
 						}
@@ -424,7 +412,7 @@ public class SimpleInventories {
 				if (building == 0) {
 					buf = buf.trim();
 					if (buf.equalsIgnoreCase("cosmetic")) {
-						object.put("stack", cosmeticItem.clone());
+						object.put("stack", currentOptions.getCosmeticItem().clone());
 					} else {
 						object.put("stack", buf);
 					}
@@ -443,24 +431,24 @@ public class SimpleInventories {
 		if (object.containsKey("guihack")) {
 			String hack = object.get("guihack").toString();
 			if (hack.equalsIgnoreCase("noheader")) {
-				render_header_row_start = 55;
-				render_start_offset = 0;
-				if (rows < 6) {
-					rows++;
+				currentOptions.setRender_header_start(55);
+				currentOptions.setRender_offset(0);
+				if (currentOptions.getRows() < 6) {
+					currentOptions.setRows(currentOptions.getRows() + 1);
 				}
 			} else if (hack.equalsIgnoreCase("nofooter")) {
-				render_footer_row_start = 55;
-				if (rows < 6) {
-					rows++;
+				currentOptions.setRender_footer_start(55);
+				if (currentOptions.getRows() < 6) {
+					currentOptions.setRows(currentOptions.getRows() + 1);
 				}
 			} else if (hack.equalsIgnoreCase("noheaderfooter")) {
-				render_header_row_start = 55;
-				render_footer_row_start = 55;
-				render_start_offset = 0;
-				if (rows < 5) {
-					rows += 2;
-				} else if (rows < 6) {
-					rows++;
+				currentOptions.setRender_header_start(55);
+				currentOptions.setRender_footer_start(55);
+				currentOptions.setRender_offset(0);
+				if (currentOptions.getRows() < 5) {
+					currentOptions.setRows(currentOptions.getRows() + 2);
+				} else if (currentOptions.getRows() < 6) {
+					currentOptions.setRows(currentOptions.getRows() + 1);
 				}
 			}
 			return lastpos;
@@ -534,10 +522,10 @@ public class SimpleInventories {
 				} else {
 					loader = LoaderRegister.getLoader(loaderType);
 				}
-				Origin or = loader.readData(file, data);
+				Origin or = loader.readData(file, data, currentOptions);
 				List<Object> items = or.getContent();
 				for (Object item : items) {
-					lastpos = generateItem(parent, item, lastpos, or);
+					lastpos = generateItem(parent, item, lastpos, or, currentOptions);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -553,7 +541,7 @@ public class SimpleInventories {
 					if (object.containsKey("items")) {
 						List<Object> items = (List<Object>) object.get("items");
 						for (Object itemObject : items) {
-							this.lastpos = generateItem(null, itemObject, this.lastpos, origin);
+							this.lastpos = generateItem(null, itemObject, this.lastpos, origin, this.localOptions);
 						}
 					}
 					return parent == null ? this.lastpos : lastpos;
@@ -563,7 +551,7 @@ public class SimpleInventories {
 						List<Object> items = (List<Object>) object.get("items");
 						if (inserted != null) {
 							for (Object itemObject : items) {
-								inserted.lastpos = generateItem(inserted, itemObject, inserted.lastpos, origin);
+								inserted.lastpos = generateItem(inserted, itemObject, inserted.lastpos, origin, inserted.getLocalOptions());
 							}
 							return parent == inserted ? inserted.lastpos : lastpos;
 						} else {
@@ -584,7 +572,7 @@ public class SimpleInventories {
 							if (object.containsKey("items")) {
 								List<Object> items = (List<Object>) object.get("items");
 								for (Object itemObject : items) {
-									this.lastpos = generateItem(null, itemObject, this.lastpos, origin);
+									this.lastpos = generateItem(null, itemObject, this.lastpos, origin, this.localOptions);
 								}
 							}
 							if (!yes_main) {
@@ -596,7 +584,7 @@ public class SimpleInventories {
 								List<Object> items = (List<Object>) object.get("items");
 								if (inserted != null) {
 									for (Object itemObject : items) {
-										inserted.lastpos = generateItem(inserted, itemObject, inserted.lastpos, origin);
+										inserted.lastpos = generateItem(inserted, itemObject, inserted.lastpos, origin, inserted.getLocalOptions());
 									}
 									if (!yes_inserted) {
 										yes_inserted = parent == inserted;
@@ -672,7 +660,7 @@ public class SimpleInventories {
 						}
 					}
 				} else if ("cosmetic".equalsIgnoreCase(clone)) {
-					object.put("stack", this.cosmeticItem.clone());
+					object.put("stack", localOptions.getCosmeticItem().clone());
 				} else if (clone.startsWith("§") || clone.startsWith("$")) {
 					ItemInfo cloned = ids.get(clone.substring(1));
 					if (cloned != null) {
@@ -737,11 +725,11 @@ public class SimpleInventories {
 			}
 		}
 		if (pagebreakC == 1 || pagebreakC == 3) {
-			positionC += (getItemsOnPage() - (positionC % getItemsOnPage()));
+			positionC += (currentOptions.getItemsOnPage() - (positionC % currentOptions.getItemsOnPage()));
 		}
 		if (object.containsKey("row")) {
-			positionC = positionC - (positionC % getItemsOnPage()) + (((int) object.get("row") - 1) * items_on_row)
-				+ (positionC % items_on_row);
+			positionC = positionC - (positionC % currentOptions.getItemsOnPage()) + (((int) object.get("row") - 1) * localOptions.getItems_on_row())
+				+ (positionC % localOptions.getItems_on_row());
 		}
 		if (object.containsKey("column")) {
 			Object cl = object.get("column");
@@ -749,17 +737,17 @@ public class SimpleInventories {
 			if ("left".equals(cl) || "first".equals(cl)) {
 				column = 0;
 			} else if ("middle".equals(cl) || "center".equals(cl)) {
-				column = items_on_row / 2;
+				column = localOptions.getItems_on_row() / 2;
 			} else if ("right".equals(cl) || "last".equals(cl)) {
-				column = items_on_row - 1;
+				column = localOptions.getItems_on_row() - 1;
 			} else {
 				column = (int) cl;
 			}
 
-			positionC = (positionC - (positionC % items_on_row)) + column;
+			positionC = (positionC - (positionC % localOptions.getItems_on_row())) + column;
 		}
 		if (linebreakC == 1 || linebreakC == 3) {
-			positionC += (items_on_row - (positionC % items_on_row));
+			positionC += (localOptions.getItems_on_row() - (positionC % localOptions.getItems_on_row()));
 		}
 		if (object.containsKey("skip")) {
 			positionC += (int) object.get("skip");
@@ -888,15 +876,27 @@ public class SimpleInventories {
 
 		}
 
+		LocalOptions options = null;
+		if (object.containsKey("options")) {
+			Object opt = object.get("options");
+			if (opt instanceof LocalOptions) {
+				options = (LocalOptions) opt;
+			} else if (opt instanceof  Map) {
+				MemoryConfiguration memory = new MemoryConfiguration();
+				memory.addDefaults((Map<String, Object>) opt);
+				options = LocalOptions.deserialize(this.localOptions, memory);
+			}
+		}
+
 		boolean write = object.containsKey("write") ? Boolean.parseBoolean("write") : true;
 		ItemInfo info = new ItemInfo(this, parent, stack.clone(), positionC, visible, disabled, id, properties, object,
-			animation, conditions, origin, write, callbacks);
+			animation, conditions, origin, write, callbacks, options);
 		if (id != null && !insertingBuffer.isEmpty()) {
 			for (Map.Entry<String, List<Object>> entry : new ArrayList<>(insertingBuffer)) {
 				if (entry.getKey().equals(id)) {
 					insertingBuffer.remove(entry);
 					for (Object itemObject : entry.getValue()) {
-						info.lastpos = generateItem(info, itemObject, info.lastpos, origin);
+						info.lastpos = generateItem(info, itemObject, info.lastpos, origin, info.getLocalOptions());
 					}
 					
 				}
@@ -905,7 +905,7 @@ public class SimpleInventories {
 		if (object.containsKey("items")) {
 			List<Object> items = (List<Object>) object.get("items");
 			for (Object itemObject : items) {
-				info.lastpos = generateItem(info, itemObject, info.lastpos, origin);
+				info.lastpos = generateItem(info, itemObject, info.lastpos, origin, info.getLocalOptions());
 			}
 		} else if (object.containsKey("book")) {
 			List<Map<String, Object>> pages = (List<Map<String, Object>>) object.get("book");
@@ -929,10 +929,10 @@ public class SimpleInventories {
 		}
 		int nextPosition = positionC;
 		if (pagebreakC >= 2) {
-			nextPosition += (getItemsOnPage() - (nextPosition % getItemsOnPage()));
+			nextPosition += (currentOptions.getItemsOnPage() - (nextPosition % currentOptions.getItemsOnPage()));
 		}
 		if (linebreakC >= 2) {
-			nextPosition += (items_on_row - (nextPosition % items_on_row));
+			nextPosition += (currentOptions.getItems_on_row() - (nextPosition % currentOptions.getItems_on_row()));
 		}
 		if (pagebreakC < 2 && linebreakC < 2) {
 			nextPosition++;
@@ -977,7 +977,7 @@ public class SimpleInventories {
 					}
 				}
 				nobject.put("times", times - 1);
-				lastpos = generateItem(parent, nobject, lastpos, origin);
+				lastpos = generateItem(parent, nobject, lastpos, origin, currentOptions);
 			}
 		}
 		return lastpos;
@@ -997,50 +997,6 @@ public class SimpleInventories {
 
 	public String getPrefix() {
 		return prefix;
-	}
-
-	public ItemStack getBackItem() {
-		return backItem;
-	}
-
-	public ItemStack getPageBackItem() {
-		return pageBackItem;
-	}
-
-	public ItemStack getPageForwardItem() {
-		return pageForwardItem;
-	}
-
-	public ItemStack getCosmeticItem() {
-		return cosmeticItem;
-	}
-
-	public int getItemsOnPage() {
-		return items_on_row * rows;
-	}
-
-	public int getItemsOnRow() {
-		return items_on_row;
-	}
-
-	public int getRows() {
-		return rows;
-	}
-
-	public int getRenderRows() {
-		return render_actual_rows;
-	}
-
-	public int getRenderHeaderStart() {
-		return render_header_row_start;
-	}
-
-	public int getRenderFooterStart() {
-		return render_footer_row_start;
-	}
-
-	public int getRenderOffset() {
-		return render_start_offset;
 	}
 
 	public boolean getShowPageNumber() {

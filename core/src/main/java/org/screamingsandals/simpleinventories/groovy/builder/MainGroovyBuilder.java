@@ -1,10 +1,13 @@
 package org.screamingsandals.simpleinventories.groovy.builder;
 
 import groovy.lang.Closure;
+import jdk.vm.ci.meta.Local;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.events.*;
 import org.screamingsandals.simpleinventories.groovy.callback.*;
 import org.screamingsandals.simpleinventories.inventory.CloseCallback;
+import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.screamingsandals.simpleinventories.inventory.OpenCallback;
 import org.screamingsandals.simpleinventories.item.BuyCallback;
 import org.screamingsandals.simpleinventories.item.PostClickCallback;
@@ -16,7 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 
 @Getter
+@RequiredArgsConstructor
 public class MainGroovyBuilder extends GroovyBuilder {
+    private final LocalOptions localOptions;
+
     private final List<RenderCallback> renderCallbacks = new ArrayList<>();
     private final List<PreClickCallback> preClickCallbacks = new ArrayList<>();
     private final List<PostClickCallback> postClickCallbacks = new ArrayList<>();
@@ -32,6 +38,11 @@ public class MainGroovyBuilder extends GroovyBuilder {
                 put("define", definition);
             }
         });
+    }
+
+    @Override
+    public LocalOptions getCategoryOptions() {
+        return localOptions;
     }
 
     @Override

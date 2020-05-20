@@ -10,6 +10,7 @@ import org.screamingsandals.simpleinventories.groovy.callback.GroovyBuyCallback;
 import org.screamingsandals.simpleinventories.groovy.callback.GroovyPostClickCallback;
 import org.screamingsandals.simpleinventories.groovy.callback.GroovyPreClickCallback;
 import org.screamingsandals.simpleinventories.groovy.callback.GroovyRenderCallback;
+import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 
 import java.util.*;
 
@@ -19,6 +20,14 @@ import static org.screamingsandals.simpleinventories.groovy.utils.GroovyUtils.in
 @AllArgsConstructor
 public class GroovyItemBuilder extends GroovyBuilder {
     private final Map<String, Object> itemMap;
+
+    @Override
+    public LocalOptions getCategoryOptions() {
+        if (!itemMap.containsKey("options")) {
+            itemMap.put("options", new LocalOptions()); // TODO get parent settings
+        }
+        return (LocalOptions) itemMap.get("options");
+    }
 
     @Override
     protected void putItem(Object object) {

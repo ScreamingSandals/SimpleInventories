@@ -18,6 +18,7 @@ import org.screamingsandals.simpleinventories.events.PostActionEvent;
 import org.screamingsandals.simpleinventories.events.PreActionEvent;
 import org.screamingsandals.simpleinventories.events.ShopTransactionEvent;
 import org.screamingsandals.simpleinventories.inventory.GuiHolder;
+import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.screamingsandals.simpleinventories.item.*;
 import org.screamingsandals.simpleinventories.utils.BookUtils;
 import org.screamingsandals.simpleinventories.utils.MapReader;
@@ -61,6 +62,7 @@ public class InventoryListener implements Listener {
             SimpleInventories format = holder.getFormat();
             PlayerItemInfo playersItem = holder.getItemInfoOnPosition(slot);
             ItemInfo originalItem = playersItem != null ? playersItem.getOriginal() : null;
+            LocalOptions localOptions = parent != null ? parent.getLocalOptions() : format.getLocalOptions();
 
             PreActionEvent event = new PreActionEvent(player, format, inventory, parent, playersItem, e.getClick());
 
@@ -80,23 +82,23 @@ public class InventoryListener implements Listener {
 
             if (playersItem == null) {
                 ItemStack cur = e.getCurrentItem();
-                ItemStack back = format.getBackItem();
-                ItemStack pageBack = format.getPageBackItem();
-                ItemStack pageForward = format.getPageForwardItem();
-                if (back.equals(cur) && slot == format.getRenderHeaderStart()) {
+                ItemStack back = localOptions.getBackItem();
+                ItemStack pageBack = localOptions.getPageBackItem();
+                ItemStack pageForward = localOptions.getPageForwardItem();
+                if (back.equals(cur) && slot == localOptions.getRender_header_start()) {
                     if (parent != null) {
                         ItemInfo parentOfParent = parent.getParent();
                         int pageOfParent = 0;
                         if (parent.isWritten()) {
-                            pageOfParent = (parent.getPosition() / format.getItemsOnPage());
+                            pageOfParent = (parent.getPosition() / localOptions.getItemsOnPage());
                         }
                         new GuiHolder(player, format, parentOfParent, pageOfParent);
                     }
-                } else if (pageBack.equals(cur) && slot == format.getRenderFooterStart()) {
+                } else if (pageBack.equals(cur) && slot == localOptions.getRender_footer_start()) {
                     if (page > 0) {
                         new GuiHolder(player, format, parent, page - 1);
                     }
-                } else if (pageForward.equals(cur) && slot == (format.getRenderFooterStart() + format.getItemsOnRow() - 1)) {
+                } else if (pageForward.equals(cur) && slot == (localOptions.getRender_footer_start() + localOptions.getItems_on_row() - 1)) {
                     if (format.getLastPageNumbers().get(parent) > page) {
                         new GuiHolder(player, format, parent, page + 1);
                     }

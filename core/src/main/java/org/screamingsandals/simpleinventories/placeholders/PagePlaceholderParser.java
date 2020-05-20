@@ -15,7 +15,7 @@ public class PagePlaceholderParser implements AdvancedPlaceholderParser {
 					case "id":
 						return item.getParent() != null ? item.getParent().getId() : "";
 					case "number":
-						return String.valueOf(item.getPosition() / item.getFormat().getItemsOnPage());
+						return String.valueOf(item.getPosition() / (item.getParent() != null ? item.getParent().getLocalOptions().getItemsOnPage() : item.getFormat().getLocalOptions().getItemsOnPage()));
 				}
 			}
 		}

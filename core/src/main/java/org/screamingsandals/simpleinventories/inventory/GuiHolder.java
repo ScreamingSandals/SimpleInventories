@@ -1,5 +1,6 @@
 package org.screamingsandals.simpleinventories.inventory;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -29,6 +30,8 @@ public class GuiHolder implements InventoryHolder {
 	private boolean animationExists = false;
 	private List<PlayerItemInfo> itemsWithAnimation;
 	private GuiAnimator animator;
+	@Getter
+	private LocalOptions localOptions;
 
 	public GuiHolder(Player player, SimpleInventories format, ItemInfo parent, int page) {
 		this.format = format;
@@ -36,7 +39,8 @@ public class GuiHolder implements InventoryHolder {
 		this.page = page;
 		this.items = getItemsInfo();
 		this.player = player;
-		this.inv = Bukkit.createInventory(this, format.getItemsOnRow() * format.getRenderRows(),
+		this.localOptions = parent != null ? parent.getLocalOptions() : format.getLocalOptions();
+		this.inv = Bukkit.createInventory(this, localOptions.getItems_on_row() * localOptions.getRender_actual_rows(),
 				format.getPrefix() + (format.getShowPageNumber() ? ("§r - " + (page + 1)) : ""));
 		this.itemsInInventory = new HashMap<>();
 		this.itemsWithAnimation = new ArrayList<>();
@@ -68,32 +72,33 @@ public class GuiHolder implements InventoryHolder {
 			animator = null;
 		}
 
+
 		if (this.parent != null) {
-			safePutStackToInventory(format.getRenderHeaderStart(), format.getBackItem());
+			safePutStackToInventory(localOptions.getRender_header_start(), localOptions.getBackItem().clone());
 		} else {
-			safePutStackToInventory(format.getRenderHeaderStart(), format.getCosmeticItem());
+			safePutStackToInventory(localOptions.getRender_header_start(), localOptions.getCosmeticItem().clone());
 		}
 
-		for (int a = 1; a < format.getItemsOnRow(); a++) {
-			safePutStackToInventory(format.getRenderHeaderStart() + a, format.getCosmeticItem());
+		for (int a = 1; a < localOptions.getItems_on_row(); a++) {
+			safePutStackToInventory(localOptions.getRender_header_start() + a, localOptions.getCosmeticItem().clone());
 		}
 
 		if (page > 0) {
-			safePutStackToInventory(format.getRenderFooterStart(), format.getPageBackItem());
+			safePutStackToInventory(localOptions.getRender_footer_start(), localOptions.getPageBackItem().clone());
 		} else {
-			safePutStackToInventory(format.getRenderFooterStart(), format.getCosmeticItem());
+			safePutStackToInventory(localOptions.getRender_footer_start(), localOptions.getCosmeticItem().clone());
 		}
 
-		for (int a = 1; a < format.getItemsOnRow(); a++) {
-			safePutStackToInventory(format.getRenderFooterStart() + a, format.getCosmeticItem());
+		for (int a = 1; a < localOptions.getItems_on_row(); a++) {
+			safePutStackToInventory(localOptions.getRender_footer_start() + a, localOptions.getCosmeticItem().clone());
 		}
 
 		if (this.format.getLastPageNumbers().get(this.parent) > this.page) {
-			safePutStackToInventory(format.getRenderFooterStart() + format.getItemsOnRow() - 1,
-					format.getPageForwardItem());
+			safePutStackToInventory(localOptions.getRender_footer_start() + localOptions.getItems_on_row() - 1,
+					localOptions.getPageForwardItem());
 		} else {
-			safePutStackToInventory(format.getRenderFooterStart() + format.getItemsOnRow() - 1,
-					format.getCosmeticItem());
+			safePutStackToInventory(localOptions.getRender_footer_start() + localOptions.getItems_on_row() - 1,
+					localOptions.getCosmeticItem());
 		}
 
 		for (ItemInfo item : items) {
@@ -122,7 +127,7 @@ public class GuiHolder implements InventoryHolder {
 			GenerateItemEvent event = new GenerateItemEvent(this.format, playersInfo, player);
 			Bukkit.getPluginManager().callEvent(event);
 
-			int cpos = (item.getPosition() % format.getItemsOnPage()) + format.getRenderOffset();
+			int cpos = (item.getPosition() % localOptions.getItemsOnPage()) + localOptions.getRender_offset();
 
 			if (playersInfo.isVisible()) {
 				if (playersInfo.hasAnimation()) {

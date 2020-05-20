@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.simpleinventories.SimpleInventories;
+import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.screamingsandals.simpleinventories.inventory.Origin;
 import org.screamingsandals.simpleinventories.operations.conditions.Condition;
 import org.screamingsandals.simpleinventories.utils.MapReader;
@@ -26,13 +27,15 @@ public class ItemInfo {
 	private Map<Condition, Map<String, Object>> conditions;
 	private Origin origin;
 	private boolean written;
+	private LocalOptions localOptions;
 	@Getter
 	private List<RenderCallback> renderCallbacks;
 	public int lastpos = 0;
 
 	public ItemInfo(SimpleInventories format, ItemInfo parent, ItemStack item, int position, boolean visible,
 			boolean disabled, String id, List<ItemProperty> properties, Map<String, Object> data, List<ItemStack> animation,
-			Map<Condition, Map<String, Object>> conditions, Origin origin, boolean written, List<RenderCallback> renderCallbacks) {
+			Map<Condition, Map<String, Object>> conditions, Origin origin, boolean written, List<RenderCallback> renderCallbacks,
+					LocalOptions localOptions) {
 		this.format = format;
 		this.parent = parent;
 		this.item = item;
@@ -47,6 +50,11 @@ public class ItemInfo {
 		this.origin = origin;
 		this.written = written;
 		this.renderCallbacks = renderCallbacks;
+		this.localOptions = localOptions;
+	}
+
+	public LocalOptions getLocalOptions() {
+		return localOptions != null ? localOptions : (parent != null ? parent.getLocalOptions() : format.getLocalOptions());
 	}
 
 	public int getPosition() {

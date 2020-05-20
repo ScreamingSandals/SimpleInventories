@@ -4,6 +4,7 @@ import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
 import org.screamingsandals.simpleinventories.dependencies.DependencyHelper;
 import org.screamingsandals.simpleinventories.groovy.builder.MainGroovyBuilder;
+import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.screamingsandals.simpleinventories.inventory.Origin;
 
 import java.io.File;
@@ -11,11 +12,12 @@ import java.net.URL;
 
 public class GroovyLoader implements Loader {
     @Override
-    public Origin readData(File file, String configPath) throws Exception {
+    public Origin readData(File file, String configPath, LocalOptions options) throws Exception {
         DependencyHelper.GROOVY.load();
 
         Binding binding = new Binding();
-        MainGroovyBuilder builder = new MainGroovyBuilder();
+        MainGroovyBuilder builder = new MainGroovyBuilder(options);
+
         binding.setVariable("inventory", builder);
         binding.setVariable("section", configPath);
         GroovyScriptEngine engine = new GroovyScriptEngine(new URL[]{file.getParentFile().toURI().toURL()});

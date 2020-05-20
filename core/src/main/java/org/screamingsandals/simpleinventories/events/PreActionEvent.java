@@ -43,4 +43,8 @@ public class PreActionEvent extends Event implements Cancellable {
 	public void setCancelled(boolean cancel) {
 		this.cancel = cancel;
 	}
+
+	public boolean hasItem() {
+		return item != null;
+	}
 }

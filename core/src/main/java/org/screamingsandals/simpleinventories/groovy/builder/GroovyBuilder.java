@@ -2,6 +2,7 @@ package org.screamingsandals.simpleinventories.groovy.builder;
 
 import groovy.lang.Closure;
 import org.bukkit.Material;
+import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 
 import java.util.*;
 
@@ -40,6 +41,12 @@ public abstract class GroovyBuilder {
     public void item(Material material, Closure<GroovyItemBuilder> closure) {
         internalCallClosure(closure, new GroovyItemBuilder(internalAddItem(material)));
     }
+
+    public void categoryOptions(Closure<LocalOptions> closure) {
+        internalCallClosure(closure, getCategoryOptions());
+    }
+
+    public abstract LocalOptions getCategoryOptions();
 
     public void cosmetic() {
         putItem(new HashMap<String, Object>() {
