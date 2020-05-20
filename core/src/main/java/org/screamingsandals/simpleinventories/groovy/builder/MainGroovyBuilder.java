@@ -1,7 +1,6 @@
 package org.screamingsandals.simpleinventories.groovy.builder;
 
 import groovy.lang.Closure;
-import jdk.vm.ci.meta.Local;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.events.*;
