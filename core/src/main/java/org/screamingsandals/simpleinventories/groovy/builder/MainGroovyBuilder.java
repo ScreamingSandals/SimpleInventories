@@ -40,8 +40,8 @@ public class MainGroovyBuilder extends GroovyBuilder {
     }
 
     @Override
-    public LocalOptions getCategoryOptions() {
-        return localOptions;
+    public IGroovyLocalOptionsBuilder getCategoryOptions() {
+        return new GroovyDirectOptionsBuilder(localOptions);
     }
 
     @Override
