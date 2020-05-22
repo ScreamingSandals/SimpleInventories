@@ -38,7 +38,7 @@ public class HelpCommand extends BaseCommand {
     public void sendHelp(Player player) {
     	player.sendMessage("SimpleGuiFormat - Help");
         player.sendMessage("/si list - §cShows you all available inventories");
-    	player.sendMessage("/si open <inventory> - ů7Opens you an inventory");
+    	player.sendMessage("/si open <inventory> - §7Opens you an inventory");
     	
     	if (player.hasPermission(ADMIN_PERMISSION)) {
 	    	player.sendMessage("/si send <player> <inventory> - §7Opens inventory for player");

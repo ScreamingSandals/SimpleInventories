@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
 import java.util.function.Consumer;

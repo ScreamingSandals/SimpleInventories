@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
@@ -12,7 +12,8 @@ import org.screamingsandals.simpleinventories.placeholders.AdvancedPlaceholderPa
 import org.screamingsandals.simpleinventories.placeholders.PlaceholderConstantParser;
 import org.screamingsandals.simpleinventories.placeholders.PlaceholderParser;
 
-@Data
+@Getter
+@Setter
 public class Options extends LocalOptions {
 
 	private boolean genericShop = false;

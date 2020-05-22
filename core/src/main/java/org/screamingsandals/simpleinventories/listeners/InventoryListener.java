@@ -88,9 +88,10 @@ public class InventoryListener implements Listener {
                 if (back.equals(cur) && slot == localOptions.getRender_header_start()) {
                     if (parent != null) {
                         ItemInfo parentOfParent = parent.getParent();
+                        LocalOptions localOptionsOfParentOfParent = parentOfParent != null ? parentOfParent.getLocalOptions() : format.getLocalOptions();
                         int pageOfParent = 0;
                         if (parent.isWritten()) {
-                            pageOfParent = (parent.getPosition() / localOptions.getItemsOnPage());
+                            pageOfParent = (parent.getPosition() / localOptionsOfParentOfParent.getItemsOnPage());
                         }
                         new GuiHolder(player, format, parentOfParent, pageOfParent);
                     }

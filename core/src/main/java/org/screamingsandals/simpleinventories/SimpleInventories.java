@@ -328,7 +328,8 @@ public class SimpleInventories {
 			if (!infoByAbsolutePosition.containsKey(info.getParent())) {
 				infoByAbsolutePosition.put(info.getParent(), new HashMap<Integer, List<ItemInfo>>());
 			}
-			int page = (info.getPosition() / localOptions.getItemsOnPage());
+			LocalOptions parentOptions = info.getParent() != null ? info.getParent().getLocalOptions() : this.localOptions;
+			int page = (info.getPosition() / parentOptions.getItemsOnPage());
 			Map<Integer, List<ItemInfo>> map = infoByAbsolutePosition.get(info.getParent());
 			if (!map.containsKey(page)) {
 				map.put(page, new ArrayList<>());
