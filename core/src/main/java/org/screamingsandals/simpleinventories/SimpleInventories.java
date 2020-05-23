@@ -86,7 +86,7 @@ public class SimpleInventories {
 	public SimpleInventories(Options options) {
 		this.prefix = options.getPrefix();
 		this.animationsEnabled = options.isAnimationsEnabled();
-		this.pluginForRunnables = options.getAnimationPlugin();
+		this.pluginForRunnables = options.getPlugin();
 		this.genericShopEnabled = options.isGenericShop();
 		this.genericShopPriceTypeRequired = options.isGenericShopPriceTypeRequired();
 		this.showPageNumber = options.isShowPageNumber();

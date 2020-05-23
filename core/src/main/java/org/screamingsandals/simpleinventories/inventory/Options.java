@@ -5,6 +5,7 @@ import java.util.Map;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
@@ -14,24 +15,20 @@ import org.screamingsandals.simpleinventories.placeholders.PlaceholderParser;
 
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class Options extends LocalOptions {
+
+	private final Plugin plugin;
 
 	private boolean genericShop = false;
 	private boolean genericShopPriceTypeRequired = true;
-	@Setter(AccessLevel.NONE)
 	private boolean animationsEnabled = false;
 	private boolean showPageNumber = true;
-	@Setter(AccessLevel.NONE)
-	private Plugin animationPlugin = null;
 	private String prefix = "Inventory";
 	private final Map<String, PlaceholderParser> placeholders = new HashMap<>();
 	private final Map<String, AdvancedPlaceholderParser> advancedPlaceholders = new HashMap<>();
 	private boolean allowAccessToConsole = false;
-
-	public void setAnimationsEnabled(boolean animationsEnabled, Plugin animationPlugin) {
-		this.animationsEnabled = animationsEnabled;
-		this.animationPlugin = animationPlugin;
-	}
+	private boolean allowBungeecordPlayerSending = false;
 
 	public boolean registerPlaceholder(String name, String value) {
 		return registerPlaceholder(name, new PlaceholderConstantParser(value));
@@ -54,19 +51,20 @@ public class Options extends LocalOptions {
 	}
 	
 	public static Options deserialize(ConfigurationSection map, Plugin plugin) {
-		Options options = new Options();
+		Options options = new Options(plugin);
 
-		options.deserializeInternal(map, plugin);
+		options.deserializeInternal(map);
 
 		return options;
 	}
 
-	protected void deserializeInternal(ConfigurationSection map, Plugin plugin) {
+	@Override
+	protected void deserializeInternal(ConfigurationSection map) {
 		super.deserializeInternal(map);
 
 		entry(map, "genericShop", entry -> setGenericShop((boolean) entry));
 		entry(map, "genericShopPriceTypeRequired", entry -> setGenericShopPriceTypeRequired((boolean) entry));
-		entry(map, "animationsEnabled", entry -> setAnimationsEnabled((boolean) entry, plugin));
+		entry(map, "animationsEnabled", entry -> setAnimationsEnabled((boolean) entry));
 		entry(map, "showPageNumber", entry -> setShowPageNumber((boolean) entry));
 		entry(map, "prefix", entry -> setPrefix(entry.toString()));
 		entry(map, "allowAccessToConsole", entry -> setAllowAccessToConsole((boolean) entry));

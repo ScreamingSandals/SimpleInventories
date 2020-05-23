@@ -1,5 +1,7 @@
 package org.screamingsandals.simpleinventories.listeners;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -176,6 +178,25 @@ public class InventoryListener implements Listener {
                         if (format.isAllowedToExecuteConsoleCommands()) {
                             Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str.substring(8).trim());
                         }
+                    } else if (str.startsWith("bungee:")) {
+                        final String server = str.substring(7).trim();
+                        Bukkit.getScheduler().runTask(format.getPluginForRunnables(), () -> {
+                            try {
+                                if (!Bukkit.getMessenger().getOutgoingChannels(format.getPluginForRunnables()).contains("BungeeCord")) {
+                                    Bukkit.getMessenger().registerOutgoingPluginChannel(format.getPluginForRunnables(), "BungeeCord");
+                                }
+
+                                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+
+                                out.writeUTF("Connect");
+                                out.writeUTF(server);
+
+                                player.sendPluginMessage(format.getPluginForRunnables(), "BungeeCord", out.toByteArray());
+                            } catch (Throwable throwable) {
+                                System.out.println("Something went wrong while teleporting player through bungeecord: " + throwable.getMessage());
+                                throwable.printStackTrace();
+                            }
+                        });
                     } else {
                         if (str.startsWith("player:")) {
                             str = str.substring(7).trim();
