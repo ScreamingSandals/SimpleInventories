@@ -55,6 +55,8 @@ public class SimpleInventories {
 
 	private boolean showPageNumber = true;
 	private boolean allowAccessToConsole = false;
+	@Getter
+	private boolean allowBungeecord = false;
 
 	private Map<String, PlaceholderParser> placeholders = new HashMap<>();
 	private Map<String, AdvancedPlaceholderParser> advancedPlaceholders = new HashMap<>();
@@ -91,6 +93,7 @@ public class SimpleInventories {
 		this.genericShopPriceTypeRequired = options.isGenericShopPriceTypeRequired();
 		this.showPageNumber = options.isShowPageNumber();
 		this.allowAccessToConsole = options.isAllowAccessToConsole();
+		this.allowBungeecord = options.isAllowBungeecordPlayerSending();
 
 		initPlaceholders();
 
