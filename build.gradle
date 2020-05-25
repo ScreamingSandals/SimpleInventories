@@ -9,11 +9,14 @@ buildscript {
     repositories {
         jcenter()
         maven {
+            url =  "https://plugins.gradle.org/m2/"
+        }
+        maven {
             url = 'https://repo.screamingsandals.org'
         }
     }
     dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.6'
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.7'
     }
 }
 
