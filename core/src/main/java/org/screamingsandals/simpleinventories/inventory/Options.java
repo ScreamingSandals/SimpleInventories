@@ -68,5 +68,6 @@ public class Options extends LocalOptions {
 		entry(map, "showPageNumber", entry -> setShowPageNumber((boolean) entry));
 		entry(map, "prefix", entry -> setPrefix(entry.toString()));
 		entry(map, "allowAccessToConsole", entry -> setAllowAccessToConsole((boolean) entry));
+		entry(map, "allowBungeecordPlayerSending", entry -> setAllowBungeecordPlayerSending((boolean) entry));
 	}
 }
