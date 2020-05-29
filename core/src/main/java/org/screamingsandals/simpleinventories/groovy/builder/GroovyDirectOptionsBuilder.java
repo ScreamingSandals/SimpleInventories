@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories.groovy.builder;
 
 import lombok.AllArgsConstructor;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 
@@ -57,5 +58,10 @@ public class GroovyDirectOptionsBuilder implements IGroovyLocalOptionsBuilder {
     @Override
     public void renderFooterStart(int renderFooterStart) {
         options.setRender_footer_start(renderFooterStart);
+    }
+
+    @Override
+    public void inventoryType(String inventoryType) {
+        options.setInventoryType(InventoryType.valueOf(inventoryType.toUpperCase()));
     }
 }

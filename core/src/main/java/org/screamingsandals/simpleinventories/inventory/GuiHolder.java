@@ -3,6 +3,7 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -17,8 +18,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GuiHolder implements InventoryHolder {
+	public static final Map<Inventory, GuiHolder> TILE_ENTITY_HOLDER_CONVERTOR = new ConcurrentHashMap<>();
+
 	private final Player player;
 	private final Inventory inv;
 
@@ -40,8 +44,13 @@ public class GuiHolder implements InventoryHolder {
 		this.items = getItemsInfo();
 		this.player = player;
 		this.localOptions = parent != null ? parent.getLocalOptions() : format.getLocalOptions();
-		this.inv = Bukkit.createInventory(this, localOptions.getItems_on_row() * localOptions.getRender_actual_rows(),
-				format.getPrefix() + (format.getShowPageNumber() ? ("§r - " + (page + 1)) : ""));
+		if (localOptions.getInventoryType() == InventoryType.CHEST) {
+			this.inv = Bukkit.createInventory(this, localOptions.getItems_on_row() * localOptions.getRender_actual_rows(),
+					format.getPrefix() + (format.getShowPageNumber() ? ("§r - " + (page + 1)) : ""));
+		} else {
+			this.inv = Bukkit.createInventory(this, localOptions.getInventoryType(),
+					format.getPrefix() + (format.getShowPageNumber() ? ("§r - " + (page + 1)) : ""));
+		}
 		this.itemsInInventory = new HashMap<>();
 		this.itemsWithAnimation = new ArrayList<>();
 		this.repaint();
@@ -54,6 +63,10 @@ public class GuiHolder implements InventoryHolder {
 
 		if (event.isCancelled()) {
 			return;
+		}
+
+		if (this.inv.getHolder() != this) {
+			TILE_ENTITY_HOLDER_CONVERTOR.put(this.inv, this);
 		}
 
 		this.player.openInventory(this.inv);

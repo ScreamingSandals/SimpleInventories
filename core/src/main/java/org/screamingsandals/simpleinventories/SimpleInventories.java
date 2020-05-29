@@ -1017,6 +1017,8 @@ public class SimpleInventories {
 		if (top != null) {
 			if (top.getHolder() instanceof GuiHolder) {
 				return (GuiHolder) top.getHolder();
+			} else if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(top)) {
+				return GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(top);
 			}
 		}
 		return null;

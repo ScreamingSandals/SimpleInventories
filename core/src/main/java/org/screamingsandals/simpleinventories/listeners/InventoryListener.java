@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -46,7 +47,13 @@ public class InventoryListener implements Listener {
         }
 
         Inventory primaryInventory = e.getInventory();
-        if (primaryInventory.getHolder() instanceof GuiHolder) {
+
+        InventoryHolder possibleHolder = primaryInventory.getHolder();
+        if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(primaryInventory)) {
+            possibleHolder = GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(primaryInventory);
+        }
+
+        if (possibleHolder instanceof GuiHolder) {
             Player player = (Player) e.getWhoClicked();
             Inventory inventory = getInventory(e.getView(), e.getRawSlot());
             if (!primaryInventory.equals(inventory)) { // check if inventory with GuiHolder and clicked inventory is
@@ -57,7 +64,7 @@ public class InventoryListener implements Listener {
                 return;
             }
             e.setCancelled(true);
-            GuiHolder holder = (GuiHolder) inventory.getHolder();
+            GuiHolder holder = (GuiHolder) possibleHolder;
             ItemInfo parent = holder.getParent();
             int page = holder.getPage();
             int slot = e.getSlot();
@@ -233,8 +240,14 @@ public class InventoryListener implements Listener {
 
         Player player = (Player) event.getPlayer();
         Inventory inventory = event.getInventory();
-        if (inventory.getHolder() instanceof GuiHolder) {
-            GuiHolder holder = (GuiHolder) inventory.getHolder();
+
+        InventoryHolder possibleHolder = inventory.getHolder();
+        if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(inventory)) {
+            possibleHolder = GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(inventory);
+        }
+
+        if (possibleHolder instanceof GuiHolder) {
+            GuiHolder holder = (GuiHolder) possibleHolder;
             SimpleInventories format = holder.getFormat();
 
             CloseInventoryEvent closeInventoryEvent = new CloseInventoryEvent(player, format, holder, inventory);
@@ -245,6 +258,8 @@ public class InventoryListener implements Listener {
 
             if (closeInventoryEvent.isCancelled()) {
                 format.openForPlayer(player);
+            } else if (inventory.getHolder() != holder) {
+                GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.remove(inventory);
             }
         }
     }
@@ -256,7 +271,13 @@ public class InventoryListener implements Listener {
         }
 
         Inventory primaryInventory = event.getInventory();
-        if (primaryInventory.getHolder() instanceof GuiHolder) {
+
+        InventoryHolder possibleHolder = primaryInventory.getHolder();
+        if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(primaryInventory)) {
+            possibleHolder = GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(primaryInventory);
+        }
+
+        if (possibleHolder instanceof GuiHolder) {
             Player player = (Player) event.getWhoClicked();
             for (int slot : event.getRawSlots()) {
                 Inventory inventory = getInventory(event.getView(), slot);
@@ -273,7 +294,17 @@ public class InventoryListener implements Listener {
             return;
         }
 
-        if (event.getSource().getHolder() instanceof GuiHolder || event.getDestination().getHolder() instanceof GuiHolder) {
+        InventoryHolder possibleHolder = event.getSource().getHolder();
+        if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(event.getSource())) {
+            possibleHolder = GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(event.getSource());
+        }
+
+        InventoryHolder possibleDestHolder = event.getDestination().getHolder();
+        if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(event.getDestination())) {
+            possibleDestHolder = GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(event.getDestination());
+        }
+
+        if (possibleHolder instanceof GuiHolder || possibleDestHolder instanceof GuiHolder) {
             event.setCancelled(true);
         }
     }

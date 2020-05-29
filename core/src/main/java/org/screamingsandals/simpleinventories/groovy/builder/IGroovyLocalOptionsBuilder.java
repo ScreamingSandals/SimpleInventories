@@ -50,4 +50,6 @@ public interface IGroovyLocalOptionsBuilder {
     void renderOffset(int renderOffset);
     void renderHeaderStart(int renderHeaderStart);
     void renderFooterStart(int renderFooterStart);
+
+    void inventoryType(String inventoryType);
 }

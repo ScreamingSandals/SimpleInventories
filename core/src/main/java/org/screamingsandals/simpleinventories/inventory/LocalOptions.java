@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
@@ -33,6 +34,8 @@ public class LocalOptions {
 	private int render_header_start = RENDER_HEADER_START;
 	private int render_footer_start = RENDER_FOOTER_START;
 
+	private InventoryType inventoryType = InventoryType.CHEST;
+
 	public LocalOptions(LocalOptions parent) {
 		setBackItem(parent.getBackItem().clone());
 		setPageBackItem(parent.getPageBackItem().clone());
@@ -45,6 +48,8 @@ public class LocalOptions {
 		setRender_offset(parent.getRender_offset());
 		setRender_header_start(parent.getRender_header_start());
 		setRender_footer_start(parent.getRender_footer_start());
+
+		setInventoryType(parent.getInventoryType());
 	}
 
 	public int getItemsOnPage() {
@@ -79,6 +84,7 @@ public class LocalOptions {
 		entry(map, "render_offset", entry -> setRender_offset(((Number) entry).intValue()));
 		entry(map, "render_header_start", entry -> setRender_header_start(((Number) entry).intValue()));
 		entry(map, "render_footer_start", entry -> setRender_footer_start(((Number) entry).intValue()));
+		entry(map, "inventoryType", entry -> setInventoryType(InventoryType.valueOf(entry.toString().toUpperCase())));
 
 		// MOST DANGER
 		entry(map, "items_on_row", entry -> setItems_on_row(((Number) entry).intValue()));

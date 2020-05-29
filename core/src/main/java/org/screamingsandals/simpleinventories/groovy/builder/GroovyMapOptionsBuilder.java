@@ -58,4 +58,9 @@ public class GroovyMapOptionsBuilder implements IGroovyLocalOptionsBuilder{
     public void renderFooterStart(int renderFooterStart) {
         map.put("render_footer_start", renderFooterStart);
     }
+
+    @Override
+    public void inventoryType(String inventoryType) {
+        map.put("inventoryType", inventoryType);
+    }
 }
