@@ -3,6 +3,7 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -13,6 +14,7 @@ import org.screamingsandals.simpleinventories.events.GenerateItemEvent;
 import org.screamingsandals.simpleinventories.events.OpenInventoryEvent;
 import org.screamingsandals.simpleinventories.item.ItemInfo;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
+import org.screamingsandals.simpleinventories.utils.AnvilGUI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +49,16 @@ public class GuiHolder implements InventoryHolder {
 		if (localOptions.getInventoryType() == InventoryType.CHEST) {
 			this.inv = Bukkit.createInventory(this, localOptions.getItems_on_row() * localOptions.getRender_actual_rows(),
 					format.getPrefix() + (format.getShowPageNumber() ? ("§r - " + (page + 1)) : ""));
+		} else if (localOptions.getInventoryType() == InventoryType.ANVIL) {
+			AnvilGUI gui = new AnvilGUI(format.getPluginForRunnables(), player, this, new AnvilGUI.AnvilClickEventHandler() {
+				@Override
+				public void onAnvilClick(AnvilGUI.AnvilClickEvent event) {
+
+				}
+			});
+			gui.setTitle(format.getPrefix() + (format.getShowPageNumber() ? ("§r - " + (page + 1)) : ""));
+			gui.setDefaultText("");
+			this.inv = gui;
 		} else {
 			this.inv = Bukkit.createInventory(this, localOptions.getInventoryType(),
 					format.getPrefix() + (format.getShowPageNumber() ? ("§r - " + (page + 1)) : ""));
@@ -69,7 +81,12 @@ public class GuiHolder implements InventoryHolder {
 			TILE_ENTITY_HOLDER_CONVERTOR.put(this.inv, this);
 		}
 
-		this.player.openInventory(this.inv);
+		if (this.inv instanceof AnvilGUI) {
+			((AnvilGUI) this.inv).open();
+			TILE_ENTITY_HOLDER_CONVERTOR.put(((AnvilGUI) this.inv).inventory, this);
+		} else {
+			this.player.openInventory(this.inv);
+		}
 	}
 
 	public void repaint() {
