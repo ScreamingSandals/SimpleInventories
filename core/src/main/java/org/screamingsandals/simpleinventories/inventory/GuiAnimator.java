@@ -24,7 +24,7 @@ public class GuiAnimator extends BukkitRunnable {
 	
 	@Override
 	public void run() {
-		if (holder.getPlayer().getOpenInventory().getTopInventory().getHolder() == holder) {
+		if (holder.getFormat().getCurrentGuiHolder(holder.getPlayer()) == holder) {
 			for (Map.Entry<PlayerItemInfo, Integer> entry : this.itemsWithAnimation.entrySet()) {
 				PlayerItemInfo info = entry.getKey();
 				int position = entry.getValue();
