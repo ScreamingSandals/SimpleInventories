@@ -127,10 +127,12 @@ public class GroovyOnlyItemBuilder {
     }
 
     private Map<String, Object> internalAddItem(Object material) {
-        Map<String, Object> map = new HashMap<>();
-        Map<String, Object> stack = new HashMap<>();
-        stack.put("type", material);
-        map.put("stack", stack);
+        Map<String, Object> map = material instanceof Map ? (Map<String, Object>) material : new HashMap<>();
+        if (!(material instanceof Map)) {
+            Map<String, Object> stack = new HashMap<>();
+            stack.put("type", material);
+            map.put("stack", stack);
+        }
         list.add(map);
         return map;
     }
