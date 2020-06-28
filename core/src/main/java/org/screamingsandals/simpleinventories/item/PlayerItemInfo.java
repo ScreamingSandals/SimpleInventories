@@ -59,6 +59,8 @@ public class PlayerItemInfo {
 		}
 
 		original.getRenderCallbacks().forEach(callback -> callback.render(this));
+
+		getFormat().getRenderCallbacks().forEach(renderCallback -> renderCallback.render(this));
 	}
 
 	/* You shouldn't work with original item! */
