@@ -233,6 +233,11 @@ public class AnvilGUI implements Inventory {
     }
 
     @Override
+    public @Nullable InventoryHolder getHolder(boolean useSnapshot) {
+        return holder;
+    }
+
+    @Override
     public @NotNull ListIterator<ItemStack> iterator() {
         return null;
     }

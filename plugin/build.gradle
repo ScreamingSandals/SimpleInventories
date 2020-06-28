@@ -2,7 +2,7 @@ dependencies {
     implementation project(':SimpleInventories-Core')
 }
 
-tasks.spigotPluginYaml.enabled = true
+project.tasks.getByName('generateSpigotDescription').enabled = true
 
 spigot {
 	name = 'SimpleInventories'

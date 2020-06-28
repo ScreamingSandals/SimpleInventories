@@ -3,6 +3,7 @@ package org.screamingsandals.simpleinventories.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
@@ -28,6 +29,20 @@ public class MaterialSearchEngine {
 		public boolean hasDamage() {
 			return damage > 0;
 		}
+	}
+
+	@AllArgsConstructor
+	public static enum FNTBTranslator {
+		ZOMBIFIED_PIGLIN_SPAWN_EGG("ZOMBIE_PIGMAN_SPAWN_EGG");
+
+		private String translate;
+	}
+
+	@AllArgsConstructor
+	public static enum FBTNTranslator {
+		ZOMBIE_PIGMAN_SPAWN_EGG("ZOMBIFIED_PIGLIN_SPAWN_EGG");
+
+		private String translate;
 	}
 	
 	/**
@@ -547,6 +562,7 @@ public class MaterialSearchEngine {
 		ZOMBIE_HEAD("SKULL_ITEM", 2),
 		ZOMBIE_HORSE_SPAWN_EGG("MONSTER_EGG", 29),
 		ZOMBIE_PIGMAN_SPAWN_EGG("MONSTER_EGG", 57),
+		ZOMBIFIED_PIGLIN_SPAWN_EGG("MONSTER_EGG", 57),
 		ZOMBIE_SPAWN_EGG("MONSTER_EGG", 54),
 		ZOMBIE_VILLAGER_SPAWN_EGG("MONSTER_EGG", 27),
 		
@@ -570,29 +586,23 @@ public class MaterialSearchEngine {
 	}
 	
 	// ATV = Aquatic to Village
+	@AllArgsConstructor
 	public static enum ATVTranslate {
 		CACTUS_GREEN("GREEN_DYE"),
 		DANDELION_YELLOW("YELLOW_DYE"),
 		ROSE_RED("RED_DYE");
 		
 		private String translate;
-		
-		private ATVTranslate(String translate) {
-			this.translate = translate;
-		}
 	}
 	
 	// VTA = Village to Aquatic
+	@AllArgsConstructor
 	public static enum VTATranslate {
 		GREEN_DYE("CACTUS_GREEN"),
 		YELLOW_DYE("DANDELION_YELLOW"),
 		RED_DYE("ROSE_RED");
 		
 		private String translate;
-		
-		private VTATranslate(String translate) {
-			this.translate = translate;
-		}
 	}
 	
 	private static int versionNumber;
@@ -626,6 +636,14 @@ public class MaterialSearchEngine {
 			FFTLTranslator translate = FFTLTranslator.valueOf(material.toUpperCase());
 			Material mat = Material.matchMaterial(translate.translate);
 			return new Result(mat, translate.damage);
+		}).attempt(versionNumber > 115, (material, damage) -> {
+			FBTNTranslator translate = FBTNTranslator.valueOf(material.toUpperCase());
+			Material mat = Material.matchMaterial(translate.translate);
+			return new Result(mat, damage);
+		}).attempt(versionNumber < 116 && !isLegacy, (material, damage) -> {
+			FNTBTranslator translate = FNTBTranslator.valueOf(material.toUpperCase());
+			Material mat = Material.matchMaterial(translate.translate);
+			return new Result(mat, damage);
 		}).attempt(versionNumber > 113, (material, damage) -> {
 			ATVTranslate translate = ATVTranslate.valueOf(material.toUpperCase());
 			Material mat = Material.matchMaterial(translate.translate);
