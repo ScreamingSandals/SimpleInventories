@@ -10,8 +10,10 @@ import org.screamingsandals.simpleinventories.groovy.callback.GroovyBuyCallback;
 import org.screamingsandals.simpleinventories.groovy.callback.GroovyPostClickCallback;
 import org.screamingsandals.simpleinventories.groovy.callback.GroovyPreClickCallback;
 import org.screamingsandals.simpleinventories.groovy.callback.GroovyRenderCallback;
+import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import static org.screamingsandals.simpleinventories.groovy.utils.GroovyUtils.internalCallClosure;
 
@@ -114,6 +116,10 @@ public class GroovyItemBuilder extends GroovyBuilder {
         itemMap.put("disabled", condition);
     }
 
+    public void disabled(Predicate<PlayerItemInfo> predicate) {
+        itemMap.put("disabled", predicate);
+    }
+
     public void id(String id) {
         itemMap.put("id", id);
     }
@@ -153,6 +159,8 @@ public class GroovyItemBuilder extends GroovyBuilder {
     public void visible(String condition) {
         itemMap.put("visible", condition);
     }
+
+    public void visible(Predicate<PlayerItemInfo> predicate) { itemMap.put("visible", predicate); }
 
     public void write(boolean write) {
         itemMap.put("write", write);

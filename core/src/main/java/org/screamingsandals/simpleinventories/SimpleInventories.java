@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -430,7 +431,7 @@ public class SimpleInventories {
 				}
 			}
 		}
-		
+
 		/* In future there will be better way how to do this! we don't recommended to use hacks if there's another way*/
 		if (object.containsKey("guihack")) {
 			String hack = object.get("guihack").toString();
@@ -457,7 +458,7 @@ public class SimpleInventories {
 			}
 			return lastpos;
 		}
-		
+
 		if (object.containsKey("define")) {
 			String definition = object.get("define").toString();
 			String[] defsplit = definition.split(" as ", 2);
@@ -493,16 +494,16 @@ public class SimpleInventories {
 			}
 			return lastpos;
 		}
-		
+
 		if (object.containsKey("include")) {
 			// [loader]:[data]@[path]
 			// Example: yml:shop3@shops.yml
 			// Another example: csv@shop.csv
-			
+
 			String path = object.get("include").toString();
 			String data = "data";
 			String loaderType = null;
-			
+
 			String[] splitByAt = path.split("@", 2);
 			if (splitByAt.length == 2) {
 				loaderType = splitByAt[0];
@@ -517,7 +518,7 @@ public class SimpleInventories {
 				loaderType = loaderType.trim();
 			}
 			data = data.trim();
-			
+
 			File file = new File(path);
 			try {
 				Loader loader;
@@ -560,7 +561,7 @@ public class SimpleInventories {
 							return parent == inserted ? inserted.lastpos : lastpos;
 						} else {
 							insertingBuffer.add(new AbstractMap.SimpleEntry<String, List<Object>>(
-								insert.substring(1), items));
+									insert.substring(1), items));
 							return lastpos;
 						}
 					}
@@ -595,7 +596,7 @@ public class SimpleInventories {
 									}
 								} else {
 									insertingBuffer.add(new AbstractMap.SimpleEntry<String, List<Object>>(
-										insert.substring(1), items));
+											insert.substring(1), items));
 								}
 							}
 						}
@@ -620,8 +621,8 @@ public class SimpleInventories {
 						} else if ("override".equalsIgnoreCase(cloneMethod)) {
 							cloneOverride = true;
 						} else if ("increment".equalsIgnoreCase(cloneMethod)
-							|| "increment-default".equalsIgnoreCase(cloneMethod)
-							|| "increment-missing".equalsIgnoreCase(cloneMethod)) {
+								|| "increment-default".equalsIgnoreCase(cloneMethod)
+								|| "increment-missing".equalsIgnoreCase(cloneMethod)) {
 							cloneListIncrement = true;
 						} else if ("increment-override".equalsIgnoreCase(cloneMethod)) {
 							cloneOverride = true;
@@ -733,7 +734,7 @@ public class SimpleInventories {
 		}
 		if (object.containsKey("row")) {
 			positionC = positionC - (positionC % currentOptions.getItemsOnPage()) + (((int) object.get("row") - 1) * localOptions.getItems_on_row())
-				+ (positionC % localOptions.getItems_on_row());
+					+ (positionC % localOptions.getItems_on_row());
 		}
 		if (object.containsKey("column")) {
 			Object cl = object.get("column");
@@ -769,7 +770,7 @@ public class SimpleInventories {
 					if (obj instanceof Map) {
 						Map<String, Object> propertyMap = (Map<String, Object>) obj;
 						ItemProperty pr = new ItemProperty(this,
-							propertyMap.containsKey("name") ? (String) propertyMap.get("name") : null, propertyMap);
+								propertyMap.containsKey("name") ? (String) propertyMap.get("name") : null, propertyMap);
 						properties.add(pr);
 					} else if (obj instanceof String) {
 						properties.add(new ItemProperty(this, (String) obj, new HashMap<String, Object>() {
@@ -811,33 +812,35 @@ public class SimpleInventories {
 			}
 		}
 
+		List<RenderCallback> callbacks = new ArrayList<>();
+
 		Object f_visible = object.getOrDefault("visible", true);
 		boolean visible = true;
 		if (f_visible instanceof Boolean) {
 			visible = (Boolean) f_visible;
+		} else if (f_visible instanceof Predicate) {
+			callbacks.add(info -> info.setVisible(((Predicate<PlayerItemInfo>) f_visible).test(info)));
 		} else if (f_visible instanceof String) {
-			Condition f_visible_cond = OperationParser.getFinalNegation(this, (String) f_visible);
-			Map<String, Object> f_visible_map = new HashMap<String, Object>();
-			f_visible_map.put("visible", false);
-			conditions.put(f_visible_cond, f_visible_map);
+			Condition f_visible_cond = OperationParser.getFinalCondition(this, f_visible.toString());
+			callbacks.add(info -> info.setVisible(f_visible_cond.process(info.getPlayer(), info)));
 		}
 
 		Object f_disabled = object.getOrDefault("disabled", false);
 		boolean disabled = false;
 		if (f_disabled instanceof Boolean) {
 			disabled = (Boolean) f_disabled;
+		} else if (f_disabled instanceof Predicate) {
+			callbacks.add(info -> info.setDisabled(((Predicate<PlayerItemInfo>) f_disabled).test(info)));
 		} else if (f_disabled instanceof String) {
-			Condition f_disabled_cond = OperationParser.getFinalNegation(this, (String) f_disabled);
-			Map<String, Object> f_disabled_map = new HashMap<String, Object>();
-			f_disabled_map.put("disabled", true);
-			conditions.put(f_disabled_cond, f_disabled_map);
+			Condition f_disabled_cond = OperationParser.getFinalCondition(this, f_disabled.toString());
+			callbacks.add(info -> info.setDisabled(f_disabled_cond.process(info.getPlayer(), info)));
 		}
 
 		if (object.containsKey("price") && !object.containsKey("price-type")) {
 			Object f_price = object.get("price");
 			String price = f_price.toString().trim();
-			int index = price.toLowerCase().indexOf("of");
-			if (index > 0 && price.length() > (index + 2)) {
+			int index = price.toLowerCase().indexOf(" of ");
+			if (index > 0 && price.length() > (index + 4)) {
 				try {
 					double pr = Double.parseDouble(price.substring(0, index).trim());
 					String price_type = price.substring(index + 2).trim();
@@ -868,8 +871,6 @@ public class SimpleInventories {
 			}
 		}
 
-		List<RenderCallback> callbacks = new ArrayList<>();
-
 		if (object.containsKey("rendercallbacks")) {
 			List<?> render = (List<?>) object.get("rendercallbacks");
 			for (Object o : render) {
@@ -885,7 +886,7 @@ public class SimpleInventories {
 			Object opt = object.get("options");
 			if (opt instanceof LocalOptions) {
 				options = (LocalOptions) opt;
-			} else if (opt instanceof  Map) {
+			} else if (opt instanceof Map) {
 				MemoryConfiguration memory = new MemoryConfiguration();
 				memory.addDefaults((Map<String, Object>) opt);
 				options = LocalOptions.deserialize(this.localOptions, memory);

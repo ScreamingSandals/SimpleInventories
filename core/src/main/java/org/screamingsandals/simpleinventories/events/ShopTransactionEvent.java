@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories.events;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import lombok.Getter;
@@ -66,20 +67,20 @@ public class ShopTransactionEvent extends Event implements Cancellable {
 		return this.player.getInventory().containsAtLeast(stack, stack.getAmount());
 	}
 	
-	public void sellStack() {
-		sellStack(this.stack);
+	public HashMap<Integer, ItemStack>  sellStack() {
+		return sellStack(this.stack);
 	}
 	
-	public void sellStack(ItemStack stack) {
-		this.player.getInventory().removeItem(stack);
+	public HashMap<Integer, ItemStack> sellStack(ItemStack stack) {
+		return this.player.getInventory().removeItem(stack);
 	}
 	
-	public void buyStack() {
-		buyStack(this.stack);
+	public HashMap<Integer, ItemStack>  buyStack() {
+		return buyStack(this.stack);
 	}
 	
-	public void buyStack(ItemStack stack) {
-		this.player.getInventory().addItem(stack);
+	public HashMap<Integer, ItemStack>  buyStack(ItemStack stack) {
+		return this.player.getInventory().addItem(stack);
 	}
 	
 	public List<ItemProperty> getProperties() {
