@@ -2,6 +2,7 @@ dependencies {
     implementation project(':SimpleInventories-Core')
 }
 
+project.tasks.getByName('detectSpigotMain').enabled = true
 project.tasks.getByName('generateSpigotDescription').enabled = true
 
 spigot {

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import kr.entree.spigradle.annotations.PluginMain;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,6 +15,7 @@ import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 import org.screamingsandals.simpleinventories.plugin.commands.SguiCommandExecutor;
 import org.screamingsandals.simpleinventories.plugin.config.Configurator;
 
+@PluginMain
 public class SimpleInventoriesPlugin extends JavaPlugin {
 	private static SimpleInventoriesPlugin instance;
 	private Map<String, Inventory> inventories;
