@@ -2,21 +2,15 @@ defaultTasks 'clean', 'screamCompile'
 
 allprojects {
     group = 'org.screamingsandals.simpleinventories'
-    version = '1.0.6'
+    version = '1.0.6.1'
 }
 
 buildscript {
     repositories {
-        jcenter()
-        maven {
-            url =  "https://plugins.gradle.org/m2/"
-        }
-        maven {
-            url = 'https://repo.screamingsandals.org'
-        }
+        maven { url 'https://repo.screamingsandals.org' }
     }
     dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.14'
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.15'
     }
 }
 
@@ -25,7 +19,7 @@ subprojects {
     apply plugin: 'org.screamingsandals.gradle.builder'
 
     repositories {
-        maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
+        maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
     }
     
     dependencies {

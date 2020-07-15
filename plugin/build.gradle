@@ -1,6 +1,8 @@
 dependencies {
-    implementation project(':SimpleInventories-Core')
+    shade project(':SimpleInventories-Core')
 }
+
+enableSpigradleSpigot()
 
 project.tasks.getByName('detectSpigotMain').enabled = true
 project.tasks.getByName('generateSpigotDescription').enabled = true

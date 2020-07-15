@@ -839,8 +839,8 @@ public class SimpleInventories {
 		if (object.containsKey("price") && !object.containsKey("price-type")) {
 			Object f_price = object.get("price");
 			String price = f_price.toString().trim();
-			int index = price.toLowerCase().indexOf(" of ");
-			if (index > 0 && price.length() > (index + 4)) {
+			int index = price.toLowerCase().indexOf("of");
+			if (index > 0 && price.length() > (index + 2)) {
 				try {
 					double pr = Double.parseDouble(price.substring(0, index).trim());
 					String price_type = price.substring(index + 2).trim();
