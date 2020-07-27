@@ -590,7 +590,9 @@ public class MaterialSearchEngine {
 	public static enum ATVTranslate {
 		CACTUS_GREEN("GREEN_DYE"),
 		DANDELION_YELLOW("YELLOW_DYE"),
-		ROSE_RED("RED_DYE");
+		ROSE_RED("RED_DYE"),
+		SIGN("OAK_SIGN"),
+		WALL_SIGN("OAK_WALL_SIGN");
 		
 		private String translate;
 	}
@@ -600,7 +602,19 @@ public class MaterialSearchEngine {
 	public static enum VTATranslate {
 		GREEN_DYE("CACTUS_GREEN"),
 		YELLOW_DYE("DANDELION_YELLOW"),
-		RED_DYE("ROSE_RED");
+		RED_DYE("ROSE_RED"),
+		OAK_SIGN("SIGN"),
+		BIRCH_SIGN("SIGN"),
+		DARK_OAK_SIGN("SIGN"),
+		JUNGLE_SIGN("SIGN"),
+		SPRUCE_SIGN("SIGN"),
+		ACACIA_SIGN("SIGN"),
+		OAK_WALL_SIGN("WALL_SIGN"),
+		BIRCH_WALL_SIGN("WALL_SIGN"),
+		DARK_OAK_WALL_SIGN("WALL_SIGN"),
+		JUNGLE_WALL_SIGN("WALL_SIGN"),
+		SPRUCE_WALL_SIGN("WALL_SIGN"),
+		ACACIA_WALL_SIGN("WALL_SIGN");
 		
 		private String translate;
 	}
