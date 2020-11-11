@@ -478,14 +478,6 @@ public class AnvilGUI implements Inventory {
 
     }
 
-    /**
-     *
-     * Created by PhilipsNostrum
-     *
-     * Cleaned up & useNewVersion-added by Gecolay
-     *
-     **/
-
     public static class NMSManager {
 
         public static final Map<Class<?>, Class<?>> CORRESPONDING_TYPES = new HashMap<Class<?>, Class<?>>();
