@@ -2,15 +2,15 @@ defaultTasks 'clean', 'screamCompile'
 
 allprojects {
     group = 'org.screamingsandals.simpleinventories'
-    version = '1.0.6.3'
+    version = '1.0.6.4'
 }
 
 buildscript {
     repositories {
-        maven { url 'https://repo.screamingsandals.org/repository/maven-public/' }
+        maven { url 'https://repo.screamingsandals.org/public/' }
     }
     dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.24'
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.29'
     }
 }
 
