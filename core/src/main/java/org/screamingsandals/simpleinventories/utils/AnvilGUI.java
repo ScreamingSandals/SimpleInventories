@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.simpleinventories.inventory.GuiHolder;
 
-/**
+/*
  *
  * Created by chasechocolate
  *
@@ -37,7 +37,7 @@ import org.screamingsandals.simpleinventories.inventory.GuiHolder;
  *
  * Cleaned up, Content upgrade & Edited to use in V1_14 by Gecolay
  *
- **/
+ */
 
 public class AnvilGUI implements Inventory {
 
