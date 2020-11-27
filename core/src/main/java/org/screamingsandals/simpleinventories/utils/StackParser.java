@@ -11,6 +11,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.Repairable;
@@ -261,64 +262,39 @@ public class StackParser {
 		if (obj.containsKey("enchants")) {
 			if (obj.get("enchants") instanceof List) {
 				for (Object en : (List<Object>) obj.get("enchants")) {
-					if (en instanceof Enchantment) {
-						Enchantment ench = (Enchantment) en;
-						if (!meta.hasEnchant(ench)) {
-							meta.addEnchant(ench, 1, true);
-						}
-					} else {
-						String ob = en.toString();
-
-						if (ob.equals("SWEEPING")) {
-							ob = "SWEEPING_EDGE";
-						}
-						Enchantment ench = Enchantment.getByName(ob);
-						if (ench != null && !meta.hasEnchant(ench)) {
+					Enchantment ench = EnchantmentSearchEngine.searchEnchantment(en);
+					if (ench != null && !meta.hasEnchant(ench)) {
+						if (meta instanceof EnchantmentStorageMeta) {
+							((EnchantmentStorageMeta) meta).addStoredEnchant(ench, 1, true);
+						} else {
 							meta.addEnchant(ench, 1, true);
 						}
 					}
 				}
 			} else if (obj.get("enchants") instanceof Map) {
 				for (Map.Entry<Object, Object> entry : ((Map<Object, Object>) obj.get("enchants")).entrySet()) {
-					if (entry.getKey() instanceof Enchantment) {
-						Enchantment ench = (Enchantment) entry.getKey();
-						int i = 1;
-						try {
-							i = ((Number) entry.getValue()).intValue();
-						} catch (Throwable t) {
-						}
-						if (!meta.hasEnchant(ench)) {
-							meta.addEnchant(ench, i, true);
-						}
-					} else {
-						String ob = entry.getKey().toString();
-						if (ob.equals("SWEEPING")) {
-							ob = "SWEEPING_EDGE";
-						}
-						Enchantment ench = Enchantment.getByName(ob);
-						int i = 1;
-						try {
-							i = ((Number) entry.getValue()).intValue();
-						} catch (Throwable t) {
-						}
-						if (ench != null && !meta.hasEnchant(ench)) {
+					Enchantment ench = EnchantmentSearchEngine.searchEnchantment(entry.getKey());
+					int i = 1;
+					try {
+						i = ((Number) entry.getValue()).intValue();
+					} catch (Throwable t) {
+					}
+					if (ench != null && !meta.hasEnchant(ench)) {
+						if (meta instanceof EnchantmentStorageMeta) {
+							((EnchantmentStorageMeta) meta).addStoredEnchant(ench, i, true);
+						} else {
 							meta.addEnchant(ench, i, true);
 						}
 					}
 				}
-			} else if (obj.get("enchants") instanceof Enchantment) {
-				Enchantment ench = (Enchantment) (obj.get("enchants"));
-				if (!meta.hasEnchant(ench)) {
-					meta.addEnchant(ench, 1, true);
-				}
 			} else {
-				String ob =  obj.get("enchants").toString();
-				if (ob.equals("SWEEPING")) {
-					ob = "SWEEPING_EDGE";
-				}
-				Enchantment ench = Enchantment.getByName(ob);
+				Enchantment ench = EnchantmentSearchEngine.searchEnchantment(obj.get("enchants"));
 				if (ench != null && meta.hasEnchant(ench)) {
-					meta.addEnchant(ench, 1, true);
+					if (meta instanceof EnchantmentStorageMeta) {
+						((EnchantmentStorageMeta) meta).addStoredEnchant(ench, 1, true);
+					} else {
+						meta.addEnchant(ench, 1, true);
+					}
 				}
 			}
 		}

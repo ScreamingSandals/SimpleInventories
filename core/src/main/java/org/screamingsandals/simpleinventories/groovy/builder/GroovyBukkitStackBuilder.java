@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
+import org.screamingsandals.simpleinventories.utils.EnchantmentSearchEngine;
 import org.screamingsandals.simpleinventories.utils.PotionTypeSearchEngine;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
@@ -102,17 +103,16 @@ public class GroovyBukkitStackBuilder implements IGroovyStackBuilder {
 
     @Override
     public void enchant(String enchant, int level) {
-        if (enchant.equals("SWEEPING")) {
-            enchant = "SWEEPING_EDGE";
-        }
-        enchant(Enchantment.getByName(enchant), level);
+        enchant(EnchantmentSearchEngine.searchEnchantment(enchant), level);
     }
 
     @Override
     public void enchant(Enchantment enchant, int level) {
-        ItemMeta meta = stack.getItemMeta();
-        meta.addEnchant(enchant, level, true);
-        stack.setItemMeta(meta);
+        if (enchant != null) {
+            ItemMeta meta = stack.getItemMeta();
+            meta.addEnchant(enchant, level, true);
+            stack.setItemMeta(meta);
+        }
     }
 
     @Override

@@ -109,9 +109,7 @@ public class SimpleInventories {
 		placeholders.put("player", new PlayerPlaceholderParser());
 		placeholders.put("permission", new PermissionPlaceholderParser());
 		placeholders.put("world", new WorldPlaceholderParser());
-		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			placeholders.put("papi", new PAPIPlaceholderParser());
-		}
+		placeholders.put("papi", new PAPIPlaceholderParser());
 
 		/* ADVANCED PLACEHOLDERS */
 		AdvancedPlaceholderParser thisParser = new ThisPlaceholderParser();
