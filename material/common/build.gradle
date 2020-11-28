@@ -1,3 +1,0 @@
-dependencies {
-    compileOnly paper("1.16.4")
-}
