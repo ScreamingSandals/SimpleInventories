@@ -1,5 +1,6 @@
 dependencies {
-    shade project(':SimpleInventories-Core')
+    shade project(':core-bukkit')
+    compileOnly paper("1.16.4")
 }
 
 enableSpigradleSpigot()

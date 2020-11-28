@@ -187,6 +187,10 @@ public class AnvilGUI implements Inventory {
         return 0;
     }
 
+    public boolean isEmpty() {
+        return false;
+    }
+
     @Override
     public void remove(@NotNull Material material) throws IllegalArgumentException {
 

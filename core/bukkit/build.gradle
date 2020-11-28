@@ -3,4 +3,5 @@ dependencies {
     compileOnly 'org.codehaus.groovy:groovy:3.0.3'
     compileOnly 'me.clip:placeholderapi:2.10.4'
     compileOnly 'io.netty:netty-all:4.1.42.Final'
+    compileOnly paper("1.16.4")
 }
