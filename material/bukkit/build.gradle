@@ -1,4 +1,5 @@
 dependencies {
+    shade project(':utils')
     shade project(':material-common')
     compileOnly paper("1.16.4")
 }

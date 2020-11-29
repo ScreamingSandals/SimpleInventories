@@ -3,8 +3,13 @@ package org.screamingsandals.simpleinventories.bukkit.material;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.screamingsandals.simpleinventories.material.MaterialHolder;
 import org.screamingsandals.simpleinventories.material.MaterialMapping;
 import org.screamingsandals.simpleinventories.material.Platform;
+import org.screamingsandals.simpleinventories.utils.OneWayTypeConverter;
 
 import java.util.Arrays;
 
@@ -27,12 +32,28 @@ public class BukkitMaterialMapping extends MaterialMapping {
 
         platform = versionNumber < 113 ? Platform.JAVA_LEGACY : Platform.JAVA_FLATTENING;
 
-        Arrays.stream(Material.values()).filter(t -> !t.name().startsWith("LEGACY")).forEach(material -> {
-            if (platform == Platform.JAVA_FLATTENING) {
-                materialMapping.put(material.name().toUpperCase(), new BukkitFlatteningMaterial(material.name()));
-            } else {
-                materialMapping.put(material.name().toUpperCase(), new BukkitLegacyMaterial(material.name()));
-            }
-        });
+        materialHolderConverter = OneWayTypeConverter.<MaterialHolder>builder()
+                .convertor(Material.class, holder -> Material.valueOf(holder.getPlatformName()))
+                .convertor(String.class, MaterialHolder::getPlatformName)
+                .convertor(ItemStack.class, holder -> {
+                    if (platform == Platform.JAVA_FLATTENING) {
+                        ItemStack stack = new ItemStack(Material.valueOf(holder.getPlatformName()));
+                        ItemMeta meta = stack.getItemMeta();
+                        if (meta instanceof Damageable) {
+                            ((Damageable) meta).setDamage(holder.getDurability());
+                            stack.setItemMeta(meta);
+                        }
+                        return stack;
+                    } else if (platform == Platform.JAVA_LEGACY) {
+                        return new ItemStack(Material.valueOf(holder.getPlatformName()), 1, holder.getDurability());
+                    } else {
+                        throw new UnsupportedOperationException("Unknown platform!");
+                    }
+                })
+                .construct();
+
+        Arrays.stream(Material.values()).filter(t -> !t.name().startsWith("LEGACY")).forEach(material ->
+                materialMapping.put(material.name().toUpperCase(), new MaterialHolder(material.name()))
+        );
     }
 }

@@ -3,6 +3,7 @@
  */
 
 rootProject.name = 'SimpleInventories-parent'
+include 'utils'
 include(':material-common')
 project(':material-common').projectDir = file('material/common')
 include(':material-bukkit')
