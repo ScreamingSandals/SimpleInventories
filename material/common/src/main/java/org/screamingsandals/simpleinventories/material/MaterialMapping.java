@@ -86,8 +86,6 @@ public abstract class MaterialMapping {
         // Legacy remapping
         f2l("AIR", 0);
 
-        // TODO: think how to map more legacy names
-
         f2l("STONE", 1);
         f2l("GRANITE", "STONE", 1, (byte) 1);
         f2l("POLISHED_GRANITE", "STONE", 1, (byte) 2);
@@ -96,7 +94,7 @@ public abstract class MaterialMapping {
         f2l("ANDESITE", "STONE", 1, (byte) 5);
         f2l("POLISHED_ANDESITE", "STONE", 1, (byte) 6);
 
-        f2l("GRASS_BLOCK", "GRASS", 2);
+        f2l("GRASS_BLOCK", "GRASS", 2); // collision
 
         f2l("DIRT", 3);
         f2l("COARSE_DIRT", "DIRT", 3, (byte) 1);
@@ -104,20 +102,12 @@ public abstract class MaterialMapping {
 
         f2l("COBBLESTONE", 4);
 
-        // Bukkit mapping
-        f2l("OAK_PLANKS", "WOOD", 5);
-        f2l("SPRUCE_PLANKS", "WOOD", 5, (byte) 1);
-        f2l("BIRCH_PLANKS", "WOOD", 5, (byte) 2);
-        f2l("JUNGLE_PLANKS", "WOOD", 5, (byte) 3);
-        f2l("ACACIA_PLANKS", "WOOD", 5, (byte) 4);
-        f2l("DARK_OAK_PLANKS", "WOOD", 5, (byte) 5);
-        // Minecraft mapping
-        f2l("OAK_PLANKS", "PLANKS", 5);
-        f2l("SPRUCE_PLANKS", "PLANKS", 5, (byte) 1);
-        f2l("BIRCH_PLANKS", "PLANKS", 5, (byte) 2);
-        f2l("JUNGLE_PLANKS", "PLANKS", 5, (byte) 3);
-        f2l("ACACIA_PLANKS", "PLANKS", 5, (byte) 4);
-        f2l("DARK_OAK_PLANKS", "PLANKS", 5, (byte) 5);
+        f2l("OAK_PLANKS", "WOOD", 5, "PLANKS");
+        f2l("SPRUCE_PLANKS", "WOOD", 5, (byte) 1, "PLANKS");
+        f2l("BIRCH_PLANKS", "WOOD", 5, (byte) 2, "PLANKS");
+        f2l("JUNGLE_PLANKS", "WOOD", 5, (byte) 3, "PLANKS");
+        f2l("ACACIA_PLANKS", "WOOD", 5, (byte) 4, "PLANKS");
+        f2l("DARK_OAK_PLANKS", "WOOD", 5, (byte) 5, "PLANKS");
 
         f2l("OAK_SAPLING", "SAPLING", 6);
         f2l("SPRUCE_SAPLING", "SAPLING", 6, (byte) 1);
@@ -167,25 +157,17 @@ public abstract class MaterialMapping {
         f2l("CHISELED_SANDSTONE", "SANDSTONE", 24, (byte) 1);
         f2l("CUT_SANDSTONE", "SANDSTONE", 24, (byte) 2);
 
-        // Bukkit mapping
-        f2l("NOTE_BLOCK", 25);
-        // Minecraft mapping
-        f2l("NOTE_BLOCK", "NOTEBLOCK", 25);
-
+        f2l("NOTE_BLOCK", 25, "NOTEBLOCK");
         //f2l("", "BED_BLOCK", 26, (byte) 0); // collision
-
-        // Bukkit mapping
-        f2l("POWERED_RAIL", 27);
-        // Minecraft mapping
-        f2l("GOLDEN_RAIL", "POWERED_RAIL", 27);
-
-        /*f2l("", "DETECTOR_RAIL", 28, (byte) 0);
-        f2l("", "PISTON_STICKY_BASE", 29, (byte) 0);
-        f2l("", "WEB", 30, (byte) 0);
-        f2l("", "LONG_GRASS", 31, (byte) 0);
-        f2l("", "DEAD_BUSH", 32, (byte) 0);
-        f2l("", "PISTON_BASE", 33, (byte) 0);
-        f2l("", "PISTON_EXTENSION", 34, (byte) 0);
+        f2l("POWERED_RAIL", 27, "GOLDEN_RAIL");
+        f2l("DETECTOR_RAIL", 28);
+        f2l("STICKY_PISTON", 29, "PISTON_STICKY_BASE");
+        f2l("COBWEB", "WEB", 30);
+        f2l("GRASS", "LONG_GRASS", 31, "TALLGRASS"); // collision
+        f2l("DEAD_BUSH", 32, "DEADBUSH");
+        f2l("PISTON", 33, "PISTON_BASE");
+        f2l("PISTON_HEAD", "PISTON_EXTENSION", 34);
+/*
         f2l("", "WOOL", 35, (byte) 0);
         f2l("", "PISTON_MOVING_PIECE", 36, (byte) 0);
         f2l("", "YELLOW_FLOWER", 37, (byte) 0);
@@ -637,6 +619,9 @@ public abstract class MaterialMapping {
     }
 
     private void f2f(String material, String material2) {
+        if (material == null || material2 == null) {
+            throw new IllegalArgumentException("Both flattening and legacy materials mustn't be null!");
+        }
         if (materialMapping.containsKey(material.toUpperCase()) && !materialMapping.containsKey(material2.toUpperCase())) {
             materialMapping.put(material2.toUpperCase(), materialMapping.get(material.toUpperCase()));
         } else if (materialMapping.containsKey(material2.toUpperCase()) && !materialMapping.containsKey(material.toUpperCase())) {
@@ -649,24 +634,69 @@ public abstract class MaterialMapping {
         f2l(material, material, legacyId);
     }
 
+    private void f2l(String material, int legacyId, String alternativeLegacyName) {
+        f2l(material, material, legacyId, alternativeLegacyName);
+    }
+
     /* For Materials where the name is changed */
     private void f2l(String flatteningMaterial, String legacyMaterial, int legacyId) {
         f2l(flatteningMaterial, legacyMaterial, legacyId, (byte) 0);
     }
+
+    private void f2l(String flatteningMaterial, String legacyMaterial, int legacyId, String alternativeLegacyName) {
+        f2l(flatteningMaterial, legacyMaterial, legacyId, (byte) 0, alternativeLegacyName);
+    }
+
     /* For Materials where the name is changed and data is not zero*/
     private void f2l(String flatteningMaterial, String legacyMaterial, int legacyId, byte data) {
+        f2l(flatteningMaterial, legacyMaterial, legacyId, data, null);
+    }
+
+    private void f2l(String flatteningMaterial, String legacyMaterial, int legacyId, byte data, String alternativeLegacyName) {
+        if (flatteningMaterial == null || legacyMaterial == null) {
+            throw new IllegalArgumentException("Both flattening and legacy materials mustn't be null!");
+        }
         flatteningMaterial = flatteningMaterial.toUpperCase();
         legacyMaterial = legacyMaterial.toUpperCase();
+        if (alternativeLegacyName != null) {
+            alternativeLegacyName = alternativeLegacyName.toUpperCase();
+            if (alternativeLegacyName.equals(legacyMaterial)) {
+                alternativeLegacyName = null;
+            }
+        }
+
         MaterialHolder holder = null;
-        if (platform.isUsingLegacyNames() && materialMapping.containsKey(legacyMaterial)) {
-            holder = materialMapping.get(legacyMaterial).newDurability(data);
-            if (!materialMapping.containsKey(flatteningMaterial) && !flatteningMaterial.equals(legacyMaterial)) {
-                materialMapping.put(flatteningMaterial, holder);
+        if (platform.isUsingLegacyNames() && (materialMapping.containsKey(legacyMaterial) || (alternativeLegacyName != null && materialMapping.containsKey(alternativeLegacyName)))) {
+            if (materialMapping.containsKey(legacyMaterial)) {
+                holder = materialMapping.get(legacyMaterial).newDurability(data);
+                if (!materialMapping.containsKey(flatteningMaterial) && !flatteningMaterial.equals(legacyMaterial)) {
+                    materialMapping.put(flatteningMaterial, holder);
+                }
+                if (data == 0 && alternativeLegacyName != null && !materialMapping.containsKey(alternativeLegacyName)) {
+                    materialMapping.put(alternativeLegacyName, holder);
+                }
+                if (alternativeLegacyName != null && !materialMapping.containsKey(alternativeLegacyName + ":" + data)) {
+                    materialMapping.put(alternativeLegacyName + ":" + data, holder);
+                }
+            } else if (alternativeLegacyName != null && materialMapping.containsKey(alternativeLegacyName)) {
+                holder = materialMapping.get(alternativeLegacyName).newDurability(data);
+                if (!materialMapping.containsKey(flatteningMaterial) && !flatteningMaterial.equals(legacyMaterial)) {
+                    materialMapping.put(flatteningMaterial, holder);
+                }
+                if (data == 0 && !materialMapping.containsKey(legacyMaterial)) {
+                    materialMapping.put(legacyMaterial, holder);
+                }
+                if (!materialMapping.containsKey(legacyMaterial + ":" + data)) {
+                    materialMapping.put(legacyMaterial + ":" + data, holder);
+                }
             }
         } else if (!platform.isUsingLegacyNames() && materialMapping.containsKey(flatteningMaterial)) {
             holder = materialMapping.get(flatteningMaterial);
             if (!materialMapping.containsKey(legacyMaterial) && !flatteningMaterial.equals(legacyMaterial)) {
                 materialMapping.put(legacyMaterial, holder);
+            }
+            if (alternativeLegacyName != null && !materialMapping.containsKey(alternativeLegacyName) && !flatteningMaterial.equals(alternativeLegacyName)) {
+                materialMapping.put(alternativeLegacyName, holder);
             }
         }
 
