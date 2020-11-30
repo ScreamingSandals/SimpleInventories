@@ -8,7 +8,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.simpleinventories.material.MaterialHolder;
 import org.screamingsandals.simpleinventories.material.MaterialMapping;
-import org.screamingsandals.simpleinventories.material.Platform;
+import org.screamingsandals.simpleinventories.utils.Platform;
 import org.screamingsandals.simpleinventories.utils.OneWayTypeConverter;
 
 import java.util.Arrays;

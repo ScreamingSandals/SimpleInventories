@@ -1,9 +1,9 @@
 package org.screamingsandals.simpleinventories.material;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.screamingsandals.simpleinventories.utils.OneWayTypeConverter;
+import org.screamingsandals.simpleinventories.utils.Platform;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -119,8 +119,8 @@ public abstract class MaterialMapping {
         f2l("BEDROCK", 7);
 
         // flowing_water and water can't be properly translated. same thing is for lava
-        f2l("WATER", 9);
-        f2l("LAVA", 11);
+        //f2l("WATER", 9); - only block (blocks will be supported later), bukkit mapping collision
+        //f2l("LAVA", 11); - only block (blocks will be supported later), bukkit mapping collision
 
         f2l("SAND", 12);
         f2l("RED_SAND", "SAND", 12, (byte) 1);
@@ -158,7 +158,7 @@ public abstract class MaterialMapping {
         f2l("CUT_SANDSTONE", "SANDSTONE", 24, (byte) 2);
 
         f2l("NOTE_BLOCK", 25, "NOTEBLOCK");
-        //f2l("", "BED_BLOCK", 26, (byte) 0); // collision
+        //f2l("", "BED_BLOCK", 26, (byte) 0); - only block (blocks will be supported later), bukkit mapping collision
         f2l("POWERED_RAIL", 27, "GOLDEN_RAIL");
         f2l("DETECTOR_RAIL", 28);
         f2l("STICKY_PISTON", 29, "PISTON_STICKY_BASE");
@@ -166,153 +166,219 @@ public abstract class MaterialMapping {
         f2l("GRASS", "LONG_GRASS", 31, "TALLGRASS"); // collision
         f2l("DEAD_BUSH", 32, "DEADBUSH");
         f2l("PISTON", 33, "PISTON_BASE");
-        f2l("PISTON_HEAD", "PISTON_EXTENSION", 34);
-/*
-        f2l("", "WOOL", 35, (byte) 0);
-        f2l("", "PISTON_MOVING_PIECE", 36, (byte) 0);
-        f2l("", "YELLOW_FLOWER", 37, (byte) 0);
-        f2l("", "RED_ROSE", 38, (byte) 0);
-        f2l("", "BROWN_MUSHROOM", 39, (byte) 0);
-        f2l("", "RED_MUSHROOM", 40, (byte) 0);
-        f2l("", "GOLD_BLOCK", 41, (byte) 0);
-        f2l("", "IRON_BLOCK", 42, (byte) 0);
-        f2l("", "DOUBLE_STEP", 43, (byte) 0);
-        f2l("", "STEP", 44, (byte) 0);
-        f2l("", "BRICK", 45, (byte) 0);
-        f2l("", "TNT", 46, (byte) 0);
-        f2l("", "BOOKSHELF", 47, (byte) 0);
-        f2l("", "MOSSY_COBBLESTONE", 48, (byte) 0);
-        f2l("", "OBSIDIAN", 49, (byte) 0);
-        f2l("", "TORCH", 50, (byte) 0);
-        f2l("", "FIRE", 51, (byte) 0);
-        f2l("", "MOB_SPAWNER", 52, (byte) 0);
-        f2l("", "WOOD_STAIRS", 53, (byte) 0);
-        f2l("", "CHEST", 54, (byte) 0);
-        f2l("", "REDSTONE_WIRE", 55, (byte) 0);
-        f2l("", "DIAMOND_ORE", 56, (byte) 0);
-        f2l("", "DIAMOND_BLOCK", 57, (byte) 0);
-        f2l("", "WORKBENCH", 58, (byte) 0);
-        f2l("", "CROPS", 59, (byte) 0);
-        f2l("", "SOIL", 60, (byte) 0);
-        f2l("", "FURNACE", 61, (byte) 0);
-        f2l("", "BURNING_FURNACE", 62, (byte) 0);
-        f2l("", "SIGN_POST", 63, (byte) 0);
-        f2l("", "WOODEN_DOOR", 64, (byte) 0);
-        f2l("", "LADDER", 65, (byte) 0);
-        f2l("", "RAILS", 66, (byte) 0);
-        f2l("", "COBBLESTONE_STAIRS", 67, (byte) 0);
-        f2l("", "WALL_SIGN", 68, (byte) 0);
-        f2l("", "LEVER", 69, (byte) 0);
-        f2l("", "STONE_PLATE", 70, (byte) 0);
-        f2l("", "IRON_DOOR_BLOCK", 71, (byte) 0);
-        f2l("", "WOOD_PLATE", 72, (byte) 0);
-        f2l("", "REDSTONE_ORE", 73, (byte) 0);
-        f2l("", "GLOWING_REDSTONE_ORE", 74, (byte) 0);
-        f2l("", "REDSTONE_TORCH_OFF", 75, (byte) 0);
-        f2l("", "REDSTONE_TORCH_ON", 76, (byte) 0);
-        f2l("", "STONE_BUTTON", 77, (byte) 0);
-        f2l("", "SNOW", 78, (byte) 0);
-        f2l("", "ICE", 79, (byte) 0);
-        f2l("", "SNOW_BLOCK", 80, (byte) 0);
-        f2l("", "CACTUS", 81, (byte) 0);
-        f2l("", "CLAY", 82, (byte) 0);
-        f2l("", "SUGAR_CANE_BLOCK", 83, (byte) 0);
-        f2l("", "JUKEBOX", 84, (byte) 0);
-        f2l("", "FENCE", 85, (byte) 0);
-        f2l("", "PUMPKIN", 86, (byte) 0);
-        f2l("", "NETHERRACK", 87, (byte) 0);
-        f2l("", "SOUL_SAND", 88, (byte) 0);
-        f2l("", "GLOWSTONE", 89, (byte) 0);
-        f2l("", "PORTAL", 90, (byte) 0);
-        f2l("", "JACK_O_LANTERN", 91, (byte) 0);
-        f2l("", "CAKE_BLOCK", 92, (byte) 0);
-        f2l("", "DIODE_BLOCK_OFF", 93, (byte) 0);
-        f2l("", "DIODE_BLOCK_ON", 94, (byte) 0);
-        f2l("", "STAINED_GLASS", 95, (byte) 0);
-        f2l("", "TRAP_DOOR", 96, (byte) 0);
-        f2l("", "MONSTER_EGGS", 97, (byte) 0);
-        f2l("", "SMOOTH_BRICK", 98, (byte) 0);
-        f2l("", "HUGE_MUSHROOM_1", 99, (byte) 0);
-        f2l("", "HUGE_MUSHROOM_2", 100, (byte) 0);
-        f2l("", "IRON_FENCE", 101, (byte) 0);
-        f2l("", "THIN_GLASS", 102, (byte) 0);
-        f2l("", "MELON_BLOCK", 103, (byte) 0);
-        f2l("", "PUMPKIN_STEM", 104, (byte) 0);
-        f2l("", "MELON_STEM", 105, (byte) 0);
-        f2l("", "VINE", 106, (byte) 0);
-        f2l("", "FENCE_GATE", 107, (byte) 0);
-        f2l("", "BRICK_STAIRS", 108, (byte) 0);
-        f2l("", "SMOOTH_STAIRS", 109, (byte) 0);
-        f2l("", "MYCEL", 110, (byte) 0);
-        f2l("", "WATER_LILY", 111, (byte) 0);
-        f2l("", "NETHER_BRICK", 112, (byte) 0);
-        f2l("", "NETHER_FENCE", 113, (byte) 0);
-        f2l("", "NETHER_BRICK_STAIRS", 114, (byte) 0);
-        f2l("", "NETHER_WARTS", 115, (byte) 0);
-        f2l("", "ENCHANTMENT_TABLE", 116, (byte) 0);
-        f2l("", "BREWING_STAND", 117, (byte) 0);
-        f2l("", "CAULDRON", 118, (byte) 0);
-        f2l("", "ENDER_PORTAL", 119, (byte) 0);
-        f2l("", "ENDER_PORTAL_FRAME", 120, (byte) 0);
-        f2l("", "ENDER_STONE", 121, (byte) 0);
-        f2l("", "DRAGON_EGG", 122, (byte) 0);
-        f2l("", "REDSTONE_LAMP_OFF", 123, (byte) 0);
-        f2l("", "REDSTONE_LAMP_ON", 124, (byte) 0);
-        f2l("", "WOOD_DOUBLE_STEP", 125, (byte) 0);
-        f2l("", "WOOD_STEP", 126, (byte) 0);
-        f2l("", "COCOA", 127, (byte) 0);
-        f2l("", "SANDSTONE_STAIRS", 128, (byte) 0);
-        f2l("", "EMERALD_ORE", 129, (byte) 0);
-        f2l("", "ENDER_CHEST", 130, (byte) 0);
-        f2l("", "TRIPWIRE_HOOK", 131, (byte) 0);
-        f2l("", "TRIPWIRE", 132, (byte) 0);
-        f2l("", "EMERALD_BLOCK", 133, (byte) 0);
-        f2l("", "SPRUCE_WOOD_STAIRS", 134, (byte) 0);
-        f2l("", "BIRCH_WOOD_STAIRS", 135, (byte) 0);
-        f2l("", "JUNGLE_WOOD_STAIRS", 136, (byte) 0);
-        f2l("", "COMMAND", 137, (byte) 0);
-        f2l("", "BEACON", 138, (byte) 0);
-        f2l("", "COBBLE_WALL", 139, (byte) 0);
-        f2l("", "FLOWER_POT", 140, (byte) 0);
-        f2l("", "CARROT", 141, (byte) 0);
-        f2l("", "POTATO", 142, (byte) 0);
-        f2l("", "WOOD_BUTTON", 143, (byte) 0);
-        f2l("", "SKULL", 144, (byte) 0);
-        f2l("", "ANVIL", 145, (byte) 0);
-        f2l("", "TRAPPED_CHEST", 146, (byte) 0);
-        f2l("", "GOLD_PLATE", 147, (byte) 0);
-        f2l("", "IRON_PLATE", 148, (byte) 0);
-        f2l("", "REDSTONE_COMPARATOR_OFF", 149, (byte) 0);
-        f2l("", "REDSTONE_COMPARATOR_ON", 150, (byte) 0);
-        f2l("", "DAYLIGHT_DETECTOR", 151, (byte) 0);
-        f2l("", "REDSTONE_BLOCK", 152, (byte) 0);
-        f2l("", "QUARTZ_ORE", 153, (byte) 0);
-        f2l("", "HOPPER", 154, (byte) 0);
-        f2l("", "QUARTZ_BLOCK", 155, (byte) 0);
-        f2l("", "QUARTZ_STAIRS", 156, (byte) 0);
-        f2l("", "ACTIVATOR_RAIL", 157, (byte) 0);
-        f2l("", "DROPPER", 158, (byte) 0);
-        f2l("", "STAINED_CLAY", 159, (byte) 0);
-        f2l("", "STAINED_GLASS_PANE", 160, (byte) 0);
-        f2l("", "LEAVES_2", 161, (byte) 0);
-        f2l("", "LOG_2", 162, (byte) 0);
-        f2l("", "ACACIA_STAIRS", 163, (byte) 0);
-        f2l("", "DARK_OAK_STAIRS", 164, (byte) 0);
-        f2l("", "SLIME_BLOCK", 165, (byte) 0);
-        f2l("", "BARRIER", 166, (byte) 0);
-        f2l("", "IRON_TRAPDOOR", 167, (byte) 0);
-        f2l("", "PRISMARINE", 168, (byte) 0);
-        f2l("", "SEA_LANTERN", 169, (byte) 0);
-        f2l("", "HAY_BLOCK", 170, (byte) 0);
-        f2l("", "CARPET", 171, (byte) 0);
-        f2l("", "HARD_CLAY", 172, (byte) 0);
-        f2l("", "COAL_BLOCK", 173, (byte) 0);
-        f2l("", "PACKED_ICE", 174, (byte) 0);
-        f2l("", "DOUBLE_PLANT", 175, (byte) 0);
-        f2l("", "STANDING_BANNER", 176, (byte) 0);
-        f2l("", "WALL_BANNER", 177, (byte) 0);
-        f2l("", "DAYLIGHT_DETECTOR_INVERTED", 178, (byte) 0);
-        f2l("", "RED_SANDSTONE", 179, (byte) 0);
+        //f2l("PISTON_HEAD", 34, "PISTON_EXTENSION"); - only block (blocks will be supported later), bukkit mapping collision
+        f2lcolored("WOOL", 35);
+        //f2l("MOVING_PISTON", "PISTON_EXTENSION", 36, (byte) 0, "PISTON_MOVING_PIECE"); - only block (blocks will be supported later), bukkit mapping collision
+        f2l("DANDELION", "YELLOW_FLOWER", 37, (byte) 0);
+
+        f2l("POPPY", "RED_FLOWER", 38, "RED_ROSE");
+        f2l("BLUE_ORCHID", "RED_FLOWER", 38, (byte) 1,"RED_ROSE");
+        f2l("ALLIUM", "RED_FLOWER", 38, (byte) 2,"RED_ROSE");
+        f2l("AZURE_BLUET", "RED_FLOWER", 38, (byte) 3,"RED_ROSE");
+        f2l("RED_TULIP", "RED_FLOWER", 38, (byte) 4,"RED_ROSE");
+        f2l("ORANGE_TULIP", "RED_FLOWER", 38, (byte) 5,"RED_ROSE");
+        f2l("WHITE_TULIP", "RED_FLOWER", 38, (byte) 6,"RED_ROSE");
+        f2l("PINK_TULIP", "RED_FLOWER", 38, (byte) 7,"RED_ROSE");
+        f2l("OXEYE_DAISY", "RED_FLOWER", 38, (byte) 8,"RED_ROSE");
+
+        f2l("BROWN_MUSHROOM", 39);
+        f2l("RED_MUSHROOM", 40);
+        f2l("GOLD_BLOCK", 41);
+        f2l("IRON_BLOCK", 42);
+
+        //f2l("", "DOUBLE_STONE_SLAB", 43, (byte) 0, "DOUBLE_STEP"); - only block (blocks will be supported later)
+
+        f2l("SMOOTH_STONE_SLAB", "STONE_SLAB", 44, (byte) 0, "STEP");
+        f2l("SANDSTONE_SLAB", "STONE_SLAB", 44, (byte) 1, "STEP");
+        f2l("PETRIFIED_OAK_SLAB", "STONE_SLAB", 44, (byte) 2, "STEP");
+        f2l("COBBLESTONE_SLAB", "STONE_SLAB", 44, (byte) 3, "STEP");
+        f2l("BRICK_SLAB", "STONE_SLAB", 44, (byte) 4, "STEP");
+        f2l("STONE_BRICK_SLAB", "STONE_SLAB", 44, (byte) 5, "STEP");
+        f2l("NETHER_BRICK_SLAB", "STONE_SLAB", 44, (byte) 6, "STEP");
+        f2l("QUARTZ_SLAB", "STONE_SLAB", 44, (byte) 7, "STEP");
+
+        f2l("BRICKS", "BRICK_BLOCK", 45, "BRICK");
+        f2l("TNT", 46);
+        f2l("BOOKSHELF", 47);
+        f2l("MOSSY_COBBLESTONE", 48);
+        f2l( "OBSIDIAN", 49);
+        f2l("TORCH", 50);
+        // flattening WALL_TORCH - only block (blocks will be supported later)
+        //f2l( "FIRE", 51); - only block (blocks will be supported later)
+        f2l("SPAWNER", "MOB_SPAWNER", 52);
+        f2l("OAK_STAIRS", "WOOD_STAIRS", 53);
+        f2l( "CHEST", 54);
+        //f2l("", "REDSTONE_WIRE", 55, (byte) 0); - block only
+        f2l("DIAMOND_ORE", 56);
+        f2l("DIAMOND_BLOCK", 57);
+        f2l("CRAFTING_TABLE", 58, "WORKBENCH");
+        //f2l("WHEAT", 59, "CROPS");
+        f2l("FARMLAND", 60, "SOIL");
+        f2l("FURNACE", 61);
+        //f2l("", "LIT_FURNACE", 62, (byte) 0, "BURNING_FURNACE"); - block only
+        //f2l("", "STANDING_SIGN", 63, "SIGN_POST"); - block only
+        //f2l("", "WOODEN_DOOR", 64, (byte) 0); - block only
+        f2l("LADDER", 65);
+        f2l("RAIL", 66, "RAILS");
+        f2l("COBBLESTONE_STAIRS", 67, "STONE_STAIRS");
+        // actually official legacy name STONE_STAIRS is colliding with flattening name of another item
+        //f2l("", "WALL_SIGN", 68, (byte) 0); - block
+        f2l( "LEVER", 69);
+        f2l("STONE_PRESSURE_PLATE", 70, "STONE_PLATE");
+        //f2l("", "IRON_DOOR_BLOCK", 71, (byte) 0); - block
+        f2l("OAK_PRESSURE_PLATE", "WOODEN_PRESSURE_PLATE", 72,"WOOD_PLATE");
+        f2l("REDSTONE_ORE", 73);
+        //f2l("", "GLOWING_REDSTONE_ORE", 74, (byte) 0); - block
+        //f2l("", "REDSTONE_TORCH_OFF", 75, (byte) 0); - block
+        // Flattening WALL_REDSTONE_TORCH - block
+        f2l("REDSTONE_TORCH", "REDSTONE_TORCH_ON", 76);
+        f2l("STONE_BUTTON", 77);
+        f2l("SNOW",78, "SNOW_LAYER"); // name snow collision with legacy snow_block namespace
+        f2l("ICE", 79);
+        f2l("SNOW_BLOCK", 80, "SNOW"); // name snow collision with flattening snow_layer namespace
+        f2l("CACTUS", 81);
+        f2l( "CLAY", 82);
+        //f2l("", "REEDS", 83, (byte) 0", SUGAR_CANE_BLOCK"); - block
+        f2l("JUKEBOX", 84);
+        f2l("OAK_FENCE", "FENCE", 85);
+        f2l("CARVED_PUMPKIN", "PUMPKIN", 86); // colliding with flattening carved_pumpkin
+        f2l("NETHERRACK", 87);
+        f2l("SOUL_SAND", 88);
+        f2l("GLOWSTONE", 89);
+        //f2l("NETHER_PORTAL", "PORTAL", 90); - block
+        f2l("JACK_O_LANTERN", 91, "LIT_PUMPKIN");
+        //f2l("", "CAKE_BLOCK", 92, (byte) 0); - block
+        // f2l("", "DIODE_BLOCK_OFF", 93, (byte) 0); - block
+        //f2l("", "DIODE_BLOCK_ON", 94, (byte) 0); - block
+        f2lcolored("STAINED_GLASS", 95);
+        f2l("OAK_TRAPDOOR", "TRAPDOOR", 96, "TRAP_DOOR");
+
+        f2l("INFESTED_STONE", "MONSTER_EGG", 97, (byte) 0, "MONSTER_EGGS");
+        f2l("INFESTED_COBBLESTONE", "MONSTER_EGG", 97, (byte) 1, "MONSTER_EGGS");
+        f2l("INFESTED_STONE_BRICKS", "MONSTER_EGG", 97, (byte) 2, "MONSTER_EGGS");
+        f2l("INFESTED_MOSSY_STONE_BRICKS", "MONSTER_EGG", 97, (byte) 3, "MONSTER_EGGS");
+        f2l("INFESTED_CRACKED_STONE_BRICKS", "MONSTER_EGG", 97, (byte) 4, "MONSTER_EGGS");
+        f2l("INFESTED_CHISELED_STONE_BRICKS", "MONSTER_EGG", 97, (byte) 5, "MONSTER_EGGS");
+
+        f2l("STONE_BRICKS", "STONEBRICK", 98, (byte) 0, "SMOOTH_BRICK");
+        f2l("MOSSY_STONE_BRICKS", "STONEBRICK", 98, (byte) 1, "SMOOTH_BRICK");
+        f2l("CRACKED_STONE_BRICKS", "STONEBRICK", 98, (byte) 2, "SMOOTH_BRICK");
+        f2l("CHISELED_STONE_BRICKS", "STONEBRICK", 98, (byte) 3, "SMOOTH_BRICK");
+
+        f2l("BROWN_MUSHROOM_BLOCK", 99, "HUGE_MUSHROOM_1");
+        f2l("RED_MUSHROOM_BLOCK", 100, "HUGE_MUSHROOM_2");
+        f2l("IRON_BARS", 101, "IRON_FENCE");
+        f2l("GLASS_PANE", 102, "THIN_GLASS");
+        f2l("MELON", "MELON_BLOCK", 103); // colliding with melon_slice?
+        //f2l("", "PUMPKIN_STEM", 104, (byte) 0); - block
+        //f2l("", "MELON_STEM", 105, (byte) 0); - block
+        f2l("VINE", 106);
+        f2l("OAK_FENCE_GATE", "FENCE_GATE", 107);
+        f2l("BRICK_STAIRS", 108);
+        f2l("STONE_BRICK_STAIRS", 109, "SMOOTH_STAIRS");
+        f2l("MYCELIUM", 110, "MYCEL");
+        f2l("LILY_PAD", "WATERLILY", 111, "WATER_LILY");
+        f2l("NETHER_BRICKS", "NETHER_BRICK", 112);
+        f2l("NETHER_BRICK_FENCE", 113, "NETHER_FENCE");
+        f2l("NETHER_BRICK_STAIRS", 114);
+        //f2l("NETHER_WART", 115, "NETHER_WARTS"); - block
+        f2l("ENCHANTING_TABLE", 116, "ENCHANTMENT_TABLE");
+       // f2l("BREWING_STAND", 117);- block
+        //f2l("CAULDRON", 118); - block
+        //f2l("END_PORTAL", 119, "ENDER_PORTAL"); - block
+        //f2l("END_PORTAL_FRAME", 120, "ENDER_PORTAL_FRAME"); - block
+        f2l("END_STONE_BRICKS", "END_BRICKS", 121, "ENDER_STONE");
+        f2l("DRAGON_EGG", 122);
+        f2l("REDSTONE_LAMP", 123, "REDSTONE_LAMP_OFF");
+        //f2l("", "REDSTONE_LAMP_ON", 124, (byte) 0); - block
+        //f2l("", "WOOD_DOUBLE_STEP", 125, (byte) 0); - block
+
+        f2l("OAK_SLAB", "WOODEN_SLAB", 126, (byte) 0, "WOOD_STEP");
+        f2l("SPRUCE_SLAB", "WOODEN_SLAB", 126, (byte) 1, "WOOD_STEP");
+        f2l("BIRCH_SLAB", "WOODEN_SLAB", 126, (byte) 2, "WOOD_STEP");
+        f2l("JUNGLE_SLAB", "WOODEN_SLAB", 126, (byte) 3, "WOOD_STEP");
+        f2l("ACACIA_SLAB", "WOODEN_SLAB", 126, (byte) 4, "WOOD_STEP");
+        f2l("DARK_OAK_SLAB", "WOODEN_SLAB", 126, (byte) 5, "WOOD_STEP");
+
+        //f2l("", "COCOA", 127, (byte) 0); - block
+        f2l("SANDSTONE_STAIRS", 128);
+        f2l("EMERALD_ORE", 129);
+        f2l("ENDER_CHEST", 130);
+        f2l("TRIPWIRE_HOOK", 131);
+        //f2l("TRIPWIRE", 132); - block
+        f2l("EMERALD_BLOCK", 133);
+        f2l("SPRUCE_STAIRS", 134, "SPRUCE_WOOD_STAIRS");
+        f2l("BIRCH_STAIRS", 135, "BIRCH_WOOD_STAIRS");
+        f2l("JUNGLE_STAIRS", 136, "JUNGLE_WOOD_STAIRS");
+        f2l("COMMAND_BLOCK", 137, "COMMAND");
+        f2l("BEACON", 138);
+        f2l("COBBLESTONE_WALL", 139, "COBBLE_WALL");
+        //f2l("", "FLOWER_POT", 140, (byte) 0); - block
+        //f2l("", "CARROTS", 141, "CARROT"); - block
+        //f2l("", "POTATOES", 142, "POTATO"); - block
+        f2l("OAK_BUTTON", "WOODEN_BUTTON", 143, "WOOD_BUTTON");
+        //f2l("", "SKULL", 144, (byte) 0); - block
+        f2l("ANVIL", 145);
+        f2l("CHIPPED_ANVIL", "ANVIL", 145, (byte) 1);
+        f2l("DAMAGED_ANVIL", "ANVIL", 145, (byte) 2);
+        f2l("TRAPPED_CHEST", 146);
+        f2l("LIGHT_WEIGHTED_PRESSURE_PLATE", 147, "GOLD_PLATE");
+        f2l("heavy_weighted_pressure_plate", 148, "IRON_PLATE");
+        //f2l("", "REDSTONE_COMPARATOR_OFF", 149, (byte) 0); - block
+        //f2l("", "REDSTONE_COMPARATOR_ON", 150, (byte) 0); - block
+        f2l("DAYLIGHT_DETECTOR", 151);
+        f2l("REDSTONE_BLOCK", 152);
+        f2l("NETHER_QUARTZ_ORE", 153, "QUARTZ_ORE");
+        f2l("HOPPER", 154);
+
+        f2l("QUARTZ_BLOCK", 155);
+        f2l("CHISELED_QUARTZ_BLOCK", "QUARTZ_BLOCK", 155, (byte) 1);
+        f2l("QUARTZ_PILLAR", "QUARTZ_BLOCK", 155, (byte) 2);
+
+        f2l("QUARTZ_STAIRS", 156);
+        f2l("ACTIVATOR_RAIL", 157);
+        f2l("DROPPER", 158);
+        f2lcolored("TERRACOTTA", "STAINED_HARDENED_CLAY", 159, "STAINED_CLAY");
+        f2lcolored("STAINED_GLASS_PANE", 160);
+
+        f2l("ACACIA_LEAVES", "LEAVES2", 161, (byte) 0, "LEAVES_2");
+        f2l("DARK_OAK_LEAVES", "LEAVES2", 161, (byte) 1, "LEAVES_2");
+
+        f2l("ACACIA_LOG", "LOG2", 162, (byte) 0, "LOG_2");
+        f2l("DARK_OAK_LOG", "LOG2", 162, (byte) 1, "LOG_2");
+        f2l("ACACIA_WOOD", "LOG2", 162, (byte) 12, "LOG_2");
+        f2l("DARK_OAK_WOOD", "LOG2", 162, (byte) 13, "LOG_2");
+
+        f2l("ACACIA_STAIRS", 163);
+        f2l("DARK_OAK_STAIRS", 164);
+
+        f2l("SLIME_BLOCK",  165, "SLIME");
+        f2l("BARRIER", 166);
+        f2l("IRON_TRAPDOOR", 167);
+
+        f2l("PRISMARINE", 168);
+        f2l("PRISMARINE_BRICKS", "PRISMARINE", 168, (byte) 1);
+        f2l("DARK_PRISMARINE", "PRISMARINE", 168, (byte) 1);
+
+        f2l("SEA_LANTERN", 169);
+        f2l("HAY_BLOCK", 170);
+        f2lcolored("CARPET", 171);
+        f2l("TERRACOTTA", "hardened_clay", 172, "HARD_CLAY");
+        f2l("COAL_BLOCK", 173);
+        f2l("PACKED_ICE", 174);
+
+        f2l("SUNFLOWER", "DOUBLE_PLANT", 175, (byte) 0);
+        f2l("LILAC", "DOUBLE_PLANT", 175, (byte) 1);
+        f2l("TALL_GRASS", "DOUBLE_PLANT", 175, (byte) 2);
+        f2l("LARGE_FERN", "DOUBLE_PLANT", 175, (byte) 3);
+        f2l("ROSE_BUSH", "DOUBLE_PLANT", 175, (byte) 4);
+        f2l("PEONY", "DOUBLE_PLANT", 175, (byte) 5);
+
+        //f2l("", "STANDING_BANNER", 176, (byte) 0); - block
+        //f2l("", "WALL_BANNER", 177, (byte) 0); - block
+
+        //f2l("", "DAYLIGHT_DETECTOR_INVERTED", 178, (byte) 0); - block
+        /*f2l("", "RED_SANDSTONE", 179, (byte) 0);
         f2l("", "RED_SANDSTONE_STAIRS", 180, (byte) 0);
         f2l("", "DOUBLE_STONE_SLAB2", 181, (byte) 0);
         f2l("", "STONE_SLAB2", 182, (byte) 0);
@@ -600,6 +666,7 @@ public abstract class MaterialMapping {
 
         // Flattening remapping
         f2f("ZOMBIFIED_PIGLIN_SPAWN_EGG", "ZOMBIE_PIGMAN_SPAWN_EGG");
+        f2f("SMOOTH_STONE_SLAB", "STONE_SLAB");
         f2f("GREEN_DYE", "CACTUS_GREEN");
         f2f("YELLOW_DYE", "DANDELION_YELLOW");
         f2f("RED_DYE", "ROSE_RED");
@@ -620,13 +687,42 @@ public abstract class MaterialMapping {
 
     private void f2f(String material, String material2) {
         if (material == null || material2 == null) {
-            throw new IllegalArgumentException("Both flattening and legacy materials mustn't be null!");
+            throw new IllegalArgumentException("Both materials mustn't be null!");
         }
         if (materialMapping.containsKey(material.toUpperCase()) && !materialMapping.containsKey(material2.toUpperCase())) {
             materialMapping.put(material2.toUpperCase(), materialMapping.get(material.toUpperCase()));
         } else if (materialMapping.containsKey(material2.toUpperCase()) && !materialMapping.containsKey(material.toUpperCase())) {
             materialMapping.put(material.toUpperCase(), materialMapping.get(material2.toUpperCase()));
         }
+    }
+
+    private void f2lcolored(String material, int legacyId) {
+        f2lcolored(material, material, legacyId);
+    }
+    private void f2lcolored(String flatteningMaterialSuffix, String legacyMaterial, int legacyId) {
+        f2lcolored(flatteningMaterialSuffix, legacyMaterial, legacyId, null);
+    }
+
+    private void f2lcolored(String flatteningMaterialSuffix, String legacyMaterial, int legacyId, String alternativeLegacyName) {
+        if (flatteningMaterialSuffix == null || legacyMaterial == null) {
+            throw new IllegalArgumentException("Both materials mustn't be null!");
+        }
+        f2l("WHITE_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 0, alternativeLegacyName);
+        f2l("ORANGE_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 1, alternativeLegacyName);
+        f2l("MAGENTA_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 2, alternativeLegacyName);
+        f2l("LIGHT_BLUE_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 3, alternativeLegacyName);
+        f2l("YELLOW_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 4, alternativeLegacyName);
+        f2l("LIME_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 5, alternativeLegacyName);
+        f2l("PINK_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 6, alternativeLegacyName);
+        f2l("GRAY_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 7, alternativeLegacyName);
+        f2l("LIGHT_GRAY_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 8, alternativeLegacyName);
+        f2l("CYAN_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 9, alternativeLegacyName);
+        f2l("PURPLE_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 10, alternativeLegacyName);
+        f2l("BLUE_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 11, alternativeLegacyName);
+        f2l("BROWN_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 12, alternativeLegacyName);
+        f2l("GREEN_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 13, alternativeLegacyName);
+        f2l("RED_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 14, alternativeLegacyName);
+        f2l("BLACK_" + flatteningMaterialSuffix, legacyMaterial, legacyId, (byte) 15, alternativeLegacyName);
     }
 
     /* For Materials where the name is same */
@@ -692,11 +788,17 @@ public abstract class MaterialMapping {
             }
         } else if (!platform.isUsingLegacyNames() && materialMapping.containsKey(flatteningMaterial)) {
             holder = materialMapping.get(flatteningMaterial);
-            if (!materialMapping.containsKey(legacyMaterial) && !flatteningMaterial.equals(legacyMaterial)) {
+            if (data == 0 && !materialMapping.containsKey(legacyMaterial) && !flatteningMaterial.equals(legacyMaterial)) {
                 materialMapping.put(legacyMaterial, holder);
             }
-            if (alternativeLegacyName != null && !materialMapping.containsKey(alternativeLegacyName) && !flatteningMaterial.equals(alternativeLegacyName)) {
+            if (!materialMapping.containsKey(legacyMaterial + ":" + data)) {
+                materialMapping.put(legacyMaterial + ":" + data, holder);
+            }
+            if (data == 0 && alternativeLegacyName != null && !materialMapping.containsKey(alternativeLegacyName) && !flatteningMaterial.equals(alternativeLegacyName)) {
                 materialMapping.put(alternativeLegacyName, holder);
+            }
+            if (alternativeLegacyName != null && !materialMapping.containsKey(alternativeLegacyName + ":" + data)) {
+                materialMapping.put(alternativeLegacyName + ":" + data, holder);
             }
         }
 

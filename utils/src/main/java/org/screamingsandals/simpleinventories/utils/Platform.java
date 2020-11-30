@@ -1,4 +1,4 @@
-package org.screamingsandals.simpleinventories.material;
+package org.screamingsandals.simpleinventories.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
