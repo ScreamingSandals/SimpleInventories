@@ -7,13 +7,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class MaterialHolder {
     private final String platformName;
-    private final short durability;
+    private final int durability;
 
     public MaterialHolder(String platformName) {
-        this(platformName, (short) 0);
+        this(platformName, 0);
     }
 
-    public MaterialHolder newDurability(short durability) {
+    public MaterialHolder newDurability(int durability) {
         return new MaterialHolder(platformName, durability);
     }
 

@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.screamingsandals.simpleinventories.material.MappingFlags;
 import org.screamingsandals.simpleinventories.material.MaterialHolder;
 import org.screamingsandals.simpleinventories.material.MaterialMapping;
 import org.screamingsandals.simpleinventories.utils.Platform;
@@ -32,6 +33,10 @@ public class BukkitMaterialMapping extends MaterialMapping {
 
         platform = versionNumber < 113 ? Platform.JAVA_LEGACY : Platform.JAVA_FLATTENING;
 
+        if (versionNumber < 112) {
+            mappingFlags.add(MappingFlags.NO_COLORED_BEDS);
+        }
+
         materialHolderConverter = OneWayTypeConverter.<MaterialHolder>builder()
                 .convertor(Material.class, holder -> Material.valueOf(holder.getPlatformName()))
                 .convertor(String.class, MaterialHolder::getPlatformName)
@@ -45,7 +50,7 @@ public class BukkitMaterialMapping extends MaterialMapping {
                         }
                         return stack;
                     } else if (platform == Platform.JAVA_LEGACY) {
-                        return new ItemStack(Material.valueOf(holder.getPlatformName()), 1, holder.getDurability());
+                        return new ItemStack(Material.valueOf(holder.getPlatformName()), 1, (short) holder.getDurability());
                     } else {
                         throw new UnsupportedOperationException("Unknown platform!");
                     }

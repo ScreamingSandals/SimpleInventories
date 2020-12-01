@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum Platform {
     JAVA_FLATTENING(false),
     JAVA_LEGACY(true),
-    BEDROCK(true);
+    BEDROCK_LEGACY(true);
+    // Do you think we will ever get bedrock flattening version?
 
     private final boolean usingLegacyNames;
 }
