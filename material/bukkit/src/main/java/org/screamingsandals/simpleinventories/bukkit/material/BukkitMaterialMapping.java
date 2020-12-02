@@ -10,7 +10,6 @@ import org.screamingsandals.simpleinventories.material.MappingFlags;
 import org.screamingsandals.simpleinventories.material.MaterialHolder;
 import org.screamingsandals.simpleinventories.material.MaterialMapping;
 import org.screamingsandals.simpleinventories.utils.Platform;
-import org.screamingsandals.simpleinventories.utils.OneWayTypeConverter;
 
 import java.util.Arrays;
 
@@ -37,10 +36,9 @@ public class BukkitMaterialMapping extends MaterialMapping {
             mappingFlags.add(MappingFlags.NO_COLORED_BEDS);
         }
 
-        materialHolderConverter = OneWayTypeConverter.<MaterialHolder>builder()
-                .convertor(Material.class, holder -> Material.valueOf(holder.getPlatformName()))
-                .convertor(String.class, MaterialHolder::getPlatformName)
-                .convertor(ItemStack.class, holder -> {
+        resultConverter
+                .register(Material.class, holder -> Material.valueOf(holder.getPlatformName()))
+                .register(ItemStack.class, holder -> {
                     if (platform == Platform.JAVA_FLATTENING) {
                         ItemStack stack = new ItemStack(Material.valueOf(holder.getPlatformName()));
                         ItemMeta meta = stack.getItemMeta();
@@ -54,8 +52,7 @@ public class BukkitMaterialMapping extends MaterialMapping {
                     } else {
                         throw new UnsupportedOperationException("Unknown platform!");
                     }
-                })
-                .construct();
+                });
 
         Arrays.stream(Material.values()).filter(t -> !t.name().startsWith("LEGACY")).forEach(material ->
                 materialMapping.put(material.name().toUpperCase(), new MaterialHolder(material.name()))

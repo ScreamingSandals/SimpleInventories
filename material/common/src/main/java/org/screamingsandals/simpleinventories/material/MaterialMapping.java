@@ -2,7 +2,7 @@ package org.screamingsandals.simpleinventories.material;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.screamingsandals.simpleinventories.utils.OneWayTypeConverter;
+import org.screamingsandals.simpleinventories.utils.ResultConverter;
 import org.screamingsandals.simpleinventories.utils.Platform;
 
 import java.util.*;
@@ -15,7 +15,8 @@ public abstract class MaterialMapping {
     protected Platform platform;
     protected final Map<String, MaterialHolder> materialMapping = new HashMap<>();
     protected final List<MappingFlags> mappingFlags = new ArrayList<>();
-    protected OneWayTypeConverter<MaterialHolder> materialHolderConverter;
+    protected ResultConverter<MaterialHolder> resultConverter = ResultConverter.<MaterialHolder>build()
+            .register(String.class, MaterialHolder::getPlatformName);
 
     private static MaterialMapping mapping = null;
     private static final Pattern RESOLUTION_PATTERN = Pattern.compile("^(((?:(?<namespace>[A-Za-z][A-Za-z0-9_.\\-]*):)?(?<material>[A-Za-z][A-Za-z0-9_.\\-/ ]*)(?::)?(?<durability>\\d+)?)|((?<id>\\d+)(?::)?(?<data>\\d+)?))$");
@@ -68,7 +69,7 @@ public abstract class MaterialMapping {
         if (mapping == null) {
             throw new UnsupportedOperationException("Material mapping is not initialized yet.");
         }
-        return mapping.materialHolderConverter.convert(holder, newType);
+        return mapping.resultConverter.convert(holder, newType);
     }
 
     @SneakyThrows
@@ -77,7 +78,8 @@ public abstract class MaterialMapping {
             throw new UnsupportedOperationException("Material mapping is already initialized.");
         }
 
-        MaterialMapping mapping = materialMapping.getConstructor().newInstance();
+        mapping = materialMapping.getConstructor().newInstance();
+        mapping.resultConverter.finish(); // don't allow new convertors
 
         /*
         if server is running Java Edition Post-Flattening version, flattening remappings have to been applied first
