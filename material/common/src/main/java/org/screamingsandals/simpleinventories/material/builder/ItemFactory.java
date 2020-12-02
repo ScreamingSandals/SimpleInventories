@@ -31,10 +31,21 @@ public class ItemFactory {
     }
 
     public static Optional<Item> build(Consumer<ItemBuilder> builder) {
+        Item item = new Item();
+
+        if (builder != null) {
+            builder.accept(new ItemBuilder(item));
+        }
+
+        if (item.getMaterial() != null) {
+            return Optional.of(item);
+        }
+
         return Optional.empty();
     }
 
     public static Optional<Item> build(Map<String, Object> map) {
+        // TODO
         return Optional.empty();
     }
 
@@ -47,6 +58,10 @@ public class ItemFactory {
         Optional<Item> item = readShortStack(shortStack);
         if (!item.isPresent()) {
             return Optional.empty();
+        }
+
+        if (builder != null) {
+            builder.accept(new ItemBuilder(item.get()));
         }
 
         return item;
