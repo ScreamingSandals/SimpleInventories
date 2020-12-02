@@ -29,6 +29,10 @@ public abstract class MaterialMapping {
 
         Matcher matcher = RESOLUTION_PATTERN.matcher(material);
 
+        if (!matcher.matches()) {
+            return Optional.empty();
+        }
+
         if (matcher.group("material") != null) {
 
             /*String namespace = matcher.group("namespace");*/ // namespace is currently useless on vanilla

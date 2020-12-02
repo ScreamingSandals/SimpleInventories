@@ -66,6 +66,10 @@ public class PotionMapping {
 
         Matcher matcher = RESOLUTION_PATTERN.matcher(potion);
 
+        if (!matcher.matches()) {
+            return Optional.empty();
+        }
+
         if (matcher.group("potion") != null) {
 
             /*String namespace = matcher.group("namespace");*/ // namespace is currently useless on vanilla

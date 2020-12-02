@@ -27,6 +27,10 @@ public abstract class EnchantmentMapping {
 
         Matcher matcher = RESOLUTION_PATTERN.matcher(enchantment);
 
+        if (!matcher.matches()) {
+            return Optional.empty();
+        }
+
         if (matcher.group("enchantment") != null) {
 
             /*String namespace = matcher.group("namespace");*/ // namespace is currently useless on vanilla
