@@ -967,4 +967,8 @@ public abstract class MaterialMapping {
             }
         }
     }
+
+    public static boolean isInitialized() {
+        return mapping != null;
+    }
 }

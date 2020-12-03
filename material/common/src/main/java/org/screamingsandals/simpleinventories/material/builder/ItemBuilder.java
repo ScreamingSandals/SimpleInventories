@@ -10,6 +10,7 @@ import org.screamingsandals.simpleinventories.material.meta.PotionMapping;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -17,73 +18,98 @@ public class ItemBuilder {
     @NotNull
     private final Item item;
 
-    public void type(@NotNull Object type) {
+    public ItemBuilder type(@NotNull Object type) {
         // TODO: custom object resolving
         String typ = type.toString();
         MaterialMapping.resolve(typ).ifPresent(item::setMaterial);
+        return this;
     }
 
-    public void amount(int amount) {
+    public ItemBuilder amount(int amount) {
         item.setAmount(amount);
+        return this;
     }
 
-    public void name(@Nullable String name) {
+    public ItemBuilder name(@Nullable String name) {
         item.setDisplayName(name);
+        return this;
     }
 
-    public void localizedName(@Nullable String name) {
+    public ItemBuilder localizedName(@Nullable String name) {
         item.setLocalizedName(name);
+        return this;
     }
 
-    public void customModelData(int data) {
+    public ItemBuilder customModelData(int data) {
         item.setCustomModelData(data);
+        return this;
     }
 
-    public void repair(int repair) {
+    public ItemBuilder repair(int repair) {
         item.setRepair(repair);
+        return this;
     }
 
-    public void flags(@Nullable List<Object> flags) {
+    public ItemBuilder flags(@Nullable List<Object> flags) {
         if (flags == null) {
             item.setItemFlags(null);
         } else {
             List<String> stringList = flags.stream().map(Object::toString).collect(Collectors.toList());
             item.setItemFlags(stringList);
         }
+        return this;
     }
-    public void unbreakable(boolean unbreakable) {
+    public ItemBuilder unbreakable(boolean unbreakable) {
         item.setUnbreakable(unbreakable);
+        return this;
     }
 
-    public void lore(@Nullable List<String> lore) {
+    public ItemBuilder lore(@Nullable List<String> lore) {
         item.setLore(lore);
+        return this;
     }
 
-    public void enchant(@NotNull Object enchant) {
+    public ItemBuilder enchant(@NotNull Object enchant) {
         EnchantmentMapping.resolve(enchant.toString()).ifPresent(item.getEnchantments()::add); // TODO: custom object resolving
+        return this;
     }
 
-    public void enchant(@NotNull Object enchant, int level) {
+    public ItemBuilder enchant(@NotNull Object enchant, int level) {
         enchant(enchant + " " + level);
+        return this;
     }
 
-    public void enchant(@NotNull Map<Object, Integer> enchants) {
+    public ItemBuilder enchant(@NotNull Map<Object, Integer> enchants) {
         enchants.forEach(this::enchant);
+        return this;
     }
 
-    public void enchant(@NotNull List<Object> enchants) {
+    public ItemBuilder enchant(@NotNull List<Object> enchants) {
         enchants.forEach(this::enchant);
+        return this;
     }
 
-    public void potion(@NotNull Object potion) {
+    public ItemBuilder potion(@NotNull Object potion) {
         PotionMapping.resolve(potion.toString()).ifPresent(item::setPotion); // TODO: custom object resolving
+        return this;
     }
 
     // For legacy versions
     @Deprecated
-    public void damage(int damage) {
-        durability(damage);
+    public ItemBuilder damage(int damage) {
+        return durability(damage);
     }
     // Or (durability is just alias for damage)
-    public void durability(int durability) {}
+    public ItemBuilder durability(int durability) {
+        item.setMaterial(item.getMaterial().newDurability(durability));
+        return this;
+    }
+
+    public Optional<Item> build() {
+        if (item.getMaterial() != null) {
+            return Optional.of(item);
+        }
+
+        return Optional.empty();
+    }
 }

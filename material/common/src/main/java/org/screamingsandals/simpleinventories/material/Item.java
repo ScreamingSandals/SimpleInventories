@@ -2,6 +2,7 @@ package org.screamingsandals.simpleinventories.material;
 
 import lombok.Data;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.material.meta.EnchantmentHolder;
 import org.screamingsandals.simpleinventories.material.meta.PotionHolder;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Data
 public class Item {
-    @Nullable // in initial state it's null
+    //@Nullable // in initial state it's null
     private MaterialHolder material;
     @Nullable
     private String displayName;
@@ -31,4 +32,8 @@ public class Item {
     @Deprecated
     @Nullable
     private Object platformMeta;
+
+    public <R> R as(Class<R> type) {
+        return ItemFactory.convertItem(this, type);
+    }
 }

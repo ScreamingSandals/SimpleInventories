@@ -90,4 +90,8 @@ public class PotionMapping {
         }
         return mapping.resultConverter.convert(holder, newType);
     }
+
+    public static boolean isInitialized() {
+        return mapping != null;
+    }
 }

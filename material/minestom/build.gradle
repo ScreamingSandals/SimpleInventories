@@ -4,9 +4,4 @@ dependencies {
     compileOnly 'com.github.Minestom:Minestom:aa4ee97710'
 }
 
-repositories {
-    maven { url 'https://libraries.minecraft.net' }
-    maven { url 'https://jitpack.io' }
-}
-
 sourceCompatibility = 11
