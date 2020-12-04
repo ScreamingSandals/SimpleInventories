@@ -54,6 +54,10 @@ public class BukkitMaterialMapping extends MaterialMapping {
                     }
                 });
 
+        argumentConverter
+                .register(Material.class, material -> new MaterialHolder(material.name()))
+                .register(ItemStack.class, stack -> new MaterialHolder(stack.getType().name(), stack.getDurability()));
+
         Arrays.stream(Material.values()).filter(t -> !t.name().startsWith("LEGACY")).forEach(material ->
                 materialMapping.put(material.name().toUpperCase(), new MaterialHolder(material.name()))
         );

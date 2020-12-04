@@ -12,9 +12,13 @@ import org.bukkit.potion.PotionData;
 import org.screamingsandals.simpleinventories.bukkit.material.BukkitMaterialMapping;
 import org.screamingsandals.simpleinventories.bukkit.material.meta.BukkitEnchantmentMapping;
 import org.screamingsandals.simpleinventories.bukkit.material.meta.BukkitPotionMapping;
+import org.screamingsandals.simpleinventories.material.Item;
+import org.screamingsandals.simpleinventories.material.MaterialHolder;
 import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class BukkitItemFactory extends ItemFactory {
     public static void init() {
@@ -44,7 +48,7 @@ public class BukkitItemFactory extends ItemFactory {
                             }
                         } else if (item.getPlatformMeta() instanceof Map) {
                             try {
-                                stack.setItemMeta((ItemMeta) ConfigurationSerialization.deserializeObject((Map<String,?>) item.getPlatformMeta()));
+                                stack.setItemMeta((ItemMeta) ConfigurationSerialization.deserializeObject((Map<String, ?>) item.getPlatformMeta()));
                             } catch (Throwable t) {
                             }
                         }
@@ -58,11 +62,13 @@ public class BukkitItemFactory extends ItemFactory {
                     if (item.getLocalizedName() != null) {
                         try {
                             meta.setLocalizedName(item.getLocalizedName());
-                        } catch (Throwable ignored) {}
+                        } catch (Throwable ignored) {
+                        }
                     }
                     try {
                         meta.setCustomModelData(item.getCustomModelData());
-                    } catch (Throwable ignored) {}
+                    } catch (Throwable ignored) {
+                    }
                     if (meta instanceof Repairable) {
                         ((Repairable) meta).setRepairCost(item.getRepair());
                     }
@@ -80,17 +86,72 @@ public class BukkitItemFactory extends ItemFactory {
                     if (item.getItemFlags() != null) {
                         try {
                             meta.addItemFlags(item.getItemFlags().stream().map(ItemFlag::valueOf).toArray(ItemFlag[]::new));
-                        } catch (IllegalArgumentException ignored) {}
+                        } catch (IllegalArgumentException ignored) {
+                        }
                     }
                     if (item.getPotion() != null && meta instanceof PotionMeta) {
                         try {
                             ((PotionMeta) stack.getItemMeta()).setBasePotionData(item.getPotion().as(PotionData.class));
-                        } catch (Throwable ignored) {}
+                        } catch (Throwable ignored) {
+                        }
                     }
 
                     stack.setItemMeta(meta);
 
                     return stack;
+                });
+
+        argumentConverter
+                .register(ItemStack.class, stack -> {
+                    Item item = new Item();
+                    Optional<MaterialHolder> material = BukkitMaterialMapping.resolve(stack.getType());
+                    if (!material.isPresent()) {
+                        return null; // WHAT??
+                    }
+                    item.setMaterial(material.get().newDurability(stack.getDurability()));
+                    item.setAmount(stack.getAmount());
+                    ItemMeta meta = stack.getItemMeta();
+                    item.setPlatformMeta(meta);
+                    if (meta != null) {
+                        if (meta.hasDisplayName()) {
+                            item.setDisplayName(meta.getDisplayName());
+                        }
+                        try {
+                            if (meta.hasLocalizedName()) {
+                                item.setLocalizedName(meta.getLocalizedName());
+                            }
+                        } catch (Throwable ignored) {
+                        }
+                        try {
+                            item.setCustomModelData(meta.getCustomModelData());
+                        } catch (Throwable ignored) {
+                        }
+                        if (meta instanceof Repairable) {
+                            item.setRepair(((Repairable) meta).getRepairCost());
+                        }
+                        item.setUnbreakable(meta.isUnbreakable());
+                        if (meta.hasLore()) {
+                            item.setLore(meta.getLore());
+                        }
+                        if (meta instanceof EnchantmentStorageMeta) {
+                            ((EnchantmentStorageMeta) meta).getStoredEnchants().entrySet().forEach(entry ->
+                                    BukkitEnchantmentMapping.resolve(entry).ifPresent(item.getEnchantments()::add)
+                            );
+                        } else {
+                            meta.getEnchants().entrySet().forEach(entry ->
+                                    BukkitEnchantmentMapping.resolve(entry).ifPresent(item.getEnchantments()::add)
+                            );
+                        }
+                        item.setItemFlags(stack.getItemFlags().stream().map(ItemFlag::name).collect(Collectors.toList()));
+
+                        if (meta instanceof PotionMeta) {
+                            try {
+                                BukkitPotionMapping.resolve(((PotionMeta) meta).getBasePotionData()).ifPresent(item::setPotion);
+                            } catch (Throwable ignored) {
+                            }
+                        }
+                    }
+                    return item;
                 });
     }
 }

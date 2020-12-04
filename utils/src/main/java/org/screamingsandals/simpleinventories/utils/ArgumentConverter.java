@@ -3,6 +3,7 @@ package org.screamingsandals.simpleinventories.utils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,5 +47,14 @@ public class ArgumentConverter<T> {
         }
 
         return opt.get().getValue().apply(object);
+    }
+
+    @NotNull
+    public <A> Optional<T> convertOptional(@Nullable A object) {
+        if (object == null) {
+            return Optional.empty();
+        }
+        Optional<Map.Entry<Class<?>, Function<Object, T>>> opt = converters.entrySet().stream().filter(c -> c.getKey().isInstance(object)).findFirst();
+        return opt.map(classFunctionEntry -> classFunctionEntry.getValue().apply(object));
     }
 }

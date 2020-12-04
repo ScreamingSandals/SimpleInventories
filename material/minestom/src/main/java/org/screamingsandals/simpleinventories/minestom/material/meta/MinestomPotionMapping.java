@@ -16,6 +16,9 @@ public class MinestomPotionMapping extends PotionMapping {
         resultConverter
                 .register(PotionType.class, e -> PotionType.valueOf(e.getPlatformName().toUpperCase()));
 
+        argumentConverter
+                .register(PotionType.class, e -> new PotionHolder(e.name()));
+
         Arrays.stream(PotionType.values()).forEach(potion -> potionMapping.put(potion.name().toUpperCase(), new PotionHolder(potion.name())));
     }
 }

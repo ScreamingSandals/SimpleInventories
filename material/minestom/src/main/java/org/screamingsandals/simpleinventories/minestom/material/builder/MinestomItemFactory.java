@@ -4,11 +4,11 @@ import net.minestom.server.chat.ColoredText;
 import net.minestom.server.item.Enchantment;
 import net.minestom.server.item.ItemFlag;
 import net.minestom.server.item.ItemStack;
-import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.EnchantedBookMeta;
 import net.minestom.server.item.metadata.ItemMeta;
 import net.minestom.server.item.metadata.PotionMeta;
 import net.minestom.server.potion.PotionType;
+import org.screamingsandals.simpleinventories.material.Item;
 import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.minestom.material.MinestomMaterialMapping;
 import org.screamingsandals.simpleinventories.minestom.material.meta.MinestomEnchantmentMapping;
@@ -72,6 +72,47 @@ public class MinestomItemFactory extends ItemFactory {
                     }
 
                     return stack;
+                });
+
+        argumentConverter
+                .register(ItemStack.class, stack -> {
+                    var item = new Item();
+                    var material = MinestomMaterialMapping.resolve(stack.getMaterial());
+                    if (material.isEmpty()) {
+                        return null; // WHAT??
+                    }
+
+                    item.setMaterial(material.get().newDurability(stack.getDamage()));
+                    item.setAmount(stack.getAmount());
+                    if (stack.getItemMeta() != null) {
+                        item.setPlatformMeta(stack.getItemMeta().copy());
+                    }
+                    if (stack.hasDisplayName()) {
+                        item.setDisplayName(stack.getDisplayName().getMessage());
+                    }
+                    // localized name
+                    item.setCustomModelData(stack.getCustomModelData());
+                    // repair
+                    item.setUnbreakable(stack.isUnbreakable());
+                    if (stack.hasLore()) {
+                        item.setLore(stack.getLore().stream().map(ColoredText::getMessage).collect(Collectors.toList()));
+                    }
+                    if (stack.getItemMeta() instanceof EnchantedBookMeta) {
+                        ((EnchantedBookMeta) stack.getItemMeta()).getStoredEnchantmentMap().entrySet().stream().map(MinestomEnchantmentMapping::resolve).forEach(en ->
+                            item.getEnchantments().add(en.orElseThrow())
+                        );
+                    } else {
+                        stack.getEnchantmentMap().entrySet().stream().map(MinestomEnchantmentMapping::resolve).forEach(en ->
+                                item.getEnchantments().add(en.orElseThrow())
+                        );
+                    }
+                    item.setItemFlags(stack.getItemFlags().stream().map(ItemFlag::name).collect(Collectors.toList()));
+                    if (stack.getItemMeta() instanceof PotionMeta) {
+                        MinestomPotionMapping.resolve(((PotionMeta) stack.getItemMeta()).getPotionType()).ifPresent(item::setPotion);
+                    }
+
+                    return item;
+
                 });
     }
 }

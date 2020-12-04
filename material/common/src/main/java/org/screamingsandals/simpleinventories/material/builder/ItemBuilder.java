@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.simpleinventories.material.Item;
-import org.screamingsandals.simpleinventories.material.MaterialMapping;
 import org.screamingsandals.simpleinventories.material.meta.EnchantmentMapping;
 import org.screamingsandals.simpleinventories.material.meta.PotionMapping;
 
@@ -19,9 +18,7 @@ public class ItemBuilder {
     private final Item item;
 
     public ItemBuilder type(@NotNull Object type) {
-        // TODO: custom object resolving
-        String typ = type.toString();
-        MaterialMapping.resolve(typ).ifPresent(item::setMaterial);
+        ItemFactory.readShortStack(item, type);
         return this;
     }
 
@@ -70,7 +67,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder enchant(@NotNull Object enchant) {
-        EnchantmentMapping.resolve(enchant.toString()).ifPresent(item.getEnchantments()::add); // TODO: custom object resolving
+        EnchantmentMapping.resolve(enchant).ifPresent(item.getEnchantments()::add);
         return this;
     }
 
@@ -90,7 +87,7 @@ public class ItemBuilder {
     }
 
     public ItemBuilder potion(@NotNull Object potion) {
-        PotionMapping.resolve(potion.toString()).ifPresent(item::setPotion); // TODO: custom object resolving
+        PotionMapping.resolve(potion).ifPresent(item::setPotion);
         return this;
     }
 

@@ -1,6 +1,8 @@
 package org.screamingsandals.simpleinventories.material.meta;
 
 import lombok.SneakyThrows;
+import org.screamingsandals.simpleinventories.material.MaterialHolder;
+import org.screamingsandals.simpleinventories.utils.ArgumentConverter;
 import org.screamingsandals.simpleinventories.utils.ResultConverter;
 import org.screamingsandals.simpleinventories.utils.RomanToDecimal;
 
@@ -18,12 +20,35 @@ public abstract class EnchantmentMapping {
 
     protected ResultConverter<EnchantmentHolder> resultConverter = ResultConverter.<EnchantmentHolder>build()
             .register(String.class, EnchantmentHolder::getPlatformName);
+    protected ArgumentConverter<EnchantmentHolder> argumentConverter = ArgumentConverter.<EnchantmentHolder>build()
+            .register(EnchantmentHolder.class, e -> e)
+            .register(Map.Entry.class, entry -> {
+                Optional<EnchantmentHolder> holder = resolve(entry.getKey());
+                if (holder.isPresent()) {
+                    int level;
+                    if (entry.getValue() instanceof Number) {
+                        level = ((Number) entry.getValue()).intValue();
+                    } else {
+                        try {
+                            level = Integer.parseInt(entry.getValue().toString());
+                        } catch (Throwable t) {
+                            level = RomanToDecimal.romanToDecimal(entry.getValue().toString());
+                        }
+                    }
+                    return holder.get().newLevel(level);
+                }
+                return null;
+            });
 
-    public static Optional<EnchantmentHolder> resolve(String enchantment) {
+    public static Optional<EnchantmentHolder> resolve(Object enchantmentObject) {
         if (mapping == null) {
             throw new UnsupportedOperationException("Enchantment mapping is not initialized yet.");
         }
-        enchantment = enchantment.trim();
+        Optional<EnchantmentHolder> opt = mapping.argumentConverter.convertOptional(enchantmentObject);
+        if (opt.isPresent()) {
+            return opt;
+        }
+        String enchantment = enchantmentObject.toString().trim();
 
         Matcher matcher = RESOLUTION_PATTERN.matcher(enchantment);
 
@@ -40,7 +65,7 @@ public abstract class EnchantmentMapping {
 
             if (mapping.enchantmentMapping.containsKey(name)) {
                 if (level_str != null && !level_str.isEmpty()) {
-                    int level = 1;
+                    int level;
                     try {
                         level = Integer.parseInt(level_str);
                     } catch (Throwable t) {
@@ -64,6 +89,7 @@ public abstract class EnchantmentMapping {
 
         mapping = mappingClass.getConstructor().newInstance();
         mapping.resultConverter.finish();
+        mapping.argumentConverter.finish();
 
         mapping.legacyMapping();
     }

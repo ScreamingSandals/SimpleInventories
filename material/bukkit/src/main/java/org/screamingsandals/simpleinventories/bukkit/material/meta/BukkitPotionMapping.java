@@ -47,6 +47,18 @@ public class BukkitPotionMapping extends PotionMapping {
                     }
                 });
 
+        argumentConverter
+                .register(PotionType.class, potion -> new PotionHolder(potion.name()))
+                .register(PotionData.class, data -> {
+                    if (data.isExtended()) {
+                        return new PotionHolder("LONG_" + data.getType().name());
+                    } else if (data.isUpgraded()) {
+                        return new PotionHolder("STRONG_" + data.getType().name());
+                    } else {
+                        return new PotionHolder(data.getType().name());
+                    }
+                });
+
         Arrays.stream(PotionType.values()).forEach(potion -> {
             potionMapping.put(potion.name().toUpperCase(), new PotionHolder(potion.name()));
             if (potion.isExtendable()) {

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class Item {
+public class Item implements Cloneable {
     //@Nullable // in initial state it's null
     private MaterialHolder material;
     @Nullable
@@ -35,5 +35,24 @@ public class Item {
 
     public <R> R as(Class<R> type) {
         return ItemFactory.convertItem(this, type);
+    }
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public Object clone() {
+        Item item = new Item();
+        item.setMaterial(material);
+        item.setDisplayName(displayName);
+        item.setLocalizedName(localizedName);
+        item.setAmount(amount);
+        item.setCustomModelData(customModelData);
+        item.setRepair(repair);
+        item.setUnbreakable(unbreakable);
+        item.setLore(lore);
+        enchantments.forEach(item.getEnchantments()::add);
+        item.setItemFlags(itemFlags);
+        item.setPotion(potion);
+        item.setPlatformMeta(platformMeta);
+        return item;
     }
 }

@@ -2,6 +2,7 @@ package org.screamingsandals.simpleinventories.material;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.screamingsandals.simpleinventories.utils.ArgumentConverter;
 import org.screamingsandals.simpleinventories.utils.ResultConverter;
 import org.screamingsandals.simpleinventories.utils.Platform;
 
@@ -17,15 +18,22 @@ public abstract class MaterialMapping {
     protected final List<MappingFlags> mappingFlags = new ArrayList<>();
     protected ResultConverter<MaterialHolder> resultConverter = ResultConverter.<MaterialHolder>build()
             .register(String.class, MaterialHolder::getPlatformName);
+    protected ArgumentConverter<MaterialHolder> argumentConverter = ArgumentConverter.<MaterialHolder>build()
+            .register(MaterialHolder.class, e -> e);
 
     private static MaterialMapping mapping = null;
     private static final Pattern RESOLUTION_PATTERN = Pattern.compile("^(((?:(?<namespace>[A-Za-z][A-Za-z0-9_.\\-]*):)?(?<material>[A-Za-z][A-Za-z0-9_.\\-/ ]*)(?::)?(?<durability>\\d+)?)|((?<id>\\d+)(?::)?(?<data>\\d+)?))$");
 
-    public static Optional<MaterialHolder> resolve(String material) {
+    public static Optional<MaterialHolder> resolve(Object materialObject) {
         if (mapping == null) {
             throw new UnsupportedOperationException("Material mapping is not initialized yet.");
         }
-        material = material.trim();
+        Optional<MaterialHolder> opt = mapping.argumentConverter.convertOptional(materialObject);
+        if (opt.isPresent()) {
+            return opt;
+        }
+
+        String material = materialObject.toString().trim();
 
         Matcher matcher = RESOLUTION_PATTERN.matcher(material);
 
@@ -84,6 +92,7 @@ public abstract class MaterialMapping {
 
         mapping = materialMapping.getConstructor().newInstance();
         mapping.resultConverter.finish(); // don't allow new convertors
+        mapping.argumentConverter.finish();
 
         /*
         if server is running Java Edition Post-Flattening version, flattening remappings have to been applied first
@@ -97,12 +106,10 @@ public abstract class MaterialMapping {
 
         if (mapping.getPlatform().name().startsWith("JAVA")) {
             mapping.flatteningLegacyMappingJava();
-        } else {
-            // BEDROCK TO JAVA FLATTENING MAPPING HERE
-        }
 
-        if (mapping.getPlatform() != Platform.JAVA_FLATTENING) {
-            mapping.flatteningMapping();
+            if (mapping.getPlatform() != Platform.JAVA_FLATTENING) {
+                mapping.flatteningMapping();
+            }
         }
     }
 

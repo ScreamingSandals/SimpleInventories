@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories.material.meta;
 
 import lombok.SneakyThrows;
+import org.screamingsandals.simpleinventories.utils.ArgumentConverter;
 import org.screamingsandals.simpleinventories.utils.ResultConverter;
 
 import java.util.HashMap;
@@ -15,6 +16,8 @@ public class PotionMapping {
     protected final Map<String, PotionHolder> potionMapping = new HashMap<>();
     protected ResultConverter<PotionHolder> resultConverter = ResultConverter.<PotionHolder>build()
             .register(String.class, PotionHolder::getPlatformName);
+    protected ArgumentConverter<PotionHolder> argumentConverter = ArgumentConverter.<PotionHolder>build()
+            .register(PotionHolder.class, e -> e);
 
     @SneakyThrows
     public static void init(Class<? extends PotionMapping> potionMapping) {
@@ -24,6 +27,7 @@ public class PotionMapping {
 
         mapping = potionMapping.getConstructor().newInstance();
         mapping.resultConverter.finish();
+        mapping.argumentConverter.finish();
 
         mapping.bukkit2minecraftMapping();
     }
@@ -58,11 +62,15 @@ public class PotionMapping {
         }
     }
 
-    public static Optional<PotionHolder> resolve(String potion) {
+    public static Optional<PotionHolder> resolve(Object potionObject) {
         if (mapping == null) {
             throw new UnsupportedOperationException("Potion mapping is not initialized yet.");
         }
-        potion = potion.trim();
+        Optional<PotionHolder> opt = mapping.argumentConverter.convertOptional(potionObject);
+        if (opt.isPresent()) {
+            return opt;
+        }
+        String potion = potionObject.toString().trim();
 
         Matcher matcher = RESOLUTION_PATTERN.matcher(potion);
 
