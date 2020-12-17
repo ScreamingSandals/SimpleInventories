@@ -85,7 +85,7 @@ public class MinestomItemFactory extends ItemFactory {
                     item.setMaterial(material.get().newDurability(stack.getDamage()));
                     item.setAmount(stack.getAmount());
                     if (stack.getItemMeta() != null) {
-                        item.setPlatformMeta(stack.getItemMeta().copy());
+                        item.setPlatformMeta(stack.getItemMeta().clone());
                     }
                     if (stack.hasDisplayName()) {
                         item.setDisplayName(stack.getDisplayName().getMessage());
