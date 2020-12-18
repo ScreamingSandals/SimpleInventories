@@ -7,6 +7,7 @@ import org.screamingsandals.simpleinventories.utils.ResultConverter;
 import org.screamingsandals.simpleinventories.utils.Platform;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,12 +86,12 @@ public abstract class MaterialMapping {
     }
 
     @SneakyThrows
-    public static void init(Class<? extends MaterialMapping> materialMapping) {
+    public static void init(Supplier<MaterialMapping> materialMapping) {
         if (mapping != null) {
             throw new UnsupportedOperationException("Material mapping is already initialized.");
         }
 
-        mapping = materialMapping.getConstructor().newInstance();
+        mapping = materialMapping.get();
         mapping.resultConverter.finish(); // don't allow new convertors
         mapping.argumentConverter.finish();
 

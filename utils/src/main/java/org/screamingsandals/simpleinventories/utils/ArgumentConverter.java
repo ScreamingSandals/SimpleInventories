@@ -41,8 +41,8 @@ public class ArgumentConverter<T> {
     @SuppressWarnings("unchecked")
     @NotNull
     public <A> T convert(@NotNull A object) {
-        Optional<Map.Entry<Class<?>, Function<Object, T>>> opt = converters.entrySet().stream().filter(c -> c.getKey().isInstance(object)).findFirst();
-        if (!opt.isPresent()) {
+        var opt = converters.entrySet().stream().filter(c -> c.getKey().isInstance(object)).findFirst();
+        if (opt.isEmpty()) {
             throw new UnsupportedOperationException("Can't convert this argument type");
         }
 
@@ -54,7 +54,7 @@ public class ArgumentConverter<T> {
         if (object == null) {
             return Optional.empty();
         }
-        Optional<Map.Entry<Class<?>, Function<Object, T>>> opt = converters.entrySet().stream().filter(c -> c.getKey().isInstance(object)).findFirst();
+        var opt = converters.entrySet().stream().filter(c -> c.getKey().isInstance(object)).findFirst();
         return opt.map(classFunctionEntry -> classFunctionEntry.getValue().apply(object));
     }
 }

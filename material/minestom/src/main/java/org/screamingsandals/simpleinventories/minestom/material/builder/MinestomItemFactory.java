@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class MinestomItemFactory extends ItemFactory {
     public static void init() {
-        ItemFactory.init(MinestomItemFactory.class);
+        ItemFactory.init(MinestomItemFactory::new);
     }
 
     public MinestomItemFactory() {

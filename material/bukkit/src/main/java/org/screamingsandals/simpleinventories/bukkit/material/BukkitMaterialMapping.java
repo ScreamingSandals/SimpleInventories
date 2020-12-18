@@ -19,7 +19,7 @@ public class BukkitMaterialMapping extends MaterialMapping {
     private int versionNumber;
 
     public static void init() {
-        MaterialMapping.init(BukkitMaterialMapping.class);
+        MaterialMapping.init(BukkitMaterialMapping::new);
     }
 
     public BukkitMaterialMapping() {

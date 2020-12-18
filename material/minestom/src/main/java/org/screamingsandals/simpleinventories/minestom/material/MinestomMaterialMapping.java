@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class MinestomMaterialMapping extends MaterialMapping {
 
     public static void init() {
-        MaterialMapping.init(MinestomMaterialMapping.class);
+        MaterialMapping.init(MinestomMaterialMapping::new);
     }
 
     public MinestomMaterialMapping() {

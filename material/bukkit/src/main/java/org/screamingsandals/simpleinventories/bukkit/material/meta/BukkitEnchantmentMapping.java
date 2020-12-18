@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class BukkitEnchantmentMapping extends EnchantmentMapping {
 
     public static void init() {
-        EnchantmentMapping.init(BukkitEnchantmentMapping.class);
+        EnchantmentMapping.init(BukkitEnchantmentMapping::new);
     }
 
     public BukkitEnchantmentMapping() {

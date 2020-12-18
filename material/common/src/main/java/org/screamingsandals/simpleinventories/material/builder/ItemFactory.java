@@ -15,8 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public abstract class ItemFactory {
 
@@ -134,12 +136,12 @@ public abstract class ItemFactory {
     private static final Pattern LORE_SPLIT = Pattern.compile("((\"((?!(?<!\\\\)(?:\\\\\\\\)*\").)+\")|((?!(?<!\\\\)(?:\\\\\\\\)*;).)+)(?=($|;))");
 
     @SneakyThrows
-    public static void init(Class<? extends ItemFactory> factoryClass) {
+    public static void init(Supplier<ItemFactory> factoryClass) {
         if (factory != null) {
             throw new UnsupportedOperationException("ItemFactory is already initialized.");
         }
 
-        factory = factoryClass.getConstructor().newInstance();
+        factory = factoryClass.get();
         factory.resultConverter.finish();
         factory.argumentConverter.finish();
     }
@@ -240,10 +242,22 @@ public abstract class ItemFactory {
         return Optional.of(item);
     }
 
+    public static List<Item> buildAll(List<Object> objects) {
+        return objects.stream().map(o -> build(o).orElse(ItemFactory.getAir())).collect(Collectors.toList());
+    }
+
+    public static Item getAir() {
+        return build("AIR").orElseThrow();
+    }
+
     public static <T> T convertItem(Item item, Class<T> newType) {
         if (factory == null) {
             throw new UnsupportedOperationException("ItemFactory is not initialized yet.");
         }
         return factory.resultConverter.convert(item, newType);
+    }
+
+    public static boolean isInitialized() {
+        return factory != null;
     }
 }

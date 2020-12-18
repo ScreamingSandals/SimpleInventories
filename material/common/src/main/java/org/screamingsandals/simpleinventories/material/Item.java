@@ -39,7 +39,7 @@ public class Item implements Cloneable {
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
-    public Object clone() {
+    public Item clone() {
         Item item = new Item();
         item.setMaterial(material);
         item.setDisplayName(displayName);

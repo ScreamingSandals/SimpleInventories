@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class MinestomEnchantmentMapping extends EnchantmentMapping {
 
     public static void init() {
-        EnchantmentMapping.init(MinestomEnchantmentMapping.class);
+        EnchantmentMapping.init(MinestomEnchantmentMapping::new);
     }
 
     public MinestomEnchantmentMapping() {

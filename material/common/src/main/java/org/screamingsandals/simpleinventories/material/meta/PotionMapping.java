@@ -7,6 +7,7 @@ import org.screamingsandals.simpleinventories.utils.ResultConverter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,12 +21,12 @@ public class PotionMapping {
             .register(PotionHolder.class, e -> e);
 
     @SneakyThrows
-    public static void init(Class<? extends PotionMapping> potionMapping) {
+    public static void init(Supplier<PotionMapping> potionMapping) {
         if (mapping != null) {
             throw new UnsupportedOperationException("Potion mapping is already initialized.");
         }
 
-        mapping = potionMapping.getConstructor().newInstance();
+        mapping = potionMapping.get();
         mapping.resultConverter.finish();
         mapping.argumentConverter.finish();
 

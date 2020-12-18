@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class BukkitItemFactory extends ItemFactory {
     public static void init() {
-        ItemFactory.init(BukkitItemFactory.class);
+        ItemFactory.init(BukkitItemFactory::new);
     }
 
     public BukkitItemFactory() {

@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class MinestomPotionMapping extends PotionMapping {
 
     public static void init() {
-        PotionMapping.init(MinestomPotionMapping.class);
+        PotionMapping.init(MinestomPotionMapping::new);
     }
 
     public MinestomPotionMapping() {

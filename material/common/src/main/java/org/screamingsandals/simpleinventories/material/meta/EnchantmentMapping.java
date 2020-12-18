@@ -9,6 +9,7 @@ import org.screamingsandals.simpleinventories.utils.RomanToDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,12 +83,12 @@ public abstract class EnchantmentMapping {
     }
 
     @SneakyThrows
-    public static void init(Class<? extends EnchantmentMapping> mappingClass) {
+    public static void init(Supplier<EnchantmentMapping> mappingClass) {
         if (mapping != null) {
             throw new UnsupportedOperationException("Enchantment mapping is already initialized.");
         }
 
-        mapping = mappingClass.getConstructor().newInstance();
+        mapping = mappingClass.get();
         mapping.resultConverter.finish();
         mapping.argumentConverter.finish();
 

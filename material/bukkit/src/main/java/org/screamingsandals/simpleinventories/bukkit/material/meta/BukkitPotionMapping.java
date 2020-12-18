@@ -16,7 +16,7 @@ public class BukkitPotionMapping extends PotionMapping {
     private int versionNumber;
 
     public static void init() {
-        PotionMapping.init(BukkitPotionMapping.class);
+        PotionMapping.init(BukkitPotionMapping::new);
     }
 
     public BukkitPotionMapping() {
