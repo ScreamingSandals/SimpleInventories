@@ -10,10 +10,10 @@ import java.util.Map;
 @AllArgsConstructor
 public class Property {
     private final Inventory format;
-    @Setter(onMethod=@__({@Deprecated}))
+    @Setter(onMethod_ = @Deprecated)
     private String propertyName;
-    @Getter(onMethod=@__({@Deprecated}))
-    @Setter(onMethod=@__({@Deprecated}))
+    @Getter(onMethod_ = @Deprecated)
+    @Setter(onMethod_ = @Deprecated)
     private Map<String, Object> propertyData;
 
     public boolean hasName() {

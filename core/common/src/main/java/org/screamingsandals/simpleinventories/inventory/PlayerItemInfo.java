@@ -23,8 +23,8 @@ public class PlayerItemInfo {
     private final List<Item> animation = new ArrayList<>();
     @Getter
     private PlayerWrapper player;
-    @Getter(onMethod = @__({@Deprecated}))
-    @Setter(onMethod = @__({@Deprecated}))
+    @Getter(onMethod_ = @Deprecated)
+    @Setter(onMethod_ = @Deprecated)
     private Map<String, Object> data;
 
     @SuppressWarnings("unchecked")

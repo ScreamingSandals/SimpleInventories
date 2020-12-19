@@ -28,6 +28,8 @@ public class Inventory extends AbstractInventory {
     private final EventManager eventManager = new EventManager(null);
 
     private final Map<String, IPlaceholderParser> placeholders = new HashMap<>();
+    private final Map<String, GenericItemInfo> ids = new HashMap<>();
+    private final SubInventory mainSubInventory = new SubInventory(true, null);
 
     {
         var thisPlaceholder = new ThisPlaceholderParser();

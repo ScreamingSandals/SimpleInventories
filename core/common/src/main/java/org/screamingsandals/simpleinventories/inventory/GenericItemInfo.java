@@ -24,15 +24,15 @@ public class GenericItemInfo {
     private boolean disabled;
     private String id;
     private final List<Property> properties = new ArrayList<>();
-    @Getter(onMethod = @__({@Deprecated}))
-    @Setter(onMethod = @__({@Deprecated}))
+    @Getter(onMethod_ = @Deprecated)
+    @Setter(onMethod_ = @Deprecated)
     private Map<String, Object> data;
     @Deprecated
     private Item book;
     private final Map<Condition, Map<String, Object>> conditions = new HashMap<>();
     private Origin origin;
     private boolean written;
-    @Setter(onMethod = @__({@Deprecated}))
+    @Setter(onMethod_ = @Deprecated)
     private EventManager eventManager;
 
     public Inventory getFormat() {
