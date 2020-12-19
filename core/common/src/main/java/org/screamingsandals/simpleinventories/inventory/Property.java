@@ -25,6 +25,6 @@ public class Property {
     }
 
     public MapReader getReader(PlayerWrapper player, PlayerItemInfo info) {
-        return new MapReader(format, propertyData, player, info);
+        return new MapReader(format, propertyData != null ? propertyData : Map.of(), player, info);
     }
 }

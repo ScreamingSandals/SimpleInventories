@@ -19,14 +19,16 @@ public class LocalOptions implements Cloneable {
     private Item cosmeticItem = ItemFactory.getAir();
 
     private int rows = ROWS;
-    private int items_on_row = ITEMS_ON_ROW;
-    private int render_actual_rows = RENDER_ACTUAL_ROWS;
-    private int render_offset = RENDER_OFFSET;
-    private int render_header_start = RENDER_HEADER_START;
-    private int render_footer_start = RENDER_FOOTER_START;
+    private int itemsOnRow = ITEMS_ON_ROW;
+    private int renderActualRows = RENDER_ACTUAL_ROWS;
+    private int renderOffset = RENDER_OFFSET;
+    private int renderHeaderStart = RENDER_HEADER_START;
+    private int renderFooterStart = RENDER_FOOTER_START;
+
+    private String inventoryType;
 
     public int getItemsOnPage() {
-        return items_on_row * rows;
+        return itemsOnRow * rows;
     }
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")
@@ -39,11 +41,11 @@ public class LocalOptions implements Cloneable {
         options.cosmeticItem = cosmeticItem != null ? cosmeticItem.clone() : null;
 
         options.rows = rows;
-        options.items_on_row = items_on_row;
-        options.render_actual_rows = render_actual_rows;
-        options.render_offset = render_offset;
-        options.render_header_start = render_header_start;
-        options.render_footer_start = render_footer_start;
+        options.itemsOnRow = itemsOnRow;
+        options.renderActualRows = renderActualRows;
+        options.renderOffset = renderOffset;
+        options.renderHeaderStart = renderHeaderStart;
+        options.renderFooterStart = renderFooterStart;
         return options;
     }
 }

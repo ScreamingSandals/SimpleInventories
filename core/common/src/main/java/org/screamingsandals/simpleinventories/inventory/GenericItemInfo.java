@@ -16,6 +16,7 @@ import java.util.Map;
 
 @Data
 public class GenericItemInfo {
+    private final Inventory format;
     private SubInventory parent;
     private int position;
     private Item item;
@@ -32,12 +33,10 @@ public class GenericItemInfo {
     private final Map<Condition, Map<String, Object>> conditions = new HashMap<>();
     private Origin origin;
     private boolean written;
-    @Setter(onMethod_ = @Deprecated)
-    private EventManager eventManager;
-
-    public Inventory getFormat() {
-        return parent.getFormat();
-    }
+    private final EventManager eventManager = new EventManager(format.getEventManager());
+    private SubInventory childInventory;
+    private String locate;
+    private final List<String> executions = new ArrayList<>();
 
     @Deprecated
     public MapReader getReader(PlayerWrapper owner) {
@@ -63,6 +62,10 @@ public class GenericItemInfo {
     @Deprecated
     public boolean hasBook() {
         return book != null;
+    }
+
+    public boolean hasChildInventory() {
+        return childInventory != null;
     }
 
 

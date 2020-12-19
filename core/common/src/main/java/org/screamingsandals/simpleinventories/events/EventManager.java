@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories.events;
 
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.simpleinventories.utils.ConsumerExecutor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +30,8 @@ public class EventManager {
                 .filter(classListEntry -> classListEntry.getKey().isInstance(event))
                 .forEach(classListEntry -> classListEntry.getValue().forEach(consumer -> {
                     try {
-                        ((Consumer<Object>) consumer).accept(event);
+                        //noinspection unchecked
+                        ConsumerExecutor.execute((Consumer<Object>) consumer, event);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

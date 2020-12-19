@@ -155,7 +155,7 @@ public abstract class ItemFactory {
     }
 
     public static Optional<Item> build(Consumer<ItemBuilder> builder) {
-        Item item = new Item();
+        var item = new Item();
 
         if (builder != null) {
             ConsumerExecutor.execute(builder, new ItemBuilder(item));
@@ -169,8 +169,8 @@ public abstract class ItemFactory {
     }
 
     public static Optional<Item> build(Object shortStack, Consumer<ItemBuilder> builder) {
-        Optional<Item> item = readStack(shortStack);
-        if (!item.isPresent()) {
+        var item = readStack(shortStack);
+        if (item.isEmpty()) {
             return Optional.empty();
         }
 
@@ -246,8 +246,13 @@ public abstract class ItemFactory {
         return objects.stream().map(o -> build(o).orElse(ItemFactory.getAir())).collect(Collectors.toList());
     }
 
+    private static Item cachedAir;
+
     public static Item getAir() {
-        return build("AIR").orElseThrow();
+        if (cachedAir == null) {
+            cachedAir = build("AIR").orElseThrow();
+        }
+        return cachedAir.clone();
     }
 
     public static <T> T convertItem(Item item, Class<T> newType) {

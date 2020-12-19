@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SubInventory extends AbstractInventory {
-    private Origin origin;
     private final List<GenericItemInfo> items = new ArrayList<>();
     private final boolean main;
     @Nullable

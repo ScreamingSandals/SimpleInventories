@@ -36,13 +36,14 @@ public class PlayerItemInfo {
         this.disabled = disabled;
         original.getAnimation().stream().map(Item::clone).forEach(animation::add);
 
-        this.data = original.getReader(player).convertToMap(); // this will copy whole map
+        if (original.hasData()) {
+            this.data = Map.copyOf(original.getData());
+        }
 
         // It's hardly recommended to use Events or Groovy's callbacks
         original.getConditions().forEach((condition, stringObjectMap) -> {
             if (condition.process(player, this)) {
                 stringObjectMap.forEach((key, val) -> {
-                    this.data.put(key, val);
                     if (key.equals("visible")) {
                         this.visible = (boolean) val;
                     } else if (key.equals("disabled")) {
@@ -52,6 +53,8 @@ public class PlayerItemInfo {
                     } else if (key.equals("animation")) {
                         this.animation.clear();
                         ItemFactory.buildAll((List<Object>) val).stream().map(Item::clone).forEach(animation::add);
+                    } else {
+                        this.data.put(key, val);
                     }
                 });
             }
@@ -72,7 +75,7 @@ public class PlayerItemInfo {
     }
 
     public MapReader getReader() {
-        return new MapReader(original.getFormat(), data, player, this);
+        return new MapReader(original.getFormat(), data != null ? data : Map.of(), player, this);
     }
 
     public boolean hasId() {
