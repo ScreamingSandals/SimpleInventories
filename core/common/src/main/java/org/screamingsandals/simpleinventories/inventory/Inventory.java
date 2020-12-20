@@ -29,7 +29,7 @@ public class Inventory extends AbstractInventory {
 
     private final Map<String, IPlaceholderParser> placeholders = new HashMap<>();
     private final Map<String, GenericItemInfo> ids = new HashMap<>();
-    private final SubInventory mainSubInventory = new SubInventory(true, null);
+    private final SubInventory mainSubInventory = new SubInventory(true, null, this);
 
     {
         var thisPlaceholder = new ThisPlaceholderParser();

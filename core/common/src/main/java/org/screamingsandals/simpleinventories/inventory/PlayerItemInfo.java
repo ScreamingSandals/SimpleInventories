@@ -94,6 +94,14 @@ public class PlayerItemInfo {
         return !animation.isEmpty();
     }
 
+    public boolean hasChildInventory() {
+        return original.hasChildInventory();
+    }
+
+    public SubInventory getChildInventory() {
+        return original.getChildInventory();
+    }
+
     public Inventory getFormat() {
         return original.getFormat();
     }

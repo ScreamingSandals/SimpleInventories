@@ -1,9 +1,6 @@
 package org.screamingsandals.simpleinventories.inventory;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -16,10 +13,21 @@ public class SubInventory extends AbstractInventory {
     private final boolean main;
     @Nullable
     private final GenericItemInfo itemOwner;
-
-    @Setter(AccessLevel.PRIVATE)
-    private Inventory format;
+    @ToString.Exclude
+    private final Inventory format;
 
     @Setter(AccessLevel.PRIVATE)
     private int lastpos;
+
+    private final List<GenericItemInfo> contents = new ArrayList<>();
+
+    /**
+     * Used for adding operations and items for future process.
+     */
+    @ToString.Exclude
+    private final List<Object> waitingQueue = new ArrayList<>();
+
+    public void process() {
+
+    }
 }

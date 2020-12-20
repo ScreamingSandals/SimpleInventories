@@ -3,6 +3,7 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.simpleinventories.events.EventManager;
 import org.screamingsandals.simpleinventories.material.Item;
@@ -17,7 +18,9 @@ import java.util.Map;
 
 @Data
 public class GenericItemInfo {
+    @ToString.Exclude
     private final Inventory format;
+    @ToString.Exclude
     private SubInventory parent;
     private int position;
     private Item item;

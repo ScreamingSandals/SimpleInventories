@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories.builder;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
@@ -30,7 +31,7 @@ public class ItemInfoBuilder extends ParametrizedCategoryBuilder {
     @Override
     public LocalOptionsBuilder getCategoryOptions() {
         if (!itemInfo.hasChildInventory()) {
-            itemInfo.setChildInventory(new SubInventory(false, itemInfo));
+            itemInfo.setChildInventory(new SubInventory(false, itemInfo, itemInfo.getFormat()));
         }
         return new LocalOptionsBuilder(itemInfo.getChildInventory().getLocalOptions());
     }
@@ -324,5 +325,16 @@ public class ItemInfoBuilder extends ParametrizedCategoryBuilder {
             list.add(map);
         }
         return this;
+    }
+
+    @Override
+    protected void putObjectToQueue(@NonNull Object object) {
+        if (subInventory == null) {
+            if (!itemInfo.hasChildInventory()) {
+                itemInfo.setChildInventory(new SubInventory(false, itemInfo, itemInfo.getFormat()));
+            }
+            subInventory = itemInfo.getChildInventory();
+        }
+        super.putObjectToQueue(object);
     }
 }
