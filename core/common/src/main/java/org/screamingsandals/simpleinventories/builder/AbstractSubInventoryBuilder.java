@@ -82,7 +82,7 @@ public abstract class AbstractSubInventoryBuilder {
 
     public AbstractSubInventoryBuilder hidden(String id, Consumer<CategoryBuilder> consumer) {
         var itemInfo = new GenericItemInfo(getFormat());
-        itemInfo.setWritten(false);
+        itemInfo.setWritten(() -> false);
         itemInfo.setId(id);
         itemInfo.setChildInventory(new SubInventory(false, itemInfo, getFormat()));
         putObjectToQueue(itemInfo);
@@ -92,7 +92,7 @@ public abstract class AbstractSubInventoryBuilder {
 
     public AbstractSubInventoryBuilder hidden(String id) {
         var itemInfo = new GenericItemInfo(getFormat());
-        itemInfo.setWritten(false);
+        itemInfo.setWritten(() -> false);
         itemInfo.setId(id);
         putObjectToQueue(itemInfo);
         return this;
@@ -105,8 +105,20 @@ public abstract class AbstractSubInventoryBuilder {
         return this;
     }
 
+    public AbstractSubInventoryBuilder insert(String link, SubInventory prebuiltInventory) {
+        var insert = new Insert(link, prebuiltInventory);
+        putObjectToQueue(insert);
+        return this;
+    }
+
     public AbstractSubInventoryBuilder insert(List<String> links, Consumer<CategoryBuilder> consumer) {
-        links.forEach(s -> insert(s, consumer));
+        var prebuiltInventory = new SubInventory(false, null, getFormat());
+        ConsumerExecutor.execute(consumer, new CategoryBuilder(prebuiltInventory));
+        return insert(links, prebuiltInventory);
+    }
+
+    public AbstractSubInventoryBuilder insert(List<String> links, SubInventory prebuiltInventory) {
+        links.forEach(s -> insert(s, prebuiltInventory));
         return this;
     }
 

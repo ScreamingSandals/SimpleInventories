@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Data
 @AllArgsConstructor
-public class Property {
+public class Property implements Cloneable {
     private final Inventory format;
     @Setter(onMethod_ = @Deprecated)
     private String propertyName;
@@ -26,5 +26,11 @@ public class Property {
 
     public MapReader getReader(PlayerWrapper player, PlayerItemInfo info) {
         return new MapReader(format, propertyData != null ? propertyData : Map.of(), player, info);
+    }
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public Property clone() {
+        return new Property(format, propertyName, Map.copyOf(propertyData));
     }
 }

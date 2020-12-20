@@ -20,4 +20,8 @@ public final class MaterialHolder {
     public <T> T as(Class<T> theClass) {
         return MaterialMapping.convertMaterialHolder(this, theClass);
     }
+
+    public boolean isAir() {
+        return platformName.equals("AIR");
+    }
 }

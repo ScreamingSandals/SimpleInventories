@@ -41,4 +41,11 @@ public class EventManager {
             parent.fireEvent(event);
         }
     }
+
+    @SuppressWarnings("unchecked")
+    public void cloneEventManager(EventManager eventManager) {
+        eventManager.handlers.forEach((aClass, consumers) -> consumers.forEach(consumer ->
+                register((Class<Object>) aClass, (Consumer<Object>) consumer)
+        ));
+    }
 }

@@ -1,9 +1,6 @@
 package org.screamingsandals.simpleinventories.inventory;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.simpleinventories.events.EventManager;
 import org.screamingsandals.simpleinventories.material.Item;
@@ -15,9 +12,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 @Data
-public class GenericItemInfo {
+public class GenericItemInfo implements Cloneable {
     @ToString.Exclude
     private final Inventory format;
     @ToString.Exclude
@@ -25,8 +23,8 @@ public class GenericItemInfo {
     private int position;
     private Item item;
     private final List<Item> animation = new ArrayList<>();
-    private boolean visible;
-    private boolean disabled;
+    private Supplier<Boolean> visible;
+    private Supplier<Boolean> disabled;
     private String id;
     private final List<Property> properties = new ArrayList<>();
     @Getter(onMethod_ = @Deprecated)
@@ -34,10 +32,11 @@ public class GenericItemInfo {
     private Map<String, Object> data;
     @Deprecated
     private Item book;
+    @Deprecated(forRemoval = true) // may be replaced by event handlers
     private final Map<Condition, Map<String, Object>> conditions = new HashMap<>();
     private Origin origin;
-    private boolean written;
-    private final EventManager eventManager = new EventManager(format.getEventManager());
+    private Supplier<Boolean> written;
+    private final EventManager eventManager;
     private SubInventory childInventory;
     private String locate;
     private final List<String> executions = new ArrayList<>();
@@ -63,6 +62,11 @@ public class GenericItemInfo {
     @Setter(onMethod_ = @Deprecated)
     @Nullable
     private String defaultCurrency;
+
+    public GenericItemInfo(Inventory format) {
+        this.format = format;
+        this.eventManager = new EventManager(format.getEventManager());
+    }
 
     @Deprecated
     public MapReader getReader(PlayerWrapper owner) {
@@ -94,5 +98,52 @@ public class GenericItemInfo {
         return childInventory != null;
     }
 
+    public boolean isWritten() {
+        return written != null ? written.get() : true;
+    }
 
+    public boolean isDisabled() {
+        return disabled != null ? disabled.get() : false;
+    }
+
+    public boolean isVisible() {
+        return visible != null ? visible.get() : true;
+    }
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    @Override
+    public GenericItemInfo clone() {
+        var info = new GenericItemInfo(format);
+        info.item = item != null ? item.clone() : null;
+        animation.stream().map(Item::clone).forEach(info.animation::add);
+        info.visible = visible;
+        info.disabled = disabled;
+        info.written = written;
+        info.id = id;
+        properties.stream().map(Property::clone).forEach(info.properties::add);
+        info.data = data != null ? Map.copyOf(data) : null; // TODO: deep copy
+        info.book = book != null ? book.clone() : null;
+        info.conditions.putAll(conditions);
+        info.eventManager.cloneEventManager(eventManager);
+        info.executions.addAll(executions);
+        prices.stream().map(Price::clone).forEach(info.prices::add);
+        info.prices.addAll(prices);
+        info.origin = origin;
+        info.requestedPosition = requestedPosition;
+        info.requestedClone = requestedClone;
+        info.requestedTimes = requestedTimes;
+        info.defaultCurrency = defaultCurrency;
+        if (hasChildInventory()) {
+            info.childInventory = new SubInventory(false, info, format);
+            childInventory.getContents().stream().map(GenericItemInfo::clone).forEach(info.childInventory.getWaitingQueue()::add);
+            childInventory.getWaitingQueue().forEach(o -> {
+                if (o instanceof GenericItemInfo) {
+                    info.childInventory.getWaitingQueue().add(((GenericItemInfo) o).clone());
+                } else {
+                    info.childInventory.getWaitingQueue().add(o);
+                }
+            });
+        }
+        return info;
+    }
 }

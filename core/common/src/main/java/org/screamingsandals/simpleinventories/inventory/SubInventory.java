@@ -2,9 +2,10 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -16,8 +17,12 @@ public class SubInventory extends AbstractInventory {
     @ToString.Exclude
     private final Inventory format;
 
-    @Setter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.NONE)
     private int lastpos;
+
+    @Setter(AccessLevel.NONE)
+    private GenericItemInfo lastItem;
+
 
     private final List<GenericItemInfo> contents = new ArrayList<>();
 
@@ -25,9 +30,157 @@ public class SubInventory extends AbstractInventory {
      * Used for adding operations and items for future process.
      */
     @ToString.Exclude
-    private final List<Object> waitingQueue = new ArrayList<>();
+    private final Queue<Object> waitingQueue = new LinkedList<>();
+
+    public boolean acceptsLink(String link) {
+        if (main && link.equalsIgnoreCase("main")) {
+            return true;
+        }
+        return itemOwner != null
+                && (link.startsWith("$") || link.startsWith("§"))
+                && link.substring(1).equals(itemOwner.getId());
+    }
 
     public void process() {
+        format.getInsertQueue().stream().filter(i -> acceptsLink(i.getLink())).forEach(insert -> {
+            format.getInsertQueue().remove(insert);
+            var clone = new LinkedList<>();
+            insert.getSubInventory().getWaitingQueue().stream().map(e -> {
+                if (e instanceof GenericItemInfo) {
+                    return ((GenericItemInfo) e).clone();
+                }
+                return e;
+            }).forEach(clone::add);
+            process(clone);
+        });
+        process(waitingQueue);
+    }
 
+    public void process(Queue<Object> queue) {
+        while (!queue.isEmpty()) {
+            var object = queue.remove();
+
+            if (object instanceof Insert) {
+                var insert = (Insert) object;
+                var linkedInventory = format.resolveCategoryLink(insert.getLink());
+                linkedInventory.ifPresentOrElse(subInventory -> {
+                    var clone = new LinkedList<>();
+                    insert.getSubInventory().getWaitingQueue().stream().map(e -> {
+                        if (e instanceof GenericItemInfo) {
+                            return ((GenericItemInfo) e).clone();
+                        }
+                        return e;
+                    }).forEach(clone::add);
+                    subInventory.process(clone);
+                }, () -> format.getInsertQueue().add(insert));
+            } else if (object instanceof Include) {
+                var include = (Include) object;
+                // TODO: reading files
+            } else if (object instanceof GenericItemInfo) {
+                var item = (GenericItemInfo) object;
+                item.setParent(this);
+                if (item.getRequestedClone() != null) {
+                    var clone = item.getRequestedClone();
+                    if (clone.getCloneLink().equalsIgnoreCase("cosmetic")) {
+                        if (clone.getCloneMethod().isOverride() || item.getItem() == null || item.getItem().getMaterial().equals(ItemFactory.getAir().getMaterial())) {
+                            item.setItem(format.getLocalOptions().getCosmeticItem());
+                        }
+                    } else {
+                        GenericItemInfo originalItem;
+                        if (clone.getCloneLink().equalsIgnoreCase("previous")) {
+                            originalItem = lastItem;
+                        } else {
+                            originalItem = format.resolveItemLink(clone.getCloneLink()).orElse(null);
+                        }
+                        if (originalItem != null) {
+                            if (originalItem.getItem() != null && !originalItem.getItem().getMaterial().isAir() && (clone.getCloneMethod().isOverride() || item.getItem() == null || item.getItem().getMaterial().isAir())) {
+                                item.setItem(originalItem.getItem());
+                            }
+                            if (originalItem.hasAnimation()) {
+                                if (!item.hasAnimation() || clone.getCloneMethod().isIncrement()) {
+                                    item.getAnimation().addAll(originalItem.getAnimation());
+                                } else if (clone.getCloneMethod().isOverride()) {
+                                    item.getAnimation().clear();
+                                    item.getAnimation().addAll(originalItem.getAnimation());
+                                }
+                            }
+                            if (originalItem.getVisible() != null && (clone.getCloneMethod().isOverride() || item.getVisible() == null)) {
+                                item.setVisible(originalItem.getVisible());
+                            }
+                            if (originalItem.getDisabled() != null && (clone.getCloneMethod().isOverride() || item.getDisabled() == null)) {
+                                item.setDisabled(originalItem.getDisabled());
+                            }
+                            item.getProperties().addAll(originalItem.getProperties());
+                            if (originalItem.hasBook() && (clone.getCloneMethod().isOverride() || !item.hasBook())) {
+                                item.setBook(originalItem.getBook().clone());
+                            }
+                            if (originalItem.getWritten() != null && (clone.getCloneMethod().isOverride() || item.getWritten() == null)) {
+                                item.setWritten(originalItem.getWritten());
+                            }
+                            item.getEventManager().cloneEventManager(originalItem.getEventManager());
+                            if (originalItem.hasChildInventory()) {
+                                if (!item.hasChildInventory()) {
+                                    item.setChildInventory(new SubInventory(false, item, format));
+                                    originalItem.getChildInventory().getContents().stream().map(GenericItemInfo::clone).forEach(item.getChildInventory().getWaitingQueue()::add);
+                                }
+                            }
+                            if (originalItem.hasData()) {
+                                if (!item.hasData()) {
+                                    item.setData(new HashMap<>());
+                                }
+                                originalItem.getData().forEach((key, val) -> {
+                                    if (val instanceof Collection) {
+                                        if (!item.getData().containsKey(key)) {
+                                            item.getData().put(key, new ArrayList<>((Collection<?>) val));
+                                        } else if (clone.getCloneMethod().isIncrement()) {
+                                            //noinspection unchecked
+                                            ((Collection<Object>) item.getData().get(key)).addAll((Collection<?>) val);
+                                        } else if (clone.getCloneMethod().isOverride()) {
+                                            item.getData().put(key, new ArrayList<>((Collection<?>) val));
+                                        }
+                                    } else if (!item.getData().containsKey(key) || clone.getCloneMethod().isOverride()) {
+                                        if (val instanceof Cloneable) {
+                                            try {
+                                                item.getData().put(key, val.getClass().getMethod("clone").invoke(val));
+                                            } catch (Exception ex) {
+                                                item.getData().put(key, val);
+                                            }
+                                        } else {
+                                            item.getData().put(key, val);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+
+                if (item.hasId()) {
+                    format.getIds().put(item.getId(), item);
+                }
+
+                if (item.isWritten()) {
+                    var newPosition = lastpos + 1;
+                    if (item.getRequestedPosition() != null) {
+
+                    }
+                    item.setPosition(newPosition);
+                    if (newPosition > lastpos) {
+                        lastpos = newPosition;
+                    }
+                }
+
+                if (item.hasChildInventory()) {
+                    item.getChildInventory().process();
+                }
+                contents.add(item);
+                lastItem = item;
+                if (item.getRequestedTimes() != null) {
+
+                }
+            } else {
+                throw new RuntimeException("Invalid object in queue!");
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.screamingsandals.simpleinventories.events.EventManager;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
@@ -9,8 +10,7 @@ import org.screamingsandals.simpleinventories.placeholders.PagePlaceholderParser
 import org.screamingsandals.simpleinventories.placeholders.ThisPlaceholderParser;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Data
@@ -30,6 +30,8 @@ public class Inventory extends AbstractInventory {
     private final Map<String, IPlaceholderParser> placeholders = new HashMap<>();
     private final Map<String, GenericItemInfo> ids = new HashMap<>();
     private final SubInventory mainSubInventory = new SubInventory(true, null, this);
+    @ToString.Exclude
+    private final List<Insert> insertQueue = new ArrayList<>();
 
     {
         var thisPlaceholder = new ThisPlaceholderParser();
@@ -105,5 +107,27 @@ public class Inventory extends AbstractInventory {
         }
         matcher.appendTail(sb);
         return sb.toString();
+    }
+
+    public Optional<GenericItemInfo> resolveItemLink(String link) {
+        if (link.startsWith("$") || link.startsWith("§")) {
+            return Optional.ofNullable(ids.get(link.substring(1)));
+        }
+        return Optional.empty();
+    }
+
+    public Optional<SubInventory> resolveCategoryLink(String link) {
+        if (link.equalsIgnoreCase("main")) {
+            return Optional.of(mainSubInventory);
+        }
+        var itemOpt = resolveItemLink(link);
+        if (itemOpt.isPresent()) {
+            var itemInfo = itemOpt.get();
+            if (!itemInfo.hasChildInventory()) {
+                itemInfo.setChildInventory(new SubInventory(false, itemInfo, itemInfo.getFormat()));
+            }
+            return Optional.of(itemInfo.getChildInventory());
+        }
+        return Optional.empty();
     }
 }

@@ -94,7 +94,7 @@ public class ItemInfoBuilder extends ParametrizedCategoryBuilder {
     }
 
     public ItemInfoBuilder disabled(boolean disabled) {
-        itemInfo.setDisabled(disabled);
+        itemInfo.setDisabled(() -> disabled);
         return this;
     }
 
@@ -232,7 +232,7 @@ public class ItemInfoBuilder extends ParametrizedCategoryBuilder {
     }
 
     public ItemInfoBuilder visible(boolean visible) {
-        itemInfo.setVisible(visible);
+        itemInfo.setVisible(() -> visible);
         return this;
     }
 
@@ -251,8 +251,16 @@ public class ItemInfoBuilder extends ParametrizedCategoryBuilder {
         return this;
     }
 
+    /**
+     * Turns on or off the rendering for this item. Shouldn't be used, use hidden instead
+     * 
+     * @see AbstractSubInventoryBuilder#hidden(String)
+     * @param write If item should be rendered
+     * @return itself
+     */
+    @Deprecated
     public ItemInfoBuilder write(boolean write) {
-        itemInfo.setWritten(write);
+        itemInfo.setWritten(() -> write);
         return this;
     }
 
