@@ -142,6 +142,11 @@ public abstract class ItemFactory {
         }
 
         factory = factoryClass.get();
+
+        assert MaterialMapping.isInitialized();
+        assert PotionMapping.isInitialized();
+        assert EnchantmentMapping.isInitialized();
+
         factory.resultConverter.finish();
         factory.argumentConverter.finish();
     }

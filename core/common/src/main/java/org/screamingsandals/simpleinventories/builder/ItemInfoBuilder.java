@@ -10,7 +10,7 @@ import org.screamingsandals.simpleinventories.inventory.*;
 import org.screamingsandals.simpleinventories.material.builder.ItemBuilder;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.operations.conditions.Condition;
-import org.screamingsandals.simpleinventories.utils.ConsumerExecutor;
+import org.screamingsandals.simpleinventories.utils.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,11 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 @Getter
 @RequiredArgsConstructor
 public class ItemInfoBuilder extends ParametrizedCategoryBuilder {
     private final GenericItemInfo itemInfo;
+
+    public static final Pattern PRICE_PATTERN = Pattern.compile("(?<price>\\d+)(\\s+of\\s+|\\s+)(?<currency>[a-zA-Z0-9]+)?");
 
     @Override
     public LocalOptionsBuilder getCategoryOptions() {
@@ -42,12 +45,35 @@ public class ItemInfoBuilder extends ParametrizedCategoryBuilder {
     }
 
     public ItemInfoBuilder price(String price) {
-
+        var matcher = PRICE_PATTERN.matcher(price);
+        while (matcher.find()) {
+            var price1 = new Price();
+            price1.setAmount(Integer.parseInt(matcher.group("price")));
+            price1.setCurrency(matcher.group("currency"));
+            itemInfo.getPrices().add(price1);
+        }
         return this;
     }
 
-    public ItemInfoBuilder priceType(String priceType) {
+    public ItemInfoBuilder price(Price price) {
+        itemInfo.getPrices().add(price);
+        return this;
+    }
 
+    public ItemInfoBuilder price(List<Object> prices) {
+        prices.forEach(o -> {
+            if (o instanceof Price) {
+                price((Price) o);
+            } else {
+                price(o.toString());
+            }
+        });
+        return this;
+    }
+
+    @Deprecated
+    public ItemInfoBuilder priceType(String priceType) {
+        itemInfo.setDefaultCurrency(priceType);
         return this;
     }
 
@@ -92,62 +118,115 @@ public class ItemInfoBuilder extends ParametrizedCategoryBuilder {
     }
 
     public ItemInfoBuilder absolute(int absolute) {
-
+        itemInfo.getRequestedPosition().setAbsolute(() -> absolute);
         return this;
     }
 
     public ItemInfoBuilder clone(String link) {
-
+        if (itemInfo.getRequestedClone() == null) {
+            itemInfo.setRequestedClone(new Clone());
+        }
+        itemInfo.getRequestedClone().setCloneLink(link);
         return this;
     }
 
     public ItemInfoBuilder cloneMethod(String cloneMethod) {
+        try {
+            cloneMethod(CloneMethod.valueOf(cloneMethod.toUpperCase()));
+        } catch (IllegalArgumentException ignored) {}
+        return this;
+    }
 
+    public ItemInfoBuilder cloneMethod(CloneMethod cloneMethod) {
+        if (itemInfo.getRequestedClone() == null) {
+            itemInfo.setRequestedClone(new Clone());
+        }
+        itemInfo.getRequestedClone().setCloneMethod(cloneMethod);
         return this;
     }
 
     public ItemInfoBuilder column(int number) {
-
+        itemInfo.getRequestedPosition().setColumn(integer -> number);
         return this;
     }
 
     public ItemInfoBuilder column(String colName) {
+        try {
+            column(Column.valueOf(colName.toUpperCase()));
+        } catch (IllegalArgumentException ignored) {}
+        return this;
+    }
 
+    public ItemInfoBuilder column(Column column) {
+        itemInfo.getRequestedPosition().setColumn(column::convert);
         return this;
     }
 
     public ItemInfoBuilder linebreak(String linebreak) {
+        try {
+            linebreak(BreakType.valueOf(linebreak.toUpperCase()));
+        } catch (IllegalArgumentException ignored) {}
+        return this;
+    }
 
+    public ItemInfoBuilder linebreak(BreakType linebreak) {
+        itemInfo.getRequestedPosition().setLinebreak(() -> linebreak);
         return this;
     }
 
     public ItemInfoBuilder pagebreak(String pagebreak) {
+        try {
+            pagebreak(BreakType.valueOf(pagebreak.toUpperCase()));
+        } catch (IllegalArgumentException ignored) {}
+        return this;
+    }
 
+    public ItemInfoBuilder pagebreak(BreakType pagebreak) {
+        itemInfo.getRequestedPosition().setPagebreak(() -> pagebreak);
         return this;
     }
 
     public ItemInfoBuilder row(int row) {
-
+        itemInfo.getRequestedPosition().setRow(() -> row);
         return this;
     }
 
     public ItemInfoBuilder skip(int skip) {
-
+        itemInfo.getRequestedPosition().setSkip(() -> skip);
         return this;
     }
 
     public ItemInfoBuilder times(int times) {
-
+        if (itemInfo.getRequestedTimes() == null) {
+            itemInfo.setRequestedTimes(new Times());
+        }
+        itemInfo.getRequestedTimes().setRepeat(times);
         return this;
     }
 
     public ItemInfoBuilder timesMethods(String method) {
-
+        try {
+            timesMethods(TimesFlags.valueOf(method.toUpperCase()));
+        } catch (IllegalArgumentException ignored) {}
         return this;
     }
 
-    public ItemInfoBuilder timesMethods(List<String> methods) {
+    public ItemInfoBuilder timesMethods(TimesFlags method) {
+        if (itemInfo.getRequestedTimes() == null) {
+            itemInfo.setRequestedTimes(new Times());
+        }
+        itemInfo.getRequestedTimes().getFlags().add(method);
+        return this;
+    }
 
+    public ItemInfoBuilder timesMethods(List<Object> methods) {
+        methods.forEach(o -> {
+            if (o instanceof TimesFlags) {
+                timesMethods((TimesFlags) o);
+            } else {
+                timesMethods(o.toString());
+            }
+        });
         return this;
     }
 

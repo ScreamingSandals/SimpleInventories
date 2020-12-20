@@ -3,6 +3,7 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.simpleinventories.events.EventManager;
 import org.screamingsandals.simpleinventories.material.Item;
 import org.screamingsandals.simpleinventories.operations.conditions.Condition;
@@ -37,6 +38,28 @@ public class GenericItemInfo {
     private SubInventory childInventory;
     private String locate;
     private final List<String> executions = new ArrayList<>();
+    private final List<Price> prices = new ArrayList<>();
+
+    /**
+     *  GENERATION ONLY
+     */
+    private Position requestedPosition = new Position();
+    /**
+     *  GENERATION ONLY
+     */
+    @Nullable
+    private Clone requestedClone;
+    /**
+     *  GENERATION ONLY
+     */
+    @Nullable
+    private Times requestedTimes;
+    /**
+     *  GENERATION ONLY
+     */
+    @Setter(onMethod_ = @Deprecated)
+    @Nullable
+    private String defaultCurrency;
 
     @Deprecated
     public MapReader getReader(PlayerWrapper owner) {

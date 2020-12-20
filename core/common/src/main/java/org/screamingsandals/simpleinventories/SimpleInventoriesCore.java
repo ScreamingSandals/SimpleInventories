@@ -28,16 +28,11 @@ public abstract class SimpleInventoriesCore {
 
         core = supplier.get();
 
-        assert MaterialMapping.isInitialized();
-        assert PotionMapping.isInitialized();
-        assert EnchantmentMapping.isInitialized();
         assert ItemFactory.isInitialized();
         assert core.logger != null;
 
         core.playerResultConverter.finish();
         core.playerArgumentConverter.finish();
-
-
     }
 
     public static <T> T convertPlayerWrapper(PlayerWrapper player, Class<T> type) {
