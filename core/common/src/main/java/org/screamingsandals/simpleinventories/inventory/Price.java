@@ -9,7 +9,7 @@ public class Price implements Cloneable {
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
-    protected Price clone() {
+    public Price clone() {
         var price = new Price();
         price.amount = amount;
         price.currency = currency;

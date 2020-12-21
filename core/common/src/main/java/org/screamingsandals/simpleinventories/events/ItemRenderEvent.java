@@ -3,9 +3,17 @@ package org.screamingsandals.simpleinventories.events;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import org.screamingsandals.simpleinventories.builder.AnimationBuilder;
+import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.Inventory;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
+import org.screamingsandals.simpleinventories.material.Item;
+import org.screamingsandals.simpleinventories.material.builder.ItemBuilder;
+import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.simpleinventories.utils.ConsumerExecutor;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+
+import java.util.function.Consumer;
 
 @Data
 @RequiredArgsConstructor
@@ -14,97 +22,78 @@ public class ItemRenderEvent {
     private final PlayerItemInfo item;
     private final PlayerWrapper player;
 
-    /*
-    @Deprecated
-    public ItemInfo getOriginalInfo() {
-        return info.getOriginal();
+    public PlayerItemInfo getInfo() {
+        return item;
+    }
+
+    public GenericItemInfo getOriginalInfo() {
+        return item.getOriginal();
     }
 
     public Item getStack() {
-        return info.getStack();
+        return item.getStack();
     }
 
     public void setStack(Item stack) {
-        info.setStack(stack);
+        item.setStack(stack);
     }
 
     public boolean isVisible() {
-        return info.isVisible();
+        return item.isVisible();
     }
 
     public void setVisible(boolean visible) {
-        info.setVisible(visible);
+        item.setVisible(visible);
     }
 
     public boolean isDisabled() {
-        return info.isDisabled();
+        return item.isDisabled();
     }
 
     public void setDisabled(boolean disabled) {
-        info.setDisabled(disabled);
+        item.setDisabled(disabled);
     }
 
-        @RequiredArgsConstructor
-    public static class GroovyRenderBuilder {
-        @Getter
-        private final PlayerItemInfo info;
-        private List<Object> animationList;
-        private Map<String,Object> purgeStack;
+    public ItemRenderEvent disabled(boolean disabled) {
+        setDisabled(disabled);
+        return this;
+    }
 
-        public void disabled(boolean disabled) {
-            info.setDisabled(disabled);
-        }
+    public ItemRenderEvent visible(boolean visible) {
+        setVisible(visible);
+        return this;
+    }
 
-        public void visible(boolean visible) {
-            info.setVisible(visible);
-        }
+    public AnimationBuilder getAnimation() {
+        return new AnimationBuilder(item.getAnimation());
+    }
 
-        public GroovyAnimationBuilder getAnimation() {
-            if (animationList == null) {
-                animationList = new ArrayList<>();
-            }
+    public ItemRenderEvent animation(Consumer<AnimationBuilder> consumer) {
+        ConsumerExecutor.execute(consumer, getAnimation());
+        return this;
+    }
 
-            return new GroovyAnimationBuilder(animationList);
-        }
+    public ItemRenderEvent stack(Consumer<ItemBuilder> consumer) {
+        item.setStack(ItemFactory.getAir());
+        ConsumerExecutor.execute(consumer, new ItemBuilder(item.getStack()));
+        return this;
+    }
 
-        public void animation(Closure<GroovyAnimationBuilder> closure) {
-            internalCallClosure(closure, getAnimation());
-        }
+    public ItemRenderEvent clearStack(Consumer<ItemBuilder> consumer) {
+        ConsumerExecutor.execute(consumer, new ItemBuilder(item.getStack()));
+        return this;
+    }
 
-        public IGroovyStackBuilder getStack() {
-            if (purgeStack != null) {
-                return new GroovyLongStackBuilder(purgeStack);
-            }
+    public String process(String raw) {
+        return format.processPlaceholders(item.getPlayer(), raw, item);
+    }
 
-            return new GroovyBukkitStackBuilder(info.getStack());
-        }
+    public PlayerWrapper getPlayer() {
+        return item.getPlayer();
+    }
 
-        public IGroovyStackBuilder getClearStack() {
-            if (purgeStack == null) {
-                purgeStack = new HashMap<>();
-            }
-
-            return new GroovyLongStackBuilder(purgeStack);
-        }
-
-        public void stack(Closure<IGroovyStackBuilder> closure) {
-            internalCallClosure(closure, getStack());
-        }
-
-        public void clearStack(Closure<IGroovyStackBuilder> closure) {
-            internalCallClosure(closure, getClearStack());
-        }
-
-        public String process(String raw) {
-            return info.getFormat().processPlaceholders(info.getPlayer(), raw, info);
-        }
-
-        public Player getPlayer() {
-            return info.getPlayer();
-        }
-
-        public void player(Closure<Player> closure) {
-            internalCallClosure(closure, getPlayer());
-        }
-    }*/
+    public ItemRenderEvent player(Consumer<PlayerWrapper> consumer) {
+        ConsumerExecutor.execute(consumer, getPlayer());
+        return this;
+    }
 }

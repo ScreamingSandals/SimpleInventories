@@ -2,10 +2,10 @@ dependencies {
     compileOnly 'com.univocity:univocity-parsers:2.8.3'
     compileOnly 'org.codehaus.groovy:groovy:3.0.3'
 
-    shade 'org.spongepowered:configurate-gson:4.0.0'
-    shade 'org.spongepowered:configurate-hocon:4.0.0'
-    shade 'org.spongepowered:configurate-xml:4.0.0'
-    shade 'org.spongepowered:configurate-yaml:4.0.0'
+    shade 'org.spongepowered:configurate-gson:' + CONFIGURATE_VERSION
+    shade 'org.spongepowered:configurate-hocon:' + CONFIGURATE_VERSION
+    shade 'org.spongepowered:configurate-xml:' + CONFIGURATE_VERSION
+    shade 'org.spongepowered:configurate-yaml:' + CONFIGURATE_VERSION
 
     shade project(':utils')
     shade project(':material-common')

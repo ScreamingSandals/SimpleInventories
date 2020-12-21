@@ -129,9 +129,9 @@ public class GenericItemInfo implements Cloneable {
         prices.stream().map(Price::clone).forEach(info.prices::add);
         info.prices.addAll(prices);
         info.origin = origin;
-        info.requestedPosition = requestedPosition;
-        info.requestedClone = requestedClone;
-        info.requestedTimes = requestedTimes;
+        info.requestedPosition = requestedPosition != null ? requestedPosition.clone() : null;
+        info.requestedClone = requestedClone != null ? requestedClone.clone() : null;
+        info.requestedTimes = requestedTimes != null ? requestedTimes.clone() : null;
         info.defaultCurrency = defaultCurrency;
         if (hasChildInventory()) {
             info.childInventory = new SubInventory(false, info, format);

@@ -24,9 +24,5 @@ subprojects {
         maven { url 'https://jitpack.io' }
     }
 
-    shadowJar {
-        relocate 'org.spongepowered.configurate', 'org.screamingsandals.simpleinventories.configurate'
-    }
-
     sourceCompatibility = 11
 }

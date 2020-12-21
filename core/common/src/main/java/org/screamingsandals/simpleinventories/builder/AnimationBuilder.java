@@ -28,4 +28,9 @@ public class AnimationBuilder {
         stacks.add(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
         return this;
     }
+
+    public AnimationBuilder clear() {
+        stacks.clear();
+        return this;
+    }
 }
