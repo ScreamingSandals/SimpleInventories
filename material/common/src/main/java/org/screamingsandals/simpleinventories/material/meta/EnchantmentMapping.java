@@ -1,9 +1,7 @@
 package org.screamingsandals.simpleinventories.material.meta;
 
 import lombok.SneakyThrows;
-import org.screamingsandals.simpleinventories.material.MaterialHolder;
-import org.screamingsandals.simpleinventories.utils.ArgumentConverter;
-import org.screamingsandals.simpleinventories.utils.ResultConverter;
+import org.screamingsandals.simpleinventories.utils.BidirectionalConverter;
 import org.screamingsandals.simpleinventories.utils.RomanToDecimal;
 
 import java.util.HashMap;
@@ -19,11 +17,10 @@ public abstract class EnchantmentMapping {
     private static EnchantmentMapping mapping = null;
     protected final Map<String, EnchantmentHolder> enchantmentMapping = new HashMap<>();
 
-    protected ResultConverter<EnchantmentHolder> resultConverter = ResultConverter.<EnchantmentHolder>build()
-            .register(String.class, EnchantmentHolder::getPlatformName);
-    protected ArgumentConverter<EnchantmentHolder> argumentConverter = ArgumentConverter.<EnchantmentHolder>build()
-            .register(EnchantmentHolder.class, e -> e)
-            .register(Map.Entry.class, entry -> {
+    protected BidirectionalConverter<EnchantmentHolder> enchantmentConverter = BidirectionalConverter.<EnchantmentHolder>build()
+            .registerW2P(String.class, EnchantmentHolder::getPlatformName)
+            .registerP2W(EnchantmentHolder.class, e -> e)
+            .registerP2W(Map.Entry.class, entry -> {
                 Optional<EnchantmentHolder> holder = resolve(entry.getKey());
                 if (holder.isPresent()) {
                     int level;
@@ -45,7 +42,7 @@ public abstract class EnchantmentMapping {
         if (mapping == null) {
             throw new UnsupportedOperationException("Enchantment mapping is not initialized yet.");
         }
-        Optional<EnchantmentHolder> opt = mapping.argumentConverter.convertOptional(enchantmentObject);
+        Optional<EnchantmentHolder> opt = mapping.enchantmentConverter.convertOptional(enchantmentObject);
         if (opt.isPresent()) {
             return opt;
         }
@@ -89,8 +86,7 @@ public abstract class EnchantmentMapping {
         }
 
         mapping = mappingClass.get();
-        mapping.resultConverter.finish();
-        mapping.argumentConverter.finish();
+        mapping.enchantmentConverter.finish();
 
         mapping.legacyMapping();
     }
@@ -133,7 +129,7 @@ public abstract class EnchantmentMapping {
         if (mapping == null) {
             throw new UnsupportedOperationException("Enchantment mapping is not initialized yet.");
         }
-        return mapping.resultConverter.convert(holder, newType);
+        return mapping.enchantmentConverter.convert(holder, newType);
     }
 
     public static boolean isInitialized() {

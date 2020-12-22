@@ -13,11 +13,9 @@ public class BukkitEnchantmentMapping extends EnchantmentMapping {
     }
 
     public BukkitEnchantmentMapping() {
-        resultConverter
-                .register(Enchantment.class, e -> Enchantment.getByName(e.getPlatformName()));
-
-        argumentConverter
-                .register(Enchantment.class, e -> new EnchantmentHolder(e.getName()));
+        enchantmentConverter
+                .registerW2P(Enchantment.class, e -> Enchantment.getByName(e.getPlatformName()))
+                .registerP2W(Enchantment.class, e -> new EnchantmentHolder(e.getName()));
 
         Arrays.stream(Enchantment.values()).forEach(enchantment -> enchantmentMapping.put(enchantment.getName().toUpperCase(), new EnchantmentHolder(enchantment.getName())));
     }

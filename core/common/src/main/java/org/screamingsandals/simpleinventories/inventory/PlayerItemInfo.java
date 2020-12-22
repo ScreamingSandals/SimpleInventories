@@ -13,6 +13,7 @@ import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 public class PlayerItemInfo {
@@ -28,12 +29,12 @@ public class PlayerItemInfo {
     private Map<String, Object> data;
 
     @SuppressWarnings("unchecked")
-    public PlayerItemInfo(PlayerWrapper player, GenericItemInfo original, Item stack, boolean visible, boolean disabled) {
+    public PlayerItemInfo(PlayerWrapper player, GenericItemInfo original) {
         this.player = player;
         this.original = original;
-        this.stack = stack;
-        this.visible = visible;
-        this.disabled = disabled;
+        this.stack = original.getItem().clone();
+        this.visible = original.isVisible();
+        this.disabled = original.isDisabled();
         original.getAnimation().stream().map(Item::clone).forEach(animation::add);
 
         if (original.hasData()) {
@@ -59,6 +60,13 @@ public class PlayerItemInfo {
                 });
             }
         });
+
+        if (stack.getDisplayName() != null) {
+            stack.setDisplayName(original.getFormat().processPlaceholders(player, stack.getDisplayName(), this));
+        }
+        if (stack.getLore() != null) {
+            stack.setLore(stack.getLore().stream().map(e -> original.getFormat().processPlaceholders(player, e, this)).collect(Collectors.toList()));
+        }
 
         original.getEventManager().fireEvent(new ItemRenderEvent(original.getFormat(), this, player));
     }

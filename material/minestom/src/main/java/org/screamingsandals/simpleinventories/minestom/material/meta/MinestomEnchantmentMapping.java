@@ -13,11 +13,9 @@ public class MinestomEnchantmentMapping extends EnchantmentMapping {
     }
 
     public MinestomEnchantmentMapping() {
-        resultConverter
-                .register(Enchantment.class, e -> Enchantment.valueOf(e.getPlatformName()));
-
-        argumentConverter
-                .register(Enchantment.class, e -> new EnchantmentHolder(e.name()));
+        enchantmentConverter
+                .registerW2P(Enchantment.class, e -> Enchantment.valueOf(e.getPlatformName()))
+                .registerP2W(Enchantment.class, e -> new EnchantmentHolder(e.name()));
 
         Arrays.stream(Enchantment.values()).forEach(enchantment -> enchantmentMapping.put(enchantment.name().toUpperCase(), new EnchantmentHolder(enchantment.name())));
     }

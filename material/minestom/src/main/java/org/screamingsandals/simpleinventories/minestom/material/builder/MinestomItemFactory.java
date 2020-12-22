@@ -33,8 +33,8 @@ public class MinestomItemFactory extends ItemFactory {
             MinestomPotionMapping.init();
         }
 
-        resultConverter
-                .register(ItemStack.class, item -> {
+        itemConverter
+                .registerW2P(ItemStack.class, item -> {
                     var stack = item.getMaterial().as(ItemStack.class);
                     stack.setAmount((byte) item.getAmount());
                     if (item.getPlatformMeta() != null) {
@@ -72,10 +72,8 @@ public class MinestomItemFactory extends ItemFactory {
                     }
 
                     return stack;
-                });
-
-        argumentConverter
-                .register(ItemStack.class, stack -> {
+                })
+                .registerP2W(ItemStack.class, stack -> {
                     var item = new Item();
                     var material = MinestomMaterialMapping.resolve(stack.getMaterial());
                     if (material.isEmpty()) {

@@ -6,9 +6,8 @@ import org.screamingsandals.simpleinventories.material.MaterialHolder;
 import org.screamingsandals.simpleinventories.material.MaterialMapping;
 import org.screamingsandals.simpleinventories.material.meta.EnchantmentMapping;
 import org.screamingsandals.simpleinventories.material.meta.PotionMapping;
-import org.screamingsandals.simpleinventories.utils.ArgumentConverter;
+import org.screamingsandals.simpleinventories.utils.BidirectionalConverter;
 import org.screamingsandals.simpleinventories.utils.ConsumerExecutor;
-import org.screamingsandals.simpleinventories.utils.ResultConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +22,10 @@ import java.util.stream.Collectors;
 public abstract class ItemFactory {
 
     private static ItemFactory factory;
-    protected ResultConverter<Item> resultConverter = ResultConverter.<Item>build()
-            .register(String.class, item -> item.getMaterial().getPlatformName())
-            .register(MaterialHolder.class, Item::getMaterial);
-    @SuppressWarnings("unchecked")
-    protected ArgumentConverter<Item> argumentConverter = ArgumentConverter.<Item>build()
-            .register(Map.class, map -> {
+    protected BidirectionalConverter<Item> itemConverter = BidirectionalConverter.<Item>build()
+            .registerW2P(String.class, item -> item.getMaterial().getPlatformName())
+            .registerW2P(MaterialHolder.class, Item::getMaterial)
+            .registerP2W(Map.class, map -> {
                 Object type = map.get("type");
                 if (type == null) {
                     return null;
@@ -147,8 +144,7 @@ public abstract class ItemFactory {
         assert PotionMapping.isInitialized();
         assert EnchantmentMapping.isInitialized();
 
-        factory.resultConverter.finish();
-        factory.argumentConverter.finish();
+        factory.itemConverter.finish();
     }
 
     public static ItemBuilder builder() {
@@ -187,7 +183,7 @@ public abstract class ItemFactory {
     }
 
     public static Optional<Item> readStack(Object stackObject) {
-        Optional<Item> it = factory.argumentConverter.convertOptional(stackObject);
+        Optional<Item> it = factory.itemConverter.convertOptional(stackObject);
         if (it.isPresent()) {
             return it;
         }
@@ -264,7 +260,7 @@ public abstract class ItemFactory {
         if (factory == null) {
             throw new UnsupportedOperationException("ItemFactory is not initialized yet.");
         }
-        return factory.resultConverter.convert(item, newType);
+        return factory.itemConverter.convert(item, newType);
     }
 
     public static boolean isInitialized() {

@@ -13,16 +13,22 @@ import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 @RequiredArgsConstructor
 public class PreClickEvent implements Cancellable {
     private final PlayerWrapper player;
-    private final Inventory format;
     // Bukkit's Inventory inv
-    private final GenericItemInfo parent;
     private final PlayerItemInfo item;
     private final ClickType clickType;
     private final SubInventory subInventory;
 
     private boolean cancelled;
 
-    /*public boolean hasItem() {
+    public boolean hasItem() {
         return item != null;
-    }*/
+    }
+
+    public Inventory getFormat() {
+        return item.getFormat();
+    }
+
+    public GenericItemInfo getParent() {
+        return subInventory.getItemOwner();
+    }
 }

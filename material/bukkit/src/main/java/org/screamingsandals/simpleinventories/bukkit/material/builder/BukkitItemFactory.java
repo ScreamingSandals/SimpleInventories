@@ -36,8 +36,8 @@ public class BukkitItemFactory extends ItemFactory {
             BukkitPotionMapping.init();
         }
 
-        resultConverter
-                .register(ItemStack.class, item -> {
+        itemConverter
+                .registerW2P(ItemStack.class, item -> {
                     ItemStack stack = item.getMaterial().as(ItemStack.class);
                     stack.setAmount(item.getAmount());
                     if (item.getPlatformMeta() != null) {
@@ -99,10 +99,8 @@ public class BukkitItemFactory extends ItemFactory {
                     stack.setItemMeta(meta);
 
                     return stack;
-                });
-
-        argumentConverter
-                .register(ItemStack.class, stack -> {
+                })
+                .registerP2W(ItemStack.class, stack -> {
                     Item item = new Item();
                     Optional<MaterialHolder> material = BukkitMaterialMapping.resolve(stack.getType());
                     if (!material.isPresent()) {

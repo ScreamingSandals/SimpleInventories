@@ -1,13 +1,12 @@
 package org.screamingsandals.simpleinventories;
 
 import org.screamingsandals.simpleinventories.builder.InventoryBuilder;
+import org.screamingsandals.simpleinventories.events.EventManager;
 import org.screamingsandals.simpleinventories.inventory.Inventory;
-import org.screamingsandals.simpleinventories.material.MaterialMapping;
+import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
-import org.screamingsandals.simpleinventories.material.meta.EnchantmentMapping;
-import org.screamingsandals.simpleinventories.material.meta.PotionMapping;
-import org.screamingsandals.simpleinventories.utils.ArgumentConverter;
-import org.screamingsandals.simpleinventories.utils.ResultConverter;
+import org.screamingsandals.simpleinventories.render.InventoryRenderer;
+import org.screamingsandals.simpleinventories.utils.BidirectionalConverter;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.util.function.Supplier;
@@ -15,11 +14,11 @@ import java.util.logging.Logger;
 
 public abstract class SimpleInventoriesCore {
 
-    protected ResultConverter<PlayerWrapper> playerResultConverter = ResultConverter.build();
-    protected ArgumentConverter<PlayerWrapper> playerArgumentConverter = ArgumentConverter.build();
+    protected final BidirectionalConverter<PlayerWrapper> playerConverter = BidirectionalConverter.build();
+    protected final EventManager eventManager = new EventManager(null);
     protected Logger logger;
 
-    private static SimpleInventoriesCore core;
+    protected static SimpleInventoriesCore core;
 
     public static void init(Supplier<SimpleInventoriesCore> supplier) {
         if (core != null) {
@@ -31,29 +30,55 @@ public abstract class SimpleInventoriesCore {
         assert ItemFactory.isInitialized();
         assert core.logger != null;
 
-        core.playerResultConverter.finish();
-        core.playerArgumentConverter.finish();
+        core.playerConverter.finish();
     }
 
     public static <T> T convertPlayerWrapper(PlayerWrapper player, Class<T> type) {
         if (core == null) {
             throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
         }
-        return core.playerResultConverter.convert(player, type);
+        return core.playerConverter.convert(player, type);
     }
 
     public static <T> PlayerWrapper wrapPlayer(T player) {
         if (core == null) {
             throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
         }
-        return core.playerArgumentConverter.convert(player);
+        return core.playerConverter.convert(player);
     }
+
+    public static InventoryRenderer openInventory(PlayerWrapper playerWrapper, SubInventory subInventory) {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        var renderer = core.openInventory0(playerWrapper, subInventory);
+        renderer.render();
+        return renderer;
+    }
+
+    public static void closeInventory(PlayerWrapper playerWrapper) {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        core.closeInventory0(playerWrapper);
+    }
+
+    protected abstract InventoryRenderer openInventory0(PlayerWrapper playerWrapper, SubInventory subInventory);
+
+    protected abstract void closeInventory0(PlayerWrapper playerWrapper);
 
     public static Logger getLogger() {
         if (core == null) {
             throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
         }
         return core.logger;
+    }
+
+    public static EventManager getEventManager() {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        return core.eventManager;
     }
 
     public static InventoryBuilder builder() {

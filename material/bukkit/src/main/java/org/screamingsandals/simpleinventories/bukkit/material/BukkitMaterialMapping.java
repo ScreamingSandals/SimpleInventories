@@ -36,9 +36,9 @@ public class BukkitMaterialMapping extends MaterialMapping {
             mappingFlags.add(MappingFlags.NO_COLORED_BEDS);
         }
 
-        resultConverter
-                .register(Material.class, holder -> Material.valueOf(holder.getPlatformName()))
-                .register(ItemStack.class, holder -> {
+        materialConverter
+                .registerW2P(Material.class, holder -> Material.valueOf(holder.getPlatformName()))
+                .registerW2P(ItemStack.class, holder -> {
                     if (platform == Platform.JAVA_FLATTENING) {
                         ItemStack stack = new ItemStack(Material.valueOf(holder.getPlatformName()));
                         ItemMeta meta = stack.getItemMeta();
@@ -52,11 +52,9 @@ public class BukkitMaterialMapping extends MaterialMapping {
                     } else {
                         throw new UnsupportedOperationException("Unknown platform!");
                     }
-                });
-
-        argumentConverter
-                .register(Material.class, material -> new MaterialHolder(material.name()))
-                .register(ItemStack.class, stack -> new MaterialHolder(stack.getType().name(), stack.getDurability()));
+                })
+                .registerP2W(Material.class, material -> new MaterialHolder(material.name()))
+                .registerP2W(ItemStack.class, stack -> new MaterialHolder(stack.getType().name(), stack.getDurability()));
 
         Arrays.stream(Material.values()).filter(t -> !t.name().startsWith("LEGACY")).forEach(material ->
                 materialMapping.put(material.name().toUpperCase(), new MaterialHolder(material.name()))

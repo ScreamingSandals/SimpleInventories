@@ -44,16 +44,32 @@ public class SubInventory extends AbstractInventory {
     public LocalOptions getLocalOptions() {
         var options = super.getLocalOptions();
         if (options == null) {
-            //noinspection ConstantConditions
-            if (!main && itemOwner.getParent() != null) {
+            if (!main) {
+                //noinspection ConstantConditions
                 options = itemOwner.getParent().getLocalOptions().clone();
-            } else if (main) {
+            } else {
                 options = format.getLocalOptions();
             }
         }
         return options;
     }
 
+    public LocalOptions getLocalOrParentOptions() {
+        var options = super.getLocalOptions();
+        if (options == null) {
+            if (!main) {
+                //noinspection ConstantConditions
+                options = itemOwner.getParent().getLocalOrParentOptions();
+            } else {
+                options = format.getLocalOptions();
+            }
+        }
+        return options;
+    }
+
+    public int getHighestPage() {
+        return contents.stream().mapToInt(item -> item.getPosition() / getLocalOrParentOptions().getItemsOnPage()).distinct().max().orElse(0);
+    }
 
     public void process() {
         format.getInsertQueue().stream().filter(i -> acceptsLink(i.getLink())).forEach(insert -> {

@@ -8,5 +8,6 @@ dependencies {
     shade project(':utils')
     shade project(':material-common')
     shade project(':material-bukkit')
+    shade project(':core-common')
     compileOnly paper(PAPER_VERSION)
 }

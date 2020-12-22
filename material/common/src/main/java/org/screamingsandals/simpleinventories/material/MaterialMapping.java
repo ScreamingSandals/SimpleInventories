@@ -2,8 +2,7 @@ package org.screamingsandals.simpleinventories.material;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.screamingsandals.simpleinventories.utils.ArgumentConverter;
-import org.screamingsandals.simpleinventories.utils.ResultConverter;
+import org.screamingsandals.simpleinventories.utils.BidirectionalConverter;
 import org.screamingsandals.simpleinventories.utils.Platform;
 
 import java.util.*;
@@ -17,10 +16,9 @@ public abstract class MaterialMapping {
     protected Platform platform;
     protected final Map<String, MaterialHolder> materialMapping = new HashMap<>();
     protected final List<MappingFlags> mappingFlags = new ArrayList<>();
-    protected ResultConverter<MaterialHolder> resultConverter = ResultConverter.<MaterialHolder>build()
-            .register(String.class, MaterialHolder::getPlatformName);
-    protected ArgumentConverter<MaterialHolder> argumentConverter = ArgumentConverter.<MaterialHolder>build()
-            .register(MaterialHolder.class, e -> e);
+    protected BidirectionalConverter<MaterialHolder> materialConverter = BidirectionalConverter.<MaterialHolder>build()
+            .registerW2P(String.class, MaterialHolder::getPlatformName)
+            .registerP2W(MaterialHolder.class, e -> e);
 
     private static MaterialMapping mapping = null;
     private static final Pattern RESOLUTION_PATTERN = Pattern.compile("^(((?:(?<namespace>[A-Za-z][A-Za-z0-9_.\\-]*):)?(?<material>[A-Za-z][A-Za-z0-9_.\\-/ ]*)(?::)?(?<durability>\\d+)?)|((?<id>\\d+)(?::)?(?<data>\\d+)?))$");
@@ -29,7 +27,7 @@ public abstract class MaterialMapping {
         if (mapping == null) {
             throw new UnsupportedOperationException("Material mapping is not initialized yet.");
         }
-        Optional<MaterialHolder> opt = mapping.argumentConverter.convertOptional(materialObject);
+        Optional<MaterialHolder> opt = mapping.materialConverter.convertOptional(materialObject);
         if (opt.isPresent()) {
             return opt;
         }
@@ -82,7 +80,7 @@ public abstract class MaterialMapping {
         if (mapping == null) {
             throw new UnsupportedOperationException("Material mapping is not initialized yet.");
         }
-        return mapping.resultConverter.convert(holder, newType);
+        return mapping.materialConverter.convert(holder, newType);
     }
 
     @SneakyThrows
@@ -92,8 +90,7 @@ public abstract class MaterialMapping {
         }
 
         mapping = materialMapping.get();
-        mapping.resultConverter.finish(); // don't allow new convertors
-        mapping.argumentConverter.finish();
+        mapping.materialConverter.finish();
 
         /*
         if server is running Java Edition Post-Flattening version, flattening remappings have to been applied first

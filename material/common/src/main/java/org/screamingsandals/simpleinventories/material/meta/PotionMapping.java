@@ -1,8 +1,7 @@
 package org.screamingsandals.simpleinventories.material.meta;
 
 import lombok.SneakyThrows;
-import org.screamingsandals.simpleinventories.utils.ArgumentConverter;
-import org.screamingsandals.simpleinventories.utils.ResultConverter;
+import org.screamingsandals.simpleinventories.utils.BidirectionalConverter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +14,9 @@ public class PotionMapping {
     private static final Pattern RESOLUTION_PATTERN = Pattern.compile("^(?:(?<namespace>[A-Za-z][A-Za-z0-9_.\\-]*):)?(?<potion>[A-Za-z][A-Za-z0-9_.\\-/]*)$");
     private static PotionMapping mapping = null;
     protected final Map<String, PotionHolder> potionMapping = new HashMap<>();
-    protected ResultConverter<PotionHolder> resultConverter = ResultConverter.<PotionHolder>build()
-            .register(String.class, PotionHolder::getPlatformName);
-    protected ArgumentConverter<PotionHolder> argumentConverter = ArgumentConverter.<PotionHolder>build()
-            .register(PotionHolder.class, e -> e);
+    protected BidirectionalConverter<PotionHolder> potionConverter = BidirectionalConverter.<PotionHolder>build()
+            .registerW2P(String.class, PotionHolder::getPlatformName)
+            .registerP2W(PotionHolder.class, e -> e);
 
     @SneakyThrows
     public static void init(Supplier<PotionMapping> potionMapping) {
@@ -27,8 +25,7 @@ public class PotionMapping {
         }
 
         mapping = potionMapping.get();
-        mapping.resultConverter.finish();
-        mapping.argumentConverter.finish();
+        mapping.potionConverter.finish();
 
         mapping.bukkit2minecraftMapping();
     }
@@ -67,7 +64,7 @@ public class PotionMapping {
         if (mapping == null) {
             throw new UnsupportedOperationException("Potion mapping is not initialized yet.");
         }
-        Optional<PotionHolder> opt = mapping.argumentConverter.convertOptional(potionObject);
+        Optional<PotionHolder> opt = mapping.potionConverter.convertOptional(potionObject);
         if (opt.isPresent()) {
             return opt;
         }
@@ -97,7 +94,7 @@ public class PotionMapping {
         if (mapping == null) {
             throw new UnsupportedOperationException("Potion mapping is not initialized yet.");
         }
-        return mapping.resultConverter.convert(holder, newType);
+        return mapping.potionConverter.convert(holder, newType);
     }
 
     public static boolean isInitialized() {

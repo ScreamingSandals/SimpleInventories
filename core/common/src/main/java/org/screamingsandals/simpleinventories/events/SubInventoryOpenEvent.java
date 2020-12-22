@@ -10,12 +10,18 @@ import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 @Data
 @RequiredArgsConstructor
 public class SubInventoryOpenEvent implements Cancellable {
-    private final Inventory format;
     // Bukkit's Inventory inv
     private final PlayerWrapper player;
-    private final GenericItemInfo parent;
-    private final int page;
     private final SubInventory subInventory;
+    private final int page;
+
+    public Inventory getFormat() {
+        return subInventory.getFormat();
+    }
+
+    public GenericItemInfo getParent() {
+        return subInventory.getItemOwner();
+    }
 
     private boolean cancelled;
 }

@@ -3,6 +3,7 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.EventManager;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
@@ -16,16 +17,13 @@ import java.util.regex.Pattern;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class Inventory extends AbstractInventory {
-    private String prefix = "Inventory";
-
     private boolean genericShop = false;
     private boolean genericShopPriceTypeRequired = true;
     private boolean animationsEnabled = false;
-    private boolean showPageNumber = true;
     private boolean allowAccessToConsole = false;
     private boolean allowBungeecordPlayerSending = false;
 
-    private final EventManager eventManager = new EventManager(null);
+    private final EventManager eventManager = new EventManager(SimpleInventoriesCore.getEventManager());
 
     private final Map<String, IPlaceholderParser> placeholders = new HashMap<>();
     private final Map<String, GenericItemInfo> ids = new HashMap<>();
@@ -34,6 +32,8 @@ public class Inventory extends AbstractInventory {
     private final List<Insert> insertQueue = new ArrayList<>();
 
     {
+        setLocalOptions(new LocalOptions());
+
         var thisPlaceholder = new ThisPlaceholderParser();
         placeholders.put("this", thisPlaceholder);
         placeholders.put("self", thisPlaceholder);

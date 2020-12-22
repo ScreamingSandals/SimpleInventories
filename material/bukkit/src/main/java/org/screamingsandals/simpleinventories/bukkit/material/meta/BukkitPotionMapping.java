@@ -2,7 +2,6 @@ package org.screamingsandals.simpleinventories.bukkit.material.meta;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.screamingsandals.simpleinventories.material.meta.PotionHolder;
@@ -27,8 +26,8 @@ public class BukkitPotionMapping extends PotionMapping {
             versionNumber += Integer.parseInt(bukkitVersion[i]) * (i == 0 ? 100 : 1);
         }
 
-        resultConverter
-                .register(PotionType.class, e -> {
+        potionConverter
+                .registerW2P(PotionType.class, e -> {
                     if (e.getPlatformName().toUpperCase().startsWith("LONG_")) {
                         return PotionType.valueOf(e.getPlatformName().substring(5).toUpperCase());
                     } else if (e.getPlatformName().toUpperCase().startsWith("STRONG_")) {
@@ -37,7 +36,7 @@ public class BukkitPotionMapping extends PotionMapping {
                         return PotionType.valueOf(e.getPlatformName().toUpperCase());
                     }
                 })
-                .register(PotionData.class, e -> {
+                .registerW2P(PotionData.class, e -> {
                     if (e.getPlatformName().toUpperCase().startsWith("LONG_")) {
                         return new PotionData(PotionType.valueOf(e.getPlatformName().substring(5)), true, false);
                     } else if (e.getPlatformName().toUpperCase().startsWith("STRONG_")) {
@@ -45,11 +44,9 @@ public class BukkitPotionMapping extends PotionMapping {
                     } else {
                         return new PotionData(PotionType.valueOf(e.getPlatformName()));
                     }
-                });
-
-        argumentConverter
-                .register(PotionType.class, potion -> new PotionHolder(potion.name()))
-                .register(PotionData.class, data -> {
+                })
+                .registerP2W(PotionType.class, potion -> new PotionHolder(potion.name()))
+                .registerP2W(PotionData.class, data -> {
                     if (data.isExtended()) {
                         return new PotionHolder("LONG_" + data.getType().name());
                     } else if (data.isUpgraded()) {

@@ -18,6 +18,10 @@ public class LocalOptions implements Cloneable {
     private Item pageForwardItem = ItemFactory.build("ARROW").orElse(ItemFactory.getAir());
     private Item cosmeticItem = ItemFactory.getAir();
 
+    private String prefix = "Inventory";
+
+    private boolean showPageNumber = true;
+
     private int rows = ROWS;
     private int itemsOnRow = ITEMS_ON_ROW;
     private int renderActualRows = RENDER_ACTUAL_ROWS;
