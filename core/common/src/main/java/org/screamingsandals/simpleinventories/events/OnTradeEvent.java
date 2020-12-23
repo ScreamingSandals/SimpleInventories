@@ -16,13 +16,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OnTradeEvent implements Cancellable {
     private final PlayerWrapper player;
-    private final Inventory format;
     private final List<Price> prices;
     private final Item stack;
     private final PlayerItemInfo item;
     private final ClickType clickType;
 
     private boolean cancelled;
+
+    public Inventory getFormat() {
+        return item.getFormat();
+    }
 
     @Deprecated
     public int getPrice() {

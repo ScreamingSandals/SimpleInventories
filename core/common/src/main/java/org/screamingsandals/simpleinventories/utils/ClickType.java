@@ -113,4 +113,12 @@ public enum ClickType {
     public boolean isShiftClick() {
         return (this == ClickType.SHIFT_LEFT) || (this == ClickType.SHIFT_RIGHT) || (this == ClickType.CONTROL_DROP);
     }
+
+    public static ClickType convert(String type) {
+        try {
+            return ClickType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            return ClickType.LEFT;
+        }
+    }
 }

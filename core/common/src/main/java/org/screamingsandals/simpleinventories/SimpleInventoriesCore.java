@@ -9,6 +9,9 @@ import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.simpleinventories.utils.BidirectionalConverter;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -80,6 +83,33 @@ public abstract class SimpleInventoriesCore {
         }
         return core.eventManager;
     }
+
+    public static Optional<InventoryRenderer> getInventoryRenderer(PlayerWrapper playerWrapper) {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        return Optional.ofNullable(core.getInventoryRenderer0(playerWrapper));
+    }
+
+    protected abstract InventoryRenderer getInventoryRenderer0(PlayerWrapper playerWrapper);
+
+    public static List<InventoryRenderer> getAllInventoryRenderersForSubInventory(SubInventory subInventory) {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        return core.getAllInventoryRenderersForSubInventory0(subInventory);
+    }
+
+    protected abstract List<InventoryRenderer> getAllInventoryRenderersForSubInventory0(SubInventory subInventory);
+
+    public static Object readConfigurationSerializable(Map<String, Object> configuration) {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        return core.readConfigurationSerializable0(configuration);
+    }
+
+    protected abstract Object readConfigurationSerializable0(Map<String, Object> configuration);
 
     public static InventoryBuilder builder() {
         return new InventoryBuilder(new Inventory());

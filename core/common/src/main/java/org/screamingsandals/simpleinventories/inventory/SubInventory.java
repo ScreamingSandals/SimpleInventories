@@ -2,7 +2,9 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 
 import java.util.*;
 
@@ -89,9 +91,10 @@ public class SubInventory extends AbstractInventory {
         while (!queue.isEmpty()) {
             process(queue.remove());
         }
+        SimpleInventoriesCore.getAllInventoryRenderersForSubInventory(this).forEach(InventoryRenderer::render);
     }
 
-    public void process(Object object) {
+    private void process(Object object) {
         if (object instanceof Insert) {
             var insert = (Insert) object;
             var linkedInventory = format.resolveCategoryLink(insert.getLink());

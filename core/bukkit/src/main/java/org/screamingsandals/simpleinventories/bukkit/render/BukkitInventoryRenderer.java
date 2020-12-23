@@ -43,6 +43,7 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
         } else {
             inventory = Bukkit.createInventory(inventoryHolder, InventoryType.valueOf(options.getInventoryType().toUpperCase()), getTitle());
         }
+        inventoryHolder.setInventoryRenderer(this);
         inventoryHolder.setInventory(inventory);
         inventoryHolder.setSubInventory(subInventory);
 
@@ -70,7 +71,7 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
 
     @Override
     public boolean isOpened() {
-        return true; // TODO
+        return player.as(Player.class).getOpenInventory().getTopInventory().getHolder() == inventoryHolder;
     }
 
     @Override

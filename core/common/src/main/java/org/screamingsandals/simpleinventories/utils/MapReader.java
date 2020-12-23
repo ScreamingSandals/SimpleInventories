@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.Inventory;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.material.Item;
@@ -227,14 +228,13 @@ public class MapReader {
 				}
 			}
 			if (!casted) {
-				var nmap = new HashMap<>();
+				var nmap = new HashMap<String, Object>();
 				for (var entry : map.entrySet()) {
 					nmap.put(entry.getKey(), convert(entry.getValue()));
 				}
 				obj = nmap;
 				if (nmap.containsKey("==")) {
-					// TODO: on Bukkit convert to such class
-					//obj = ConfigurationSerialization.deserializeObject(nmap);
+					obj = SimpleInventoriesCore.readConfigurationSerializable(nmap);
 				}
 			}
 		}

@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories.render;
 
 import lombok.*;
+import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.SubInventoryOpenEvent;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.Inventory;
@@ -132,6 +133,7 @@ public abstract class InventoryRenderer {
 
     public void close() {
         clear();
+        SimpleInventoriesCore.closeInventory(player);
     }
 
     protected void clear() {
@@ -183,7 +185,7 @@ public abstract class InventoryRenderer {
             var pos = (itemInfo.getPosition() % options.getItemsOnPage()) + options.getRenderOffset();
             if (playerItemInfo.isVisible()) {
                 safePutStackToInventory(size, pos, playerItemInfo.getStack());
-                if (playerItemInfo.hasAnimation()) {
+                if (subInventory.getFormat().isAnimationsEnabled() && playerItemInfo.hasAnimation()) {
                     animations.put(pos, List.copyOf(playerItemInfo.getAnimation()));
                 }
             }
