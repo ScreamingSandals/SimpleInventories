@@ -34,7 +34,6 @@ public class GenericItemInfo implements Cloneable {
     private Item book;
     @Deprecated(forRemoval = true) // may be replaced by event handlers
     private final Map<Condition, Map<String, Object>> conditions = new HashMap<>();
-    private Origin origin;
     private Supplier<Boolean> written;
     private final EventManager eventManager;
     private SubInventory childInventory;
@@ -128,7 +127,6 @@ public class GenericItemInfo implements Cloneable {
         info.executions.addAll(executions);
         prices.stream().map(Price::clone).forEach(info.prices::add);
         info.prices.addAll(prices);
-        info.origin = origin;
         info.requestedPosition = requestedPosition != null ? requestedPosition.clone() : null;
         info.requestedClone = requestedClone != null ? requestedClone.clone() : null;
         info.requestedTimes = requestedTimes != null ? requestedTimes.clone() : null;

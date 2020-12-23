@@ -1,4 +1,5 @@
 dependencies {
+    shade project(':core-common')
     shade project(':core-bukkit')
     compileOnly paper("1.16.4")
 }

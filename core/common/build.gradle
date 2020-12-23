@@ -1,6 +1,6 @@
 dependencies {
     compileOnly 'com.univocity:univocity-parsers:2.8.3'
-    compileOnly 'org.codehaus.groovy:groovy:3.0.3'
+    compileOnly 'org.codehaus.groovy:groovy:3.0.7'
 
     shade 'org.spongepowered:configurate-gson:' + CONFIGURATE_VERSION
     shade 'org.spongepowered:configurate-hocon:' + CONFIGURATE_VERSION

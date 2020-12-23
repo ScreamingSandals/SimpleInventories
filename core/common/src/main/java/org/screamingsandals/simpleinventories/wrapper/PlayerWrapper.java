@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.Inventory;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.simpleinventories.material.Item;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -25,6 +27,26 @@ public class PlayerWrapper {
 
     public void closeInventory() {
         SimpleInventoriesCore.closeInventory(this);
+    }
+
+    public boolean hasInInventory(Item item) {
+        return SimpleInventoriesCore.hasPlayerInInventory(this, item);
+    }
+
+    public List<Item> addItem(Item item) {
+        return addItems(List.of(item));
+    }
+
+    public List<Item> addItems(List<Item> items) {
+        return SimpleInventoriesCore.giveItemsToPlayer(this, items);
+    }
+
+    public List<Item> removeItem(Item item) {
+        return removeItems(List.of(item));
+    }
+
+    public List<Item> removeItems(List<Item> items) {
+        return SimpleInventoriesCore.removeItemsFromPlayer(this, items);
     }
 
     public <T> T as(Class<T> type) {

@@ -2,10 +2,9 @@ package org.screamingsandals.simpleinventories.bukkit;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitClickActionHandler;
@@ -14,11 +13,19 @@ import org.screamingsandals.simpleinventories.bukkit.action.BukkitItemDragAction
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitItemMoveActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.material.builder.BukkitItemFactory;
+import org.screamingsandals.simpleinventories.bukkit.placeholders.PAPIPlaceholderParser;
+import org.screamingsandals.simpleinventories.bukkit.placeholders.PermissionPlaceholderParser;
+import org.screamingsandals.simpleinventories.bukkit.placeholders.PlayerPlaceholderParser;
+import org.screamingsandals.simpleinventories.bukkit.placeholders.WorldPlaceholderParser;
 import org.screamingsandals.simpleinventories.bukkit.render.BukkitInventoryRenderer;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.simpleinventories.material.Item;
+import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -99,4 +106,40 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
             return configuration;
         }
     }
+
+    @Override
+    protected boolean hasPlayerInInventory0(PlayerWrapper playerWrapper, Item item) {
+        return playerWrapper.as(Player.class).getInventory().contains(item.as(ItemStack.class));
+    }
+
+    @Override
+    protected List<Item> giveItemsToPlayer0(PlayerWrapper playerWrapper, List<Item> items) {
+        return playerWrapper.as(Player.class).getInventory()
+                .addItem(items.stream().map(item -> item.as(ItemStack.class)).toArray(ItemStack[]::new))
+                .values().stream().map(ItemFactory::build)
+                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+    }
+
+    @Override
+    protected List<Item> removeItemsFromPlayer0(PlayerWrapper playerWrapper, List<Item> items) {
+        return playerWrapper.as(Player.class).getInventory()
+                .removeItem(items.stream().map(item -> item.as(ItemStack.class)).toArray(ItemStack[]::new))
+                .values().stream().map(ItemFactory::build)
+                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+    }
+
+    @Override
+    protected void registerPlatformSpecificPlaceholders0(Map<String, IPlaceholderParser> placeholders) {
+        placeholders.put("papi", new PAPIPlaceholderParser());
+        placeholders.put("world", new WorldPlaceholderParser());
+        placeholders.put("player", new PlayerPlaceholderParser());
+        placeholders.put("permission", new PermissionPlaceholderParser());
+    }
+
+    @Override
+    protected void runJar0(File file) throws Exception {
+        var plugin = Bukkit.getPluginManager().loadPlugin(file);
+        Bukkit.getPluginManager().enablePlugin(plugin);
+    }
+
 }

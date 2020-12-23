@@ -12,6 +12,7 @@ import org.screamingsandals.simpleinventories.placeholders.ThisPlaceholderParser
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 @Data
@@ -39,6 +40,8 @@ public class Inventory extends AbstractInventory {
         placeholders.put("self", thisPlaceholder);
 
         placeholders.put("page", new PagePlaceholderParser());
+
+        SimpleInventoriesCore.registerPlatformSpecificPlaceholders(placeholders);
     }
 
     public boolean registerPlaceholder(String name, String value) {

@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.screamingsandals.simpleinventories.inventory.Inventory;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.simpleinventories.utils.ConsumerExecutor;
+
+import java.util.function.Consumer;
 
 @Getter
 @NoArgsConstructor
@@ -22,5 +25,14 @@ public class CategoryBuilder extends AbstractSubInventoryBuilder {
     @Override
     protected void putObjectToQueue(@NonNull Object object) {
         subInventory.getWaitingQueue().add(object);
+    }
+
+    public CategoryBuilder categoryOptions(Consumer<LocalOptionsBuilder> consumer) {
+        ConsumerExecutor.execute(consumer, getCategoryOptions());
+        return this;
+    }
+
+    public LocalOptionsBuilder getCategoryOptions() {
+        return new LocalOptionsBuilder(subInventory.getLocalOptions());
     }
 }

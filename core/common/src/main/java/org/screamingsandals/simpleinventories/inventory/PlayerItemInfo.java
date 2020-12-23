@@ -119,10 +119,6 @@ public class PlayerItemInfo {
         return original.getConditions();
     }
 
-    public Origin getOrigin() {
-        return original.getOrigin();
-    }
-
     public SubInventory getParent() {
         return original.getParent();
     }

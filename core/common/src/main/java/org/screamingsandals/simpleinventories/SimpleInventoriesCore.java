@@ -4,11 +4,14 @@ import org.screamingsandals.simpleinventories.builder.InventoryBuilder;
 import org.screamingsandals.simpleinventories.events.EventManager;
 import org.screamingsandals.simpleinventories.inventory.Inventory;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.simpleinventories.material.Item;
 import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.simpleinventories.utils.BidirectionalConverter;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -110,6 +113,52 @@ public abstract class SimpleInventoriesCore {
     }
 
     protected abstract Object readConfigurationSerializable0(Map<String, Object> configuration);
+
+    public static boolean hasPlayerInInventory(PlayerWrapper playerWrapper, Item item) {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        return core.hasPlayerInInventory0(playerWrapper, item);
+    }
+
+    protected abstract boolean hasPlayerInInventory0(PlayerWrapper playerWrapper, Item item);
+
+    public static List<Item> giveItemsToPlayer(PlayerWrapper playerWrapper, List<Item> items) {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        return core.giveItemsToPlayer0(playerWrapper, items);
+    }
+
+    protected abstract List<Item> giveItemsToPlayer0(PlayerWrapper playerWrapper, List<Item> items);
+
+    public static List<Item> removeItemsFromPlayer(PlayerWrapper playerWrapper, List<Item> items) {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        return core.removeItemsFromPlayer0(playerWrapper, items);
+    }
+
+    protected abstract List<Item> removeItemsFromPlayer0(PlayerWrapper playerWrapper, List<Item> items);
+
+    public static void registerPlatformSpecificPlaceholders(Map<String, IPlaceholderParser> placeholders) {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        core.registerPlatformSpecificPlaceholders0(placeholders);
+    }
+
+
+    protected abstract void registerPlatformSpecificPlaceholders0(Map<String, IPlaceholderParser> placeholders);
+
+    public static void runJar(File file) throws Exception {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        core.runJar0(file);
+    }
+
+    protected abstract void runJar0(File file) throws Exception;
 
     public static InventoryBuilder builder() {
         return new InventoryBuilder(new Inventory());

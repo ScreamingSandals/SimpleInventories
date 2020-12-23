@@ -42,7 +42,7 @@ public class OnTradeEvent implements Cancellable {
     }
 
     public boolean hasPlayerInInventory(Item item) {
-        return false; // TODO
+        return player.hasInInventory(item);
     }
 
     public List<Item> sellStack() {
@@ -50,7 +50,7 @@ public class OnTradeEvent implements Cancellable {
     }
 
     public List<Item> sellStack(Item item) {
-        return List.of(); // TODO
+        return player.removeItem(item);
     }
 
     public List<Item> buyStack() {
@@ -58,7 +58,7 @@ public class OnTradeEvent implements Cancellable {
     }
 
     public List<Item> buyStack(Item item) {
-        return List.of(); // TODO
+        return player.addItem(item);
     }
 
     public List<Property> getProperties() {

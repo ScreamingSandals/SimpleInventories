@@ -22,8 +22,8 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 @Getter
-@RequiredArgsConstructor
-public class ItemInfoBuilder extends ParametrizedCategoryBuilder {
+@RequiredArgsConstructor(staticName = "of")
+public class ItemInfoBuilder extends CategoryBuilder {
     private final GenericItemInfo itemInfo;
 
     public static final Pattern PRICE_PATTERN = Pattern.compile("(?<price>\\d+)(\\s+of\\s+|\\s+)(?<currency>[a-zA-Z0-9]+)?");

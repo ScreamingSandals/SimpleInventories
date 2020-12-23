@@ -10,10 +10,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.simpleinventories.inventory.Options;
-import org.screamingsandals.simpleinventories.listeners.InventoryListener;
+import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import org.screamingsandals.simpleinventories.plugin.commands.SguiCommandExecutor;
-import org.screamingsandals.simpleinventories.plugin.config.Configurator;
 
 @PluginMain
 public class SimpleInventoriesPlugin extends JavaPlugin {
@@ -35,8 +33,8 @@ public class SimpleInventoriesPlugin extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
-		
-		InventoryListener.init(this);
+
+		SimpleInventoriesBukkit.init(this);
 		
 		SguiCommandExecutor executor = new SguiCommandExecutor();
 		PluginCommand command = getCommand("simpleinventories");
