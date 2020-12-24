@@ -6,10 +6,14 @@ import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.Insert;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.simpleinventories.material.builder.ItemBuilder;
+import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
 import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.Scalars;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class ConfigurateLoader {
 
@@ -60,11 +64,105 @@ public class ConfigurateLoader {
                         var visible = itemNode.node("visible");
                         var write = itemNode.node("write");
 
-                        var builder = ItemInfoBuilder.of(new GenericItemInfo(subInventory.getFormat()));
+                        var item = new GenericItemInfo(subInventory.getFormat());
 
-                        // TODO - item loading
+                        item.setItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
 
-                        subInventory.getWaitingQueue().add(builder.getItemInfo());
+                        subInventory.getWaitingQueue().add(item);
+
+                        var builder = ItemInfoBuilder.of(item);
+                        if (!absolute.empty()) {
+                            builder.absolute(absolute.getInt());
+                        }
+                        if (!animation.empty() && animation.isList()) {
+                            animation.childrenList().forEach(builder.getAnimation()::stack);
+                        }
+                        if (!clone.empty()) {
+                            builder.clone(clone.getString());
+                        }
+                        if (!cloneMethod.empty()) {
+                            //noinspection ConstantConditions
+                            builder.cloneMethod(cloneMethod.getString());
+                        }
+                        if (!column.empty()) {
+                            try {
+                                //noinspection ConstantConditions
+                                builder.column(column.get(Integer.class)); // I need this to fail if it's not number
+                            } catch (SerializationException | NullPointerException ignored) {
+                                //noinspection ConstantConditions
+                                builder.column(column.getString());
+                            }
+                        }
+                        if (!conditions.empty()) {
+                            // TODO - conditions
+                        }
+                        if (!disabled.empty()) {
+                            builder.disabled(disabled.getString());
+                        }
+                        if (!execute.empty()) {
+                            if (execute.isList()) {
+                                builder.execute(execute.getList(String.class));
+                            } else {
+                                builder.execute(execute.getString());
+                            }
+                        }
+                        if (!id.empty()) {
+                            builder.id(id.getString());
+                        }
+                        if (!linebreak.empty()) {
+                            //noinspection ConstantConditions
+                            builder.linebreak(linebreak.getString());
+                        }
+                        if (!locate.empty()) {
+                            builder.locate(locate.getString());
+                        }
+                        if (!options.empty()) {
+                            // TODO - Options
+                        }
+                        if (!pagebreak.empty()) {
+                            //noinspection ConstantConditions
+                            builder.pagebreak(pagebreak.getString());
+                        }
+                        if (!price.empty()) {
+                            builder.price(price.getString());
+                        }
+                        if (!priceType.empty()) {
+                            builder.priceType(priceType.getString());
+                        }
+                        if (!properties.empty()) {
+                            // TODO - Properties
+                        }
+                        if (!row.empty()) {
+                            builder.row(row.getInt());
+                        }
+                        if (!skip.empty()) {
+                            builder.skip(times.getInt(0));
+                        }
+                        if (!times.empty()) {
+                            builder.times(times.getInt(1));
+                        }
+                        if (!timesMethods.empty()) {
+                            if (timesMethods.isList()) {
+                                //noinspection ConstantConditions
+                                builder.timesMethods(timesMethods.getList(Object.class));
+                            } else {
+                                //noinspection ConstantConditions
+                                builder.timesMethods(timesMethods.getString());
+                            }
+                        }
+                        if (!visible.empty()) {
+                            builder.visible(visible.getString());
+                        }
+                        if (!write.empty()) {
+                            builder.write(write.getBoolean());
+                        }
+
+                        // TODO - find non-standard fields and fill the map
+
+                        if (!items.empty()) {
+                            items.childrenList().forEach(child -> loadConfigurationNodeInto(builder.getSubInventory(), child));
+                        }
+
                     }
                 } else {
                     var string = itemNode.getString();
@@ -84,22 +182,4 @@ public class ConfigurateLoader {
             }
         });
     }
-
-    /*
-    public static Object transformer(ConfigurationNode node) {
-        if (node.empty()) {
-            return null;
-        }
-
-        if (node.isList()) {
-            return node.childrenList().stream().map(ConfigurateLoader::transformer).collect(Collectors.toList());
-        } else if (node.isMap()) {
-            var map = new HashMap<String, Object>();
-            node.childrenMap().entrySet().stream().map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey().toString(), transformer(entry.getValue())))
-                    .forEach(entry -> map.put(entry.getKey(), entry.getValue()));
-            return map;
-        } else {
-            // Oh, how to continue here? xdd
-        }
-    }*/
 }

@@ -3,6 +3,7 @@ package org.screamingsandals.simpleinventories.material.meta;
 import lombok.SneakyThrows;
 import org.screamingsandals.simpleinventories.utils.BidirectionalConverter;
 import org.screamingsandals.simpleinventories.utils.RomanToDecimal;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,12 @@ public abstract class EnchantmentMapping {
                     int level;
                     if (entry.getValue() instanceof Number) {
                         level = ((Number) entry.getValue()).intValue();
+                    } else if (entry.getValue() instanceof ConfigurationNode) {
+                        try {
+                            level = Integer.parseInt(((ConfigurationNode) entry.getValue()).getString("1"));
+                        } catch (Throwable t) {
+                            level = RomanToDecimal.romanToDecimal(((ConfigurationNode) entry.getValue()).getString("I"));
+                        }
                     } else {
                         try {
                             level = Integer.parseInt(entry.getValue().toString());

@@ -28,14 +28,6 @@ public class ItemInfoBuilder extends CategoryBuilder {
 
     public static final Pattern PRICE_PATTERN = Pattern.compile("(?<price>\\d+)(\\s+of\\s+|\\s+)(?<currency>[a-zA-Z0-9]+)?");
 
-    @Override
-    public LocalOptionsBuilder getCategoryOptions() {
-        if (!itemInfo.hasChildInventory()) {
-            itemInfo.setChildInventory(new SubInventory(false, itemInfo, itemInfo.getFormat()));
-        }
-        return new LocalOptionsBuilder(itemInfo.getChildInventory().getLocalOptions());
-    }
-
     public ItemInfoBuilder stack(Consumer<ItemBuilder> consumer) {
         ConsumerExecutor.execute(consumer, getStack());
         return this;
@@ -336,13 +328,18 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     @Override
-    protected void putObjectToQueue(@NonNull Object object) {
+    public SubInventory getSubInventory() {
         if (subInventory == null) {
             if (!itemInfo.hasChildInventory()) {
                 itemInfo.setChildInventory(new SubInventory(false, itemInfo, itemInfo.getFormat()));
             }
             subInventory = itemInfo.getChildInventory();
         }
-        super.putObjectToQueue(object);
+        return subInventory;
+    }
+
+    @Override
+    protected Inventory getFormat() {
+        return itemInfo.getFormat();
     }
 }

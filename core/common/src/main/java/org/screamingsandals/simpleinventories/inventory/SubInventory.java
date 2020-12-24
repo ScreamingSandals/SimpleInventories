@@ -31,7 +31,7 @@ public class SubInventory extends AbstractInventory {
      * Used for adding operations and items for future process.
      */
     @ToString.Exclude
-    private final Queue<Object> waitingQueue = new LinkedList<>();
+    private final Queue<Queueable> waitingQueue = new LinkedList<>();
 
     public boolean acceptsLink(String link) {
         if (main && link.equalsIgnoreCase("main")) {
@@ -76,7 +76,7 @@ public class SubInventory extends AbstractInventory {
     public void process() {
         format.getInsertQueue().stream().filter(i -> acceptsLink(i.getLink())).forEach(insert -> {
             format.getInsertQueue().remove(insert);
-            var clone = new LinkedList<>();
+            var clone = new LinkedList<Queueable>();
             insert.getSubInventory().getWaitingQueue().stream().map(e -> {
                 if (e instanceof GenericItemInfo) {
                     return ((GenericItemInfo) e).clone();
@@ -87,19 +87,19 @@ public class SubInventory extends AbstractInventory {
         });
         process(waitingQueue);
     }
-    public void process(Queue<Object> queue) {
+    public void process(Queue<Queueable> queue) {
         while (!queue.isEmpty()) {
             process(queue.remove());
         }
         SimpleInventoriesCore.getAllInventoryRenderersForSubInventory(this).forEach(InventoryRenderer::render);
     }
 
-    private void process(Object object) {
+    private void process(Queueable object) {
         if (object instanceof Insert) {
             var insert = (Insert) object;
             var linkedInventory = format.resolveCategoryLink(insert.getLink());
             linkedInventory.ifPresentOrElse(subInventory -> {
-                var clone = new LinkedList<>();
+                var clone = new LinkedList<Queueable>();
                 insert.getSubInventory().getWaitingQueue().stream().map(e -> {
                     if (e instanceof GenericItemInfo) {
                         return ((GenericItemInfo) e).clone();

@@ -118,7 +118,7 @@ public abstract class AbstractSubInventoryBuilder {
     }
 
     protected abstract Inventory getFormat();
-    protected abstract void putObjectToQueue(@NonNull Object object);
+    protected abstract void putObjectToQueue(@NonNull Queueable queueable);
 
     protected GenericItemInfo build(Object stack) {
         return BuilderUtils.buildItem(getFormat(), stack);

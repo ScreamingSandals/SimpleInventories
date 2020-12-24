@@ -8,6 +8,8 @@ import org.screamingsandals.simpleinventories.material.meta.EnchantmentMapping;
 import org.screamingsandals.simpleinventories.material.meta.PotionMapping;
 import org.screamingsandals.simpleinventories.utils.BidirectionalConverter;
 import org.screamingsandals.simpleinventories.utils.ConsumerExecutor;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +27,132 @@ public abstract class ItemFactory {
     protected BidirectionalConverter<Item> itemConverter = BidirectionalConverter.<Item>build()
             .registerW2P(String.class, item -> item.getMaterial().getPlatformName())
             .registerW2P(MaterialHolder.class, Item::getMaterial)
+            .registerP2W(ConfigurationNode.class, node -> {
+                var type = node.node("type");
+
+                var optionalItem = readStack(type.getString());
+                if (optionalItem.isEmpty()) {
+                    return null;
+                }
+                var item = optionalItem.get();
+
+                var amount = node.node("amount");
+                if (!amount.empty()) {
+                    item.setAmount(amount.getInt(1));
+                }
+
+                var damage = node.node("damage");
+                if (!damage.empty()) {
+                    item.setMaterial(item.getMaterial().newDurability(damage.getInt(0)));
+                }
+                var durability = node.node("durability");
+                if (!durability.empty()) {
+                    item.setMaterial(item.getMaterial().newDurability(durability.getInt(0)));
+                }
+
+                var displayName = node.node("display-name");
+                if (!displayName.empty()) {
+                    item.setDisplayName(displayName.getString());
+                }
+                var locName = node.node("loc-name");
+                if (!locName.empty()) {
+                    item.setLocalizedName(locName.getString());
+                }
+                var customModelData = node.node("custom-model-data");
+                if (!customModelData.empty()) {
+                    item.setCustomModelData(locName.getInt(0));
+                }
+                var repairCost = node.node("repair-cost");
+                if (!repairCost.empty()) {
+                    item.setRepair(repairCost.getInt());
+                }
+                var itemFlags = node.node("ItemFlags");
+                if (!itemFlags.empty()) {
+                    if (itemFlags.isList()) {
+                        try {
+                            item.setItemFlags(itemFlags.getList(String.class));
+                        } catch (SerializationException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //noinspection ConstantConditions
+                        item.setItemFlags(List.of(itemFlags.getString()));
+                    }
+                }
+                var unbreakable = node.node("Unbreakable");
+                if (!unbreakable.empty()) {
+                    item.setUnbreakable(unbreakable.getBoolean(false));
+                }
+                var lore = node.node("lore");
+                if (!lore.empty()) {
+                    if (lore.isList()) {
+                        try {
+                            item.setLore(lore.getList(String.class));
+                        } catch (SerializationException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        //noinspection ConstantConditions
+                        item.setLore(List.of(lore.getString()));
+                    }
+                }
+                var enchants = node.node("enchants");
+                if (!enchants.empty()) {
+                    if (enchants.isMap()) {
+                        enchants.childrenMap().entrySet().stream()
+                                .map(EnchantmentMapping::resolve)
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
+                                .forEach(item.getEnchantments()::add);
+                    } else if (enchants.isList()) {
+                        try {
+                            //noinspection ConstantConditions
+                            enchants.getList(Object.class).stream()
+                                    .map(EnchantmentMapping::resolve)
+                                    .filter(Optional::isPresent)
+                                    .map(Optional::get)
+                                    .forEach(item.getEnchantments()::add);
+                        } catch (SerializationException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            EnchantmentMapping.resolve(enchants.get(Object.class)).ifPresent(item.getEnchantments()::add);
+                        } catch (SerializationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                var potionType = node.node("potion-type");
+                if (!potionType.empty()) {
+                    try {
+                        PotionMapping.resolve(potionType.get(Object.class)).ifPresent(item::setPotion);
+                    } catch (SerializationException e) {
+                        e.printStackTrace();
+                    }
+                }
+                var meta = node.node("meta");
+                if (!meta.empty()) {
+                    try {
+                        item.setPlatformMeta(meta.get(Object.class)); // TODO: check
+                    } catch (SerializationException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                return item;
+            })
             .registerP2W(Map.class, map -> {
-                Object type = map.get("type");
+                var type = map.get("type");
                 if (type == null) {
                     return null;
                 }
 
-                Optional<Item> optionalItem = readStack(type.toString());
-                if (!optionalItem.isPresent()) {
+                var optionalItem = readStack(type.toString());
+                if (optionalItem.isEmpty()) {
                     return null;
                 }
-                Item item = optionalItem.get();
+                var item = optionalItem.get();
 
                 if (map.containsKey("amount")) {
                     try {
@@ -68,7 +185,7 @@ public abstract class ItemFactory {
                 }
 
                 if (map.containsKey("ItemFlags") && map.get("ItemFlags") instanceof List) {
-                    List flags = (List) map.get("ItemFlags");
+                    var flags = (List) map.get("ItemFlags");
                     for (Object str : flags) {
                         if (item.getItemFlags() == null) {
                             item.setItemFlags(new ArrayList<>());
@@ -183,7 +300,7 @@ public abstract class ItemFactory {
     }
 
     public static Optional<Item> readStack(Object stackObject) {
-        Optional<Item> it = factory.itemConverter.convertOptional(stackObject);
+        var it = factory.itemConverter.convertOptional(stackObject);
         if (it.isPresent()) {
             return it;
         }
@@ -192,32 +309,32 @@ public abstract class ItemFactory {
 
     public static Optional<Item> readShortStack(Item item, Object shortStackObject) {
         if (!(shortStackObject instanceof String)) {
-            Optional<MaterialHolder> opt = MaterialMapping.resolve(shortStackObject);
+            var opt = MaterialMapping.resolve(shortStackObject);
             if (opt.isPresent()) {
                 item.setMaterial(opt.get());
                 return Optional.of(item);
             }
         }
 
-        String shortStack = shortStackObject.toString().trim();
+        var shortStack = shortStackObject.toString().trim();
         if (shortStack.startsWith("(cast to ItemStack)")) {
             shortStack = shortStack.substring(19).trim();
         }
 
-        Matcher matcher = SHORT_STACK_PATTERN.matcher(shortStack);
+        var matcher = SHORT_STACK_PATTERN.matcher(shortStack);
 
         if (!matcher.matches() || matcher.group("material") == null) {
             return Optional.empty();
         }
 
-        String material = matcher.group("material");
-        String amount = matcher.group("amount");
-        String name = matcher.group("name");
+        var material = matcher.group("material");
+        var amount = matcher.group("amount");
+        var name = matcher.group("name");
         if (name != null && name.startsWith("\"") && name.endsWith("\"")) {
             name = name.substring(1, name.length() - 1);
         }
-        String lore_string = matcher.group("lore");
-        List<String> lore = new ArrayList<>();
+        var lore_string = matcher.group("lore");
+        var lore = new ArrayList<String>();
         if (lore_string != null) {
             Matcher loreMatcher = LORE_SPLIT.matcher(lore_string);
             while (loreMatcher.find()) {
@@ -225,8 +342,8 @@ public abstract class ItemFactory {
             }
         }
 
-        Optional<MaterialHolder> materialHolder = MaterialMapping.resolve(material);
-        if (!materialHolder.isPresent()) {
+        var materialHolder = MaterialMapping.resolve(material);
+        if (materialHolder.isEmpty()) {
             return Optional.empty();
         }
         item.setMaterial(materialHolder.get());

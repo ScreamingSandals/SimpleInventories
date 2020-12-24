@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.*;
 import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.placeholders.RuntimeDefinedPlaceholder;
 
 import java.util.function.Consumer;
@@ -15,8 +16,11 @@ public class InventoryBuilder extends CategoryBuilder {
     private final Inventory inventory;
 
     @Override
-    public LocalOptionsBuilder getCategoryOptions() {
-        return new LocalOptionsBuilder(inventory.getLocalOptions());
+    public SubInventory getSubInventory() {
+        if (subInventory == null) {
+            subInventory = inventory.getMainSubInventory();
+        }
+        return subInventory;
     }
 
     public InventoryBuilder define(String definition) {

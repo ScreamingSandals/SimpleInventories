@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 @Data
-public class GenericItemInfo implements Cloneable {
+public class GenericItemInfo implements Cloneable, Queueable {
     @ToString.Exclude
     private final Inventory format;
     @ToString.Exclude
