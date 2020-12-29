@@ -1,7 +1,6 @@
 package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.EventManager;
@@ -12,7 +11,6 @@ import org.screamingsandals.simpleinventories.placeholders.ThisPlaceholderParser
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 @Data

@@ -144,6 +144,13 @@ public class CategoryBuilder {
         return this;
     }
 
+    /**
+     * Ends the builder. Use only for InventorySetBuilder, it automatically triggers the rest!
+     */
+    public void process() {
+        getSubInventory().process();
+    }
+
     protected GenericItemInfo build(Object stack) {
         return BuilderUtils.buildItem(getFormat(), stack);
     }
