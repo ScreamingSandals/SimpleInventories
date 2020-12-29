@@ -28,17 +28,11 @@ Look into our wiki: https://github.com/ScreamingSandals/SimpleInventories/wiki
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.Player;
 
 import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
-import org.screamingsandals.simpleinventories.events.GenerateItemEvent;
-import org.screamingsandals.simpleinventories.events.PostActionEvent;
-import org.screamingsandals.simpleinventories.events.PreActionEvent;
-import org.screamingsandals.simpleinventories.inventorySet.Options;
-import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 
-public class Sample extends JavaPlugin implements Listener {
+public class Sample extends JavaPlugin {
     
     private InventorySet inventorySet;
 
