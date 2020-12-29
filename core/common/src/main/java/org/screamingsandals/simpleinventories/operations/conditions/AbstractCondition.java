@@ -1,16 +1,16 @@
 package org.screamingsandals.simpleinventories.operations.conditions;
 
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.operations.Operation;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 public abstract class AbstractCondition implements Condition {
-	protected Inventory format;
+	protected InventorySet format;
 	protected Object obj1;
 	protected Object obj2;
 
-	public AbstractCondition(Inventory format, Object obj1, Object obj2) {
+	public AbstractCondition(InventorySet format, Object obj1, Object obj2) {
 		this.format = format;
 		this.obj1 = obj1;
 		this.obj2 = obj2;

@@ -1,7 +1,6 @@
 package org.screamingsandals.simpleinventories.builder;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
@@ -246,7 +245,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     /**
      * Turns on or off the rendering for this item. Shouldn't be used, use hidden instead
      * 
-     * @see AbstractSubInventoryBuilder#hidden(String)
+     * @see CategoryBuilder#hidden(String)
      * @param write If item should be rendered
      * @return itself
      */
@@ -257,7 +256,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     public AnimationBuilder getAnimation() {
-        return new AnimationBuilder(itemInfo.getAnimation());
+        return AnimationBuilder.of(itemInfo.getAnimation());
     }
 
     public ItemInfoBuilder animation(Consumer<AnimationBuilder> consumer) {
@@ -276,7 +275,22 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     public ItemInfoBuilder locate(String locate) {
-        itemInfo.setLocate(locate);
+        itemInfo.setLocate(InventoryLink.of(getFormat(), locate));
+        return this;
+    }
+
+    public ItemInfoBuilder locate(InventorySet inventorySet) {
+        itemInfo.setLocate(InventoryLink.of(inventorySet));
+        return this;
+    }
+
+    public ItemInfoBuilder locate(SubInventory subInventory) {
+        itemInfo.setLocate(InventoryLink.of(subInventory));
+        return this;
+    }
+
+    public ItemInfoBuilder locate(InventorySet inventorySet, String locate) {
+        itemInfo.setLocate(InventoryLink.of(inventorySet, locate));
         return this;
     }
 
@@ -339,7 +353,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     @Override
-    protected Inventory getFormat() {
+    protected InventorySet getFormat() {
         return itemInfo.getFormat();
     }
 }

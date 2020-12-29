@@ -3,7 +3,7 @@ package org.screamingsandals.simpleinventories.wrapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.material.Item;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
@@ -21,8 +21,8 @@ public class PlayerWrapper {
         return SimpleInventoriesCore.openInventory(this, subInventory);
     }
 
-    public InventoryRenderer openInventory(Inventory inventory) {
-        return SimpleInventoriesCore.openInventory(this, inventory.getMainSubInventory());
+    public InventoryRenderer openInventory(InventorySet inventorySet) {
+        return SimpleInventoriesCore.openInventory(this, inventorySet.getMainSubInventory());
     }
 
     public void closeInventory() {

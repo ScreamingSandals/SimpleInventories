@@ -8,7 +8,7 @@ import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
 
 import java.util.function.Consumer;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(staticName = "of")
 @Getter
 public class LocalOptionsBuilder {
     private final LocalOptions localOptions;
@@ -92,6 +92,16 @@ public class LocalOptionsBuilder {
 
     public LocalOptionsBuilder inventoryType(String inventoryType) {
         localOptions.setInventoryType(inventoryType);
+        return this;
+    }
+
+    public LocalOptionsBuilder showPageNumber(boolean showPageNumber) {
+        localOptions.setShowPageNumber(showPageNumber);
+        return this;
+    }
+
+    public LocalOptionsBuilder prefix(String prefix) {
+        localOptions.setPrefix(prefix);
         return this;
     }
 }

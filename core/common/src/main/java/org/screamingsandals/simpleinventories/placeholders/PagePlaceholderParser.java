@@ -15,7 +15,7 @@ public class PagePlaceholderParser implements IPlaceholderParser {
 					case "id":
 						return item.getParent().isMain() ? "" : item.getParent().getItemOwner().getId();
 					case "number":
-						return String.valueOf(item.getPosition() / (item.getParent() != null ? item.getParent().getLocalOptions().getItemsOnPage() : item.getFormat().getLocalOptions().getItemsOnPage()));
+						return String.valueOf(item.getPosition() / (item.getParent() != null ? item.getParent().getLocalOptions().getItemsOnPage() : item.getFormat().getMainSubInventory().getLocalOptions().getItemsOnPage()));
 				}
 			}
 		}

@@ -1,21 +1,38 @@
 package org.screamingsandals.simpleinventories.loaders;
 
+import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.builder.BuilderUtils;
 import org.screamingsandals.simpleinventories.builder.ItemInfoBuilder;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.Insert;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.simpleinventories.material.builder.ItemBuilder;
 import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.serialize.Scalars;
+import org.spongepowered.configurate.loader.AbstractConfigurationLoader;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
-public class ConfigurateLoader {
+@RequiredArgsConstructor
+public abstract class ConfigurateLoader implements ILoader {
+    private final Supplier<AbstractConfigurationLoader.Builder<?,?>> configurationLoaderBuilder;
+
+    @Override
+    public void loadPathInto(SubInventory subInventory, Path path, String configPath) throws Exception {
+        var loader = configurationLoaderBuilder.get()
+                .path(path)
+                .build();
+
+        final ConfigurationNode root = loader.load();
+
+        var configKeys = configPath.split("\\.");
+        var node = root.node((Object[]) configKeys);
+
+        loadConfigurationNodeInto(subInventory, node);
+    }
 
     public static void loadConfigurationNodeInto(SubInventory subInventory, ConfigurationNode configurationNode) {
         configurationNode.childrenList().forEach(itemNode -> {
@@ -23,9 +40,10 @@ public class ConfigurateLoader {
                 if (itemNode.isMap()) {
                     if (itemNode.hasChild("define")) {
                         //noinspection ConstantConditions
-                        BuilderUtils.buildDefinition(subInventory.getFormat(), itemNode.node("define").getString());
+                        BuilderUtils.buildDefinition(subInventory.getInventorySet(), itemNode.node("define").getString());
                     } else if (itemNode.hasChild("include")) {
-                        subInventory.getWaitingQueue().add(new Include(itemNode.node("include").getString()));
+                        //noinspection ConstantConditions
+                        subInventory.getWaitingQueue().add(Include.of(itemNode.node("include").getString()));
                     } else if (itemNode.hasChild("insert")) {
                         var insert = itemNode.node("insert");
                         var items = itemNode.node("items");
@@ -35,7 +53,7 @@ public class ConfigurateLoader {
                         } else {
                             inserts.add(insert.getString());
                         }
-                        var insertContainer = new SubInventory(false, null, subInventory.getFormat());
+                        var insertContainer = new SubInventory(false, null, subInventory.getInventorySet());
                         inserts.forEach(s -> subInventory.getWaitingQueue().add(new Insert(s, insertContainer)));
                         items.childrenList().forEach(child -> loadConfigurationNodeInto(subInventory, child));
                     } else {
@@ -64,7 +82,7 @@ public class ConfigurateLoader {
                         var visible = itemNode.node("visible");
                         var write = itemNode.node("write");
 
-                        var item = new GenericItemInfo(subInventory.getFormat());
+                        var item = new GenericItemInfo(subInventory.getInventorySet());
 
                         item.setItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
 
@@ -169,11 +187,11 @@ public class ConfigurateLoader {
                     if (string != null) {
                         string = string.trim();
                         if (string.startsWith("define ")) {
-                            BuilderUtils.buildDefinition(subInventory.getFormat(), string.substring(7));
+                            BuilderUtils.buildDefinition(subInventory.getInventorySet(), string.substring(7));
                         } else if (string.startsWith("@")) {
-                            subInventory.getWaitingQueue().add(new Include(string.substring(1)));
+                            subInventory.getWaitingQueue().add(Include.of(string.substring(1)));
                         } else {
-                            subInventory.getWaitingQueue().add(BuilderUtils.buildItem(subInventory.getFormat(), string));
+                            subInventory.getWaitingQueue().add(BuilderUtils.buildItem(subInventory.getInventorySet(), string));
                         }
                     }
                 }

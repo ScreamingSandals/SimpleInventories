@@ -10,7 +10,7 @@ public abstract class CloseInventoryActionHandler {
         var page = inventoryRenderer.getPage();
 
         var closeEvent = new SubInventoryCloseEvent(player, subInventory, page);
-        subInventory.getFormat().getEventManager().fireEvent(closeEvent);
+        subInventory.getInventorySet().getEventManager().fireEvent(closeEvent);
 
         if (closeEvent.isCancelled()) {
             inventoryRenderer.jump(subInventory, page);

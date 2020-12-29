@@ -16,8 +16,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class Inventory extends AbstractInventory {
+public class InventorySet {
     private boolean genericShop = false;
     private boolean genericShopPriceTypeRequired = true;
     private boolean animationsEnabled = false;
@@ -33,8 +32,6 @@ public class Inventory extends AbstractInventory {
     private final List<Insert> insertQueue = new ArrayList<>();
 
     {
-        setLocalOptions(new LocalOptions());
-
         var thisPlaceholder = new ThisPlaceholderParser();
         placeholders.put("this", thisPlaceholder);
         placeholders.put("self", thisPlaceholder);

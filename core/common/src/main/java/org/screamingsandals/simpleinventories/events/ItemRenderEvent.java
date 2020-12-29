@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.screamingsandals.simpleinventories.builder.AnimationBuilder;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.material.Item;
 import org.screamingsandals.simpleinventories.material.builder.ItemBuilder;
@@ -18,9 +18,11 @@ import java.util.function.Consumer;
 @Data
 @RequiredArgsConstructor
 public class ItemRenderEvent {
-    private final Inventory format;
     private final PlayerItemInfo item;
-    private final PlayerWrapper player;
+
+    public InventorySet getFormat() {
+        return item.getFormat();
+    }
 
     public PlayerItemInfo getInfo() {
         return item;
@@ -65,7 +67,7 @@ public class ItemRenderEvent {
     }
 
     public AnimationBuilder getAnimation() {
-        return new AnimationBuilder(item.getAnimation());
+        return AnimationBuilder.of(item.getAnimation());
     }
 
     public ItemRenderEvent animation(Consumer<AnimationBuilder> consumer) {
@@ -85,7 +87,7 @@ public class ItemRenderEvent {
     }
 
     public String process(String raw) {
-        return format.processPlaceholders(item.getPlayer(), raw, item);
+        return item.getFormat().processPlaceholders(item.getPlayer(), raw, item);
     }
 
     public PlayerWrapper getPlayer() {

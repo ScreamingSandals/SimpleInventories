@@ -1,10 +1,10 @@
 package org.screamingsandals.simpleinventories.operations.bitwise;
 
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 
 public class RightShiftBitwise extends AbstractBitwise {
 
-	public RightShiftBitwise(Inventory format, Object obj1, Object obj2) {
+	public RightShiftBitwise(InventorySet format, Object obj1, Object obj2) {
 		super(format, obj1, obj2);
 	}
 

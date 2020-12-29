@@ -1,12 +1,12 @@
 package org.screamingsandals.simpleinventories.operations.conditions;
 
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 public class NotFullEqualsCondition extends FullEqualsCondition {
 
-	public NotFullEqualsCondition(Inventory format, Object obj1, Object obj2) {
+	public NotFullEqualsCondition(InventorySet format, Object obj1, Object obj2) {
 		super(format, obj1, obj2);
 	}
 	

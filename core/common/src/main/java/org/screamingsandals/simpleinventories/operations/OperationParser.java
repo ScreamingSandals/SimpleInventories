@@ -1,6 +1,6 @@
 package org.screamingsandals.simpleinventories.operations;
 
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.operations.arithmetic.*;
 import org.screamingsandals.simpleinventories.operations.bitwise.*;
 import org.screamingsandals.simpleinventories.operations.conditions.*;
@@ -41,7 +41,7 @@ public class OperationParser {
 		PRIORITIES.add(Arrays.asList("||")); // 3
 	}
 
-	public static Condition getFinalCondition(Inventory format, String operationString) {
+	public static Condition getFinalCondition(InventorySet format, String operationString) {
 		Operation op = getFinalOperation(format, operationString);
 		if (op instanceof Condition) {
 			return (Condition) op;
@@ -52,7 +52,7 @@ public class OperationParser {
 		}
 	}
 
-	public static Condition getFinalNegation(Inventory format, String operationString) {
+	public static Condition getFinalNegation(InventorySet format, String operationString) {
 		Operation op = getFinalOperation(format, operationString);
 		if (op instanceof BlankOperation) {
 			return new NegationCondition(format, ((BlankOperation) op).getBlankObject());
@@ -61,7 +61,7 @@ public class OperationParser {
 		}
 	}
 
-	public static Operation getFinalOperation(Inventory format, String operationString) {
+	public static Operation getFinalOperation(InventorySet format, String operationString) {
 		// 1) parsing
 		char[] chars = operationString.toCharArray();
 		int lastIndexOfEscape = -2;
@@ -156,7 +156,7 @@ public class OperationParser {
 		return internalProcess(format, firstResult);
 	}
 
-	private static Operation internalProcess(Inventory format, List<Object> firstResult) {
+	private static Operation internalProcess(InventorySet format, List<Object> firstResult) {
 		// 2) Prepare objects
 		List<Object> operations = new ArrayList<>();
 		for (int priority = 0; priority < PRIORITIES.size(); priority++) {
@@ -271,8 +271,8 @@ public class OperationParser {
 		throw new RuntimeException("Parsing error!");
 	}
 
-	private static Operation getOperation(Inventory format, Operator lastOperation, Object lastOperand,
-			Object operand) {
+	private static Operation getOperation(InventorySet format, Operator lastOperation, Object lastOperand,
+                                          Object operand) {
 		if (lastOperand instanceof Operand) {
 			lastOperand = ((Operand) lastOperand).string;
 		}

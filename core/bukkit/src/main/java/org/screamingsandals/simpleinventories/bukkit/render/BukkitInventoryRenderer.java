@@ -27,7 +27,7 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
     @Override
     protected void renderOnPlatform() {
         boolean reopen = true;
-        var options = subInventory.getLocalOrParentOptions();
+        var options = subInventory.getLocalOptions();
         if (inventoryHolder != null && inventoryHolder.getInventory().getSize() == options.getRenderActualRows() * options.getItemsOnRow()
                 && (inventoryHolder.getInventory().getType().name().equalsIgnoreCase(options.getInventoryType()) ||
                 (SIZEABLE_CONTAINERS.contains(options.getInventoryType().toUpperCase()) &&

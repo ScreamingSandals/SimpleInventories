@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 @Data
 public class GenericItemInfo implements Cloneable, Queueable {
     @ToString.Exclude
-    private final Inventory format;
+    private final InventorySet format;
     @ToString.Exclude
     private SubInventory parent;
     private int position;
@@ -37,7 +37,7 @@ public class GenericItemInfo implements Cloneable, Queueable {
     private Supplier<Boolean> written;
     private final EventManager eventManager;
     private SubInventory childInventory;
-    private String locate;
+    private InventoryLink locate;
     private final List<String> executions = new ArrayList<>();
     private final List<Price> prices = new ArrayList<>();
 
@@ -62,7 +62,7 @@ public class GenericItemInfo implements Cloneable, Queueable {
     @Nullable
     private String defaultCurrency;
 
-    public GenericItemInfo(Inventory format) {
+    public GenericItemInfo(InventorySet format) {
         this.format = format;
         this.eventManager = new EventManager(format.getEventManager());
     }

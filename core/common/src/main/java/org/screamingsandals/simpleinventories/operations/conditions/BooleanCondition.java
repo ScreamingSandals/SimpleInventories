@@ -1,15 +1,15 @@
 package org.screamingsandals.simpleinventories.operations.conditions;
 
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.operations.Operation;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 public class BooleanCondition implements Condition {
-	protected Inventory format;
+	protected InventorySet format;
 	protected Object obj;
 
-	public BooleanCondition(Inventory format, Object obj) {
+	public BooleanCondition(InventorySet format, Object obj) {
 		this.format = format;
 		this.obj = obj;
 	}

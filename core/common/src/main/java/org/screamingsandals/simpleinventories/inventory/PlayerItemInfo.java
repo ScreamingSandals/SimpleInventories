@@ -68,7 +68,7 @@ public class PlayerItemInfo {
             stack.setLore(stack.getLore().stream().map(e -> original.getFormat().processPlaceholders(player, e, this)).collect(Collectors.toList()));
         }
 
-        original.getEventManager().fireEvent(new ItemRenderEvent(original.getFormat(), this, player));
+        original.getEventManager().fireEvent(new ItemRenderEvent(this));
     }
     public String getId() {
         return original.getId();
@@ -110,7 +110,7 @@ public class PlayerItemInfo {
         return original.getChildInventory();
     }
 
-    public Inventory getFormat() {
+    public InventorySet getFormat() {
         return original.getFormat();
     }
 

@@ -26,6 +26,7 @@ import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -140,6 +141,11 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
     protected void runJar0(File file) throws Exception {
         var plugin = Bukkit.getPluginManager().loadPlugin(file);
         Bukkit.getPluginManager().enablePlugin(plugin);
+    }
+
+    @Override
+    protected Path getRootPath0() {
+        return plugin.getDataFolder().toPath();
     }
 
 }

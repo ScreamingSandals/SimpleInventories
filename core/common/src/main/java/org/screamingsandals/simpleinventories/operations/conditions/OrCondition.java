@@ -1,12 +1,12 @@
 package org.screamingsandals.simpleinventories.operations.conditions;
 
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 public class OrCondition extends AbstractCondition {
 
-	public OrCondition(Inventory format, Object obj1, Object obj2) {
+	public OrCondition(InventorySet format, Object obj1, Object obj2) {
 		super(format, obj1, obj2);
 	}
 

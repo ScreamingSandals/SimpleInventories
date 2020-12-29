@@ -2,8 +2,8 @@ package org.screamingsandals.simpleinventories.loaders;
 
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public interface ILoader {
-    void loadFileInto(SubInventory subInventory, File file, String configPath) throws Exception;
+    void loadPathInto(SubInventory subInventory, Path path, String configPath) throws Exception;
 }

@@ -2,18 +2,16 @@ package org.screamingsandals.simpleinventories.builder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.*;
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.simpleinventories.placeholders.RuntimeDefinedPlaceholder;
 
 import java.util.function.Consumer;
 
 @Getter
-@RequiredArgsConstructor
-public class InventoryBuilder extends CategoryBuilder {
-    private final Inventory inventory;
+@RequiredArgsConstructor(staticName = "of")
+public class InventorySetBuilder extends CategoryBuilder {
+    private final InventorySet inventory;
 
     @Override
     public SubInventory getSubInventory() {
@@ -23,37 +21,37 @@ public class InventoryBuilder extends CategoryBuilder {
         return subInventory;
     }
 
-    public InventoryBuilder define(String definition) {
+    public InventorySetBuilder define(String definition) {
         BuilderUtils.buildDefinition(inventory, definition);
         return this;
     }
 
-    public InventoryBuilder render(Consumer<ItemRenderEvent> consumer) {
+    public InventorySetBuilder render(Consumer<ItemRenderEvent> consumer) {
         inventory.getEventManager().register(ItemRenderEvent.class, consumer);
         return this;
     }
 
-    public InventoryBuilder preClick(Consumer<PreClickEvent> consumer) {
+    public InventorySetBuilder preClick(Consumer<PreClickEvent> consumer) {
         inventory.getEventManager().register(PreClickEvent.class, consumer);
         return this;
     }
 
-    public InventoryBuilder click(Consumer<PostClickEvent> consumer) {
+    public InventorySetBuilder click(Consumer<PostClickEvent> consumer) {
         inventory.getEventManager().register(PostClickEvent.class, consumer);
         return this;
     }
 
-    public InventoryBuilder open(Consumer<SubInventoryOpenEvent> consumer) {
+    public InventorySetBuilder open(Consumer<SubInventoryOpenEvent> consumer) {
         inventory.getEventManager().register(SubInventoryOpenEvent.class, consumer);
         return this;
     }
 
-    public InventoryBuilder close(Consumer<SubInventoryCloseEvent> consumer) {
+    public InventorySetBuilder close(Consumer<SubInventoryCloseEvent> consumer) {
         inventory.getEventManager().register(SubInventoryCloseEvent.class, consumer);
         return this;
     }
 
-    public InventoryBuilder buy(Consumer<OnTradeEvent> consumer) {
+    public InventorySetBuilder buy(Consumer<OnTradeEvent> consumer) {
         inventory.getEventManager().register(OnTradeEvent.class, consumer);
         return this;
     }

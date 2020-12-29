@@ -1,10 +1,10 @@
 package org.screamingsandals.simpleinventories.operations.bitwise;
 
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 
 public class AndBitwise extends AbstractBitwise {
 
-	public AndBitwise(Inventory format, Object obj1, Object obj2) {
+	public AndBitwise(InventorySet format, Object obj1, Object obj2) {
 		super(format, obj1, obj2);
 	}
 

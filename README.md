@@ -35,7 +35,7 @@ import org.screamingsandals.simpleinventories.SimpleInventories;
 import org.screamingsandals.simpleinventories.events.GenerateItemEvent;
 import org.screamingsandals.simpleinventories.events.PostActionEvent;
 import org.screamingsandals.simpleinventories.events.PreActionEvent;
-import org.screamingsandals.simpleinventories.inventory.Options;
+import org.screamingsandals.simpleinventories.inventorySet.Options;
 import org.screamingsandals.simpleinventories.listeners.InventoryListener;
 
 public class Sample extends JavaPlugin implements Listener {
@@ -48,7 +48,7 @@ public class Sample extends JavaPlugin implements Listener {
 
         // here do some things to load the configuration
 
-        ItemStack backItem = someItemStack1; // here load item for go back to parent inventory
+        ItemStack backItem = someItemStack1; // here load item for go back to parent inventorySet
         ItemStack pageBackItem = someItemStack2; // here load item for page back
         ItemStack pageForwardItem = someItemStack3; // here load item for page forward
         ItemStack cosmeticItem = someItemStack4; // here load cosmetics on first and last line
@@ -90,7 +90,7 @@ public class Sample extends JavaPlugin implements Listener {
             return; // you should stop working when event is cancelled
         }
 
-        // here you should check that player has permissions for this inventory, if not, you should cancel this event
+        // here you should check that player has permissions for this inventorySet, if not, you should cancel this event
     
     }
 

@@ -1,10 +1,10 @@
 package org.screamingsandals.simpleinventories.operations.bitwise;
 
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 
 public class XorBitwise extends AbstractBitwise {
 
-	public XorBitwise(Inventory format, Object obj1, Object obj2) {
+	public XorBitwise(InventorySet format, Object obj1, Object obj2) {
 		super(format, obj1, obj2);
 	}
 

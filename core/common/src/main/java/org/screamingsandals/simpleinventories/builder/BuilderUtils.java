@@ -12,7 +12,7 @@ public class BuilderUtils {
     private static final Pattern REPEAT_MATCH_PATTERN = Pattern.compile("^(?<remain>.*)\\s+repeat\\s+(?<times>\\d+)$");
     private static final Pattern FOR_PRICE_MATCH_PATTERN = Pattern.compile("(?<remain>.*)\\s+for\\s+(?<price>[^\"]*)$");
 
-    public static GenericItemInfo buildItem(Inventory format, Object stack) {
+    public static GenericItemInfo buildItem(InventorySet format, Object stack) {
         if (stack instanceof GenericItemInfo) {
             return (GenericItemInfo) stack;
         } else if (stack instanceof String) {
@@ -58,7 +58,7 @@ public class BuilderUtils {
         }
     }
 
-    public static void buildDefinition(Inventory inventory, String definition) {
+    public static void buildDefinition(InventorySet inventorySet, String definition) {
         var defsplit = definition.split(" as ", 2);
         var key = defsplit[0].trim();
         if (key.startsWith("%")) {
@@ -70,14 +70,14 @@ public class BuilderUtils {
         var placeholderFormat = key.split("(?<!\\.)\\.(?!\\.)", 2);
         key = placeholderFormat[0];
         var placeholderArguments = placeholderFormat.length == 1 ? "" : placeholderFormat[1];
-        if (inventory.getPlaceholders().containsKey(key) && !(inventory.getPlaceholders().get(key) instanceof RuntimeDefinedPlaceholder)) {
+        if (inventorySet.getPlaceholders().containsKey(key) && !(inventorySet.getPlaceholders().get(key) instanceof RuntimeDefinedPlaceholder)) {
             SimpleInventoriesCore.getLogger().severe("Placeholder " + key + " is already defined as non-dynamic placeholder!");
             return;
         }
-        if (!inventory.getPlaceholders().containsKey(key)) {
-            inventory.registerPlaceholder(key, new RuntimeDefinedPlaceholder());
+        if (!inventorySet.getPlaceholders().containsKey(key)) {
+            inventorySet.registerPlaceholder(key, new RuntimeDefinedPlaceholder());
         }
-        var parser = (RuntimeDefinedPlaceholder) inventory.getPlaceholders().get(key);
+        var parser = (RuntimeDefinedPlaceholder) inventorySet.getPlaceholders().get(key);
         if (defsplit.length == 2) {
             if (!placeholderArguments.isEmpty()) {
                 parser.register(placeholderArguments, defsplit[1].trim());

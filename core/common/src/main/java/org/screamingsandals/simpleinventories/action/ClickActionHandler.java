@@ -15,7 +15,7 @@ public abstract class ClickActionHandler {
     protected void handleAction(InventoryRenderer inventoryRenderer, int slot, ClickType clickType) {
         var playerWrapper = inventoryRenderer.getPlayer();
         var subInventory = inventoryRenderer.getSubInventory();
-        var options = subInventory.getLocalOrParentOptions();
+        var options = subInventory.getLocalOptions();
 
         var playerItemInfo = inventoryRenderer.getItemInfoMap().get(slot);
         var parentItem = subInventory.getItemOwner();
@@ -23,7 +23,7 @@ public abstract class ClickActionHandler {
         if (playerItemInfo != null) {
             playerItemInfo.getOriginal().getEventManager().fireEvent(preClickEvent);
         } else {
-            subInventory.getFormat().getEventManager().fireEvent(preClickEvent);
+            subInventory.getInventorySet().getEventManager().fireEvent(preClickEvent);
         }
 
         if (preClickEvent.isCancelled()) {
@@ -35,7 +35,7 @@ public abstract class ClickActionHandler {
             if (slot == options.getRenderHeaderStart()) {
                 if (!subInventory.isMain() && parentItem != null) {
                     var parent = parentItem.getParent();
-                    var pageOfParent = parentItem.isWritten() ? parentItem.getPosition() / parent.getLocalOrParentOptions().getItemsOnPage() : 0;
+                    var pageOfParent = parentItem.isWritten() ? parentItem.getPosition() / parent.getLocalOptions().getItemsOnPage() : 0;
                     inventoryRenderer.jump(parent, pageOfParent);
                 }
             } else if (slot == options.getRenderFooterStart()) {
@@ -62,7 +62,7 @@ public abstract class ClickActionHandler {
         }
 
         if (playerItemInfo.getOriginal().getLocate() != null) {
-            var opt = playerItemInfo.getFormat().resolveCategoryLink(playerItemInfo.getOriginal().getLocate());
+            var opt = playerItemInfo.getOriginal().getLocate().resolve();
             if (opt.isPresent()) {
                 inventoryRenderer.jump(opt.get());
                 return;

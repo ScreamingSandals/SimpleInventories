@@ -3,10 +3,7 @@ package org.screamingsandals.simpleinventories.render;
 import lombok.*;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.SubInventoryOpenEvent;
-import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
-import org.screamingsandals.simpleinventories.inventory.Inventory;
-import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.simpleinventories.inventory.*;
 import org.screamingsandals.simpleinventories.material.Item;
 import org.screamingsandals.simpleinventories.tasks.RepeatingTask;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
@@ -85,21 +82,21 @@ public abstract class InventoryRenderer {
         return true;
     }
 
-    public boolean jump(Inventory inventory) {
-        if (inventory == null) {
+    public boolean jump(InventorySet inventorySet) {
+        if (inventorySet == null) {
             return false;
         }
-        this.subInventory = inventory.getMainSubInventory();
+        this.subInventory = inventorySet.getMainSubInventory();
         this.mainEventCalled = false;
         render();
         return true;
     }
 
-    public boolean jump(Inventory inventory, int page) {
-        if (inventory == null) {
+    public boolean jump(InventorySet inventorySet, int page) {
+        if (inventorySet == null) {
             return false;
         }
-        this.subInventory = inventory.getMainSubInventory();
+        this.subInventory = inventorySet.getMainSubInventory();
         this.mainEventCalled = false;
         this.page = 0;
         if (subInventory.getHighestPage() > page && page >= 0) {
@@ -109,12 +106,23 @@ public abstract class InventoryRenderer {
         return true;
     }
 
+    public boolean jump(InventoryLink inventoryLink) {
+        if (inventoryLink == null) {
+            return false;
+        }
+        var link = inventoryLink.resolve();
+        if (link.isEmpty()) {
+            return false;
+        }
+        return jump(link.get());
+    }
+
     public void render() {
         clear();
 
         if (!mainEventCalled) {
             var openInventoryEvent = new SubInventoryOpenEvent(player, subInventory, page);
-            subInventory.getFormat().getEventManager().fireEvent(openInventoryEvent);
+            subInventory.getInventorySet().getEventManager().fireEvent(openInventoryEvent);
 
             if (openInventoryEvent.isCancelled()) {
                 close();
@@ -147,7 +155,7 @@ public abstract class InventoryRenderer {
     }
 
     protected String getTitle() {
-        var options = subInventory.getLocalOrParentOptions();
+        var options = subInventory.getLocalOptions();
         var prefix = options.getPrefix();
         if (options.isShowPageNumber()) {
             prefix += "&r - " + (page + 1);
@@ -156,7 +164,7 @@ public abstract class InventoryRenderer {
     }
 
     protected void generateNewData() {
-        var options = subInventory.getLocalOrParentOptions();
+        var options = subInventory.getLocalOptions();
         var size = options.getRenderActualRows() * options.getItemsOnRow();
 
         for (var i = 0; i < options.getItemsOnRow(); i++) {
@@ -185,7 +193,7 @@ public abstract class InventoryRenderer {
             var pos = (itemInfo.getPosition() % options.getItemsOnPage()) + options.getRenderOffset();
             if (playerItemInfo.isVisible()) {
                 safePutStackToInventory(size, pos, playerItemInfo.getStack());
-                if (subInventory.getFormat().isAnimationsEnabled() && playerItemInfo.hasAnimation()) {
+                if (subInventory.getInventorySet().isAnimationsEnabled() && playerItemInfo.hasAnimation()) {
                     animations.put(pos, List.copyOf(playerItemInfo.getAnimation()));
                 }
             }
@@ -200,7 +208,7 @@ public abstract class InventoryRenderer {
     }
 
     protected boolean isOnThisPage(GenericItemInfo item) {
-        var options = subInventory.getLocalOrParentOptions();
+        var options = subInventory.getLocalOptions();
         return page == item.getPosition() / options.getItemsOnPage();
     }
 

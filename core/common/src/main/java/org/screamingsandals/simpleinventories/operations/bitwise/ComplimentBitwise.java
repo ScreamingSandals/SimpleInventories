@@ -1,16 +1,16 @@
 package org.screamingsandals.simpleinventories.operations.bitwise;
 
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.operations.Operation;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 public class ComplimentBitwise implements Operation {
 	
-	private Inventory format;
+	private InventorySet format;
 	private Object obj;
 
-	public ComplimentBitwise(Inventory format, Object obj) {
+	public ComplimentBitwise(InventorySet format, Object obj) {
 		this.format = format;
 		this.obj = obj;
 	}

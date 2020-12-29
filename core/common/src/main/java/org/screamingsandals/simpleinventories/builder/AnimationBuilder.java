@@ -9,7 +9,7 @@ import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
 import java.util.List;
 import java.util.function.Consumer;
 
-@AllArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @Getter
 public class AnimationBuilder {
     private final List<Item> stacks;

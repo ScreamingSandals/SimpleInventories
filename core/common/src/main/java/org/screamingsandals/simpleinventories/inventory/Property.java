@@ -9,7 +9,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class Property implements Cloneable {
-    private final Inventory format;
+    private final InventorySet format;
     @Setter(onMethod_ = @Deprecated)
     private String propertyName;
     @Getter(onMethod_ = @Deprecated)

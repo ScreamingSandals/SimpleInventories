@@ -2,7 +2,7 @@ package org.screamingsandals.simpleinventories.events;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.inventory.Price;
 import org.screamingsandals.simpleinventories.inventory.Property;
@@ -23,7 +23,7 @@ public class OnTradeEvent implements Cancellable {
 
     private boolean cancelled;
 
-    public Inventory getFormat() {
+    public InventorySet getFormat() {
         return item.getFormat();
     }
 

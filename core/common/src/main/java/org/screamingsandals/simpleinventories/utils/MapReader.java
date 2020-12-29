@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.material.Item;
 import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
@@ -22,7 +22,7 @@ import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 @Data
 @RequiredArgsConstructor
 public class MapReader {
-	private final Inventory format;
+	private final InventorySet format;
 	@Getter(AccessLevel.PRIVATE)
 	private final Map<String, Object> map;
 	private final PlayerWrapper player;

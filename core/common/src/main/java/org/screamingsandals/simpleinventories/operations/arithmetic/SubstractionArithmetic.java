@@ -1,10 +1,10 @@
 package org.screamingsandals.simpleinventories.operations.arithmetic;
 
-import org.screamingsandals.simpleinventories.inventory.Inventory;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 
 public class SubstractionArithmetic extends AbstractArithmetic {
 
-	public SubstractionArithmetic(Inventory format, Object obj1, Object obj2) {
+	public SubstractionArithmetic(InventorySet format, Object obj1, Object obj2) {
 		super(format, obj1, obj2);
 	}
 
