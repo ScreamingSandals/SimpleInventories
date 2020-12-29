@@ -30,6 +30,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.Player;
 
+import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 
 public class Sample extends JavaPlugin {
@@ -51,10 +52,10 @@ public class Sample extends JavaPlugin {
                     
                 })
                 .categoryOptions(options -> 
-                    options.backItem(Item.build(someItemStack1))
-                        .pageBackItem(Item.build(someItemStack2))
-                        .pageForwardItem(Item.build(someItemStack3))
-                        .cosmeticItem(Item.build(someItemStack4))
+                    options.backItem(ItemFactory.build(someItemStack1))
+                        .pageBackItem(ItemFactory.build(someItemStack2))
+                        .pageForwardItem(ItemFactory.build(someItemStack3))
+                        .cosmeticItem(ItemFactory.build(someItemStack4))
                 )
                 .include("myAwesomeGui.yml")
                 .process();
