@@ -13,7 +13,7 @@ import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.utils.BookUtils;
 import org.screamingsandals.simpleinventories.bukkit.utils.InventoryUtils;
 import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.utils.ClickType;
+import org.screamingsandals.simpleinventories.utils.ClickType;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 public class BukkitClickActionHandler extends ClickActionHandler implements Listener {

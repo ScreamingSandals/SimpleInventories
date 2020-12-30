@@ -11,6 +11,10 @@ import org.screamingsandals.simpleinventories.inventory.*;
 import org.screamingsandals.lib.material.builder.ItemBuilder;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.operations.conditions.Condition;
+import org.screamingsandals.simpleinventories.utils.BreakType;
+import org.screamingsandals.simpleinventories.utils.CloneMethod;
+import org.screamingsandals.simpleinventories.utils.Column;
+import org.screamingsandals.simpleinventories.utils.TimesFlags;
 
 import java.util.ArrayList;
 import java.util.HashMap;

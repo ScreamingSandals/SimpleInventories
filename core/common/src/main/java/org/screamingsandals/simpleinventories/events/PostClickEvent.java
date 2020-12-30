@@ -6,7 +6,7 @@ import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.lib.utils.ClickType;
+import org.screamingsandals.simpleinventories.utils.ClickType;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 @Data

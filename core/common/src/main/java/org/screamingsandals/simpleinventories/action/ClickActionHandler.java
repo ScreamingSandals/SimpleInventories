@@ -5,7 +5,7 @@ import org.screamingsandals.simpleinventories.events.PostClickEvent;
 import org.screamingsandals.simpleinventories.events.PreClickEvent;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.lib.utils.ClickType;
+import org.screamingsandals.simpleinventories.utils.ClickType;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.util.Objects;

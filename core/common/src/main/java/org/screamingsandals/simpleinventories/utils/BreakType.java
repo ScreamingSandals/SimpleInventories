@@ -1,4 +1,4 @@
-package org.screamingsandals.lib.utils;
+package org.screamingsandals.simpleinventories.utils;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

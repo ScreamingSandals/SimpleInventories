@@ -1,4 +1,4 @@
-package org.screamingsandals.lib.utils;
+package org.screamingsandals.simpleinventories.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

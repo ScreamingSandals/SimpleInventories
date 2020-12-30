@@ -7,7 +7,7 @@ import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.operations.conditions.Condition;
-import org.screamingsandals.lib.utils.MapReader;
+import org.screamingsandals.simpleinventories.utils.MapReader;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.util.ArrayList;
