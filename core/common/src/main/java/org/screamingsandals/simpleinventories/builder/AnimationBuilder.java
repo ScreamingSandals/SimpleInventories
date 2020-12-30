@@ -2,9 +2,9 @@ package org.screamingsandals.simpleinventories.builder;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.screamingsandals.simpleinventories.material.Item;
-import org.screamingsandals.simpleinventories.material.builder.ItemBuilder;
-import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.material.builder.ItemBuilder;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 
 import java.util.List;
 import java.util.function.Consumer;

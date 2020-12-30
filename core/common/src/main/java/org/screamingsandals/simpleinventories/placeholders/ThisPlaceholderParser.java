@@ -1,7 +1,7 @@
 package org.screamingsandals.simpleinventories.placeholders;
 
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.utils.MapReader;
+import org.screamingsandals.lib.utils.MapReader;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 public class ThisPlaceholderParser implements IPlaceholderParser {

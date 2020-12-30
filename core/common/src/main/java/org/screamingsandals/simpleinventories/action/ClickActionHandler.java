@@ -3,9 +3,9 @@ package org.screamingsandals.simpleinventories.action;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 import org.screamingsandals.simpleinventories.events.PostClickEvent;
 import org.screamingsandals.simpleinventories.events.PreClickEvent;
-import org.screamingsandals.simpleinventories.material.Item;
+import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.simpleinventories.utils.ClickType;
+import org.screamingsandals.lib.utils.ClickType;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.util.Objects;

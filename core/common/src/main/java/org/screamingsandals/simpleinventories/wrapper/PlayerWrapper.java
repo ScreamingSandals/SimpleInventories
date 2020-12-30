@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.simpleinventories.material.Item;
+import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 
 import java.util.List;

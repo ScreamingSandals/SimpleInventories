@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.simpleinventories.material.Item;
-import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 
 import java.util.Optional;
 

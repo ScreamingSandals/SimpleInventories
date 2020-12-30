@@ -2,7 +2,7 @@ package org.screamingsandals.simpleinventories.builder;
 
 import lombok.*;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.simpleinventories.utils.ConsumerExecutor;
+import org.screamingsandals.lib.utils.ConsumerExecutor;
 
 import java.util.List;
 import java.util.function.Consumer;

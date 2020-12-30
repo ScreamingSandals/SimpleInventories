@@ -2,15 +2,15 @@ package org.screamingsandals.simpleinventories.builder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.utils.*;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 import org.screamingsandals.simpleinventories.events.PostClickEvent;
 import org.screamingsandals.simpleinventories.events.PreClickEvent;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.simpleinventories.material.builder.ItemBuilder;
+import org.screamingsandals.lib.material.builder.ItemBuilder;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.operations.conditions.Condition;
-import org.screamingsandals.simpleinventories.utils.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

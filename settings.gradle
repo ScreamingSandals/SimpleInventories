@@ -3,13 +3,6 @@
  */
 
 rootProject.name = 'SimpleInventories-parent'
-include 'utils'
-include(':material-common')
-project(':material-common').projectDir = file('material/common')
-include(':material-bukkit')
-project(':material-bukkit').projectDir = file('material/bukkit')
-include(':material-minestom')
-project(':material-minestom').projectDir = file('material/minestom')
 include(':core-common')
 project(':core-common').projectDir = file('core/common')
 include(':core-minestom')

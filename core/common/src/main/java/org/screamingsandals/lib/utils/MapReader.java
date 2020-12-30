@@ -1,4 +1,4 @@
-package org.screamingsandals.simpleinventories.utils;
+package org.screamingsandals.lib.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.material.Item;
-import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 

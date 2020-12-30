@@ -1,7 +1,7 @@
 package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
-import org.screamingsandals.simpleinventories.utils.MapReader;
+import org.screamingsandals.lib.utils.MapReader;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.util.Map;

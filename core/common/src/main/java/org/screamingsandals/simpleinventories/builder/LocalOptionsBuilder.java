@@ -3,8 +3,8 @@ package org.screamingsandals.simpleinventories.builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
-import org.screamingsandals.simpleinventories.material.builder.ItemBuilder;
-import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.lib.material.builder.ItemBuilder;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 
 import java.util.function.Consumer;
 

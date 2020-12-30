@@ -1,7 +1,7 @@
 package org.screamingsandals.simpleinventories.events;
 
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.simpleinventories.utils.ConsumerExecutor;
+import org.screamingsandals.lib.utils.ConsumerExecutor;
 
 import java.util.ArrayList;
 import java.util.HashMap;

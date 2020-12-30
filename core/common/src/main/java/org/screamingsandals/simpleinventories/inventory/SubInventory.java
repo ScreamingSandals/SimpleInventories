@@ -3,7 +3,7 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
-import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 
 import java.util.*;

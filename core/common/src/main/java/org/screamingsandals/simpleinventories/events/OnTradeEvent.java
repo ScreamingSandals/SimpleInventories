@@ -6,8 +6,8 @@ import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.inventory.Price;
 import org.screamingsandals.simpleinventories.inventory.Property;
-import org.screamingsandals.simpleinventories.material.Item;
-import org.screamingsandals.simpleinventories.utils.ClickType;
+import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.utils.ClickType;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.util.List;

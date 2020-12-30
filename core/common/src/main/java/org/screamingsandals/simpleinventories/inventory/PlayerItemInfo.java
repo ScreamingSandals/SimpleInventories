@@ -4,10 +4,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
-import org.screamingsandals.simpleinventories.material.Item;
-import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.operations.conditions.Condition;
-import org.screamingsandals.simpleinventories.utils.MapReader;
+import org.screamingsandals.lib.utils.MapReader;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.util.ArrayList;

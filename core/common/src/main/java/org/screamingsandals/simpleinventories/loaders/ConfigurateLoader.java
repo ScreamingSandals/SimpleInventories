@@ -7,7 +7,7 @@ import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.Insert;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.loader.AbstractConfigurationLoader;
 import org.spongepowered.configurate.serialize.SerializationException;

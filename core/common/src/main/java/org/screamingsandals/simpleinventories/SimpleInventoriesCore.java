@@ -4,11 +4,11 @@ import org.screamingsandals.simpleinventories.builder.InventorySetBuilder;
 import org.screamingsandals.simpleinventories.events.EventManager;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.simpleinventories.material.Item;
-import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.simpleinventories.utils.BidirectionalConverter;
+import org.screamingsandals.lib.utils.BidirectionalConverter;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.io.File;

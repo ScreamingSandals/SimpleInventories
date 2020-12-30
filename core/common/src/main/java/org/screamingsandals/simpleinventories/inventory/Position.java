@@ -3,7 +3,7 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.Data;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.simpleinventories.utils.BreakType;
+import org.screamingsandals.lib.utils.BreakType;
 
 import java.util.function.Function;
 import java.util.function.Supplier;

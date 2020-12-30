@@ -2,7 +2,7 @@ package org.screamingsandals.simpleinventories.builder;
 
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.placeholders.RuntimeDefinedPlaceholder;
 
 import java.util.regex.Pattern;

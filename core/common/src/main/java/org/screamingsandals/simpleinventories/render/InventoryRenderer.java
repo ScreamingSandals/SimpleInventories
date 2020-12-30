@@ -4,7 +4,7 @@ import lombok.*;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.SubInventoryOpenEvent;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.simpleinventories.material.Item;
+import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.simpleinventories.tasks.RepeatingTask;
 import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 

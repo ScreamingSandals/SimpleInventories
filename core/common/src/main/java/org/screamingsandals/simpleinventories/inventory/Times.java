@@ -1,7 +1,7 @@
 package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.Data;
-import org.screamingsandals.simpleinventories.utils.TimesFlags;
+import org.screamingsandals.lib.utils.TimesFlags;
 
 import java.util.ArrayList;
 import java.util.List;
