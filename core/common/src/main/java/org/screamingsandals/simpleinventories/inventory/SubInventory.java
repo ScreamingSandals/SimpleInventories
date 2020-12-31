@@ -2,14 +2,17 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.lib.material.container.Openable;
+import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
+import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
 
 import java.util.*;
 
 @Data
-public class SubInventory {
+            public class SubInventory implements Openable {
     private final boolean main;
     @Nullable
     private final GenericItemInfo itemOwner;
@@ -215,6 +218,14 @@ public class SubInventory {
             }
         } else {
             throw new RuntimeException("Invalid object in queue!");
+        }
+    }
+
+    @Override
+    public void openInventory(Wrapper wrapper) {
+        // TODO: change this method after removing org.screamingsandals.simpleinventories.wrapper.PlayerWrapper
+        if (wrapper instanceof PlayerWrapper) {
+            SimpleInventoriesCore.openInventory((PlayerWrapper) wrapper, this);
         }
     }
 }

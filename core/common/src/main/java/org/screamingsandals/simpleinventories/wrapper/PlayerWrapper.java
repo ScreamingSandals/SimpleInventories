@@ -2,6 +2,7 @@ package org.screamingsandals.simpleinventories.wrapper;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
@@ -13,7 +14,8 @@ import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
-public class PlayerWrapper {
+// TODO: replace with Player Utils from ScreamingLib
+public class PlayerWrapper implements Wrapper {
     private final String name;
     private final UUID uuid;
 

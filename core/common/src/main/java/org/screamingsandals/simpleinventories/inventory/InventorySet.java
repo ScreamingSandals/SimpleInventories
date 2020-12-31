@@ -2,6 +2,8 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.Data;
 import lombok.ToString;
+import org.screamingsandals.lib.material.container.Openable;
+import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.EventManager;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
@@ -14,7 +16,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Data
-public class InventorySet {
+public class InventorySet implements Openable {
     private boolean genericShop = false;
     private boolean genericShopPriceTypeRequired = true;
     private boolean animationsEnabled = false;
@@ -127,5 +129,10 @@ public class InventorySet {
             return Optional.of(itemInfo.getChildInventory());
         }
         return Optional.empty();
+    }
+
+    @Override
+    public void openInventory(Wrapper wrapper) {
+        mainSubInventory.openInventory(wrapper);
     }
 }
