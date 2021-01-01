@@ -11,7 +11,7 @@ import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemBuilder;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.lib.utils.ConsumerExecutor;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.function.Consumer;
 

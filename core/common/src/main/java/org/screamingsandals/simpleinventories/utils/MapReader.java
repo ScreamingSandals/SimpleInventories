@@ -16,7 +16,7 @@ import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 @SuppressWarnings("unchecked")
 @Data

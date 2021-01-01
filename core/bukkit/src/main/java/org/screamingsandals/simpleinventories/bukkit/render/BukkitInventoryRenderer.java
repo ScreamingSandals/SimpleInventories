@@ -10,7 +10,7 @@ import org.screamingsandals.simpleinventories.bukkit.holder.StandardInventoryHol
 import org.screamingsandals.simpleinventories.bukkit.tasks.BukkitRepeatingTask;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.List;
 import java.util.Optional;

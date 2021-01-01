@@ -6,7 +6,7 @@ import org.screamingsandals.simpleinventories.events.SubInventoryOpenEvent;
 import org.screamingsandals.simpleinventories.inventory.*;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.simpleinventories.tasks.RepeatingTask;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -141,7 +141,7 @@ public abstract class InventoryRenderer {
 
     public void close() {
         clear();
-        SimpleInventoriesCore.closeInventory(player);
+        player.closeInventory();
     }
 
     protected void clear() {

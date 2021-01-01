@@ -6,6 +6,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.screamingsandals.lib.bukkit.player.BukkitPlayerUtils;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitClickActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitCloseInventoryActionHandler;
@@ -23,7 +24,7 @@ import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -46,10 +47,7 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
         this.logger = plugin.getLogger();
 
         BukkitItemFactory.init();
-
-        playerConverter
-                .registerP2W(Player.class, player -> new PlayerWrapper(player.getName(), player.getUniqueId()))
-                .registerW2P(Player.class, playerWrapper -> Bukkit.getPlayer(playerWrapper.getUuid()));
+        BukkitPlayerUtils.init();
 
         Bukkit.getPluginManager().registerEvents(new BukkitClickActionHandler(), this.plugin);
         Bukkit.getPluginManager().registerEvents(new BukkitCloseInventoryActionHandler(), this.plugin);
@@ -67,11 +65,6 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
     @Override
     protected BukkitInventoryRenderer openInventory0(PlayerWrapper playerWrapper, SubInventory subInventory) {
         return new BukkitInventoryRenderer(playerWrapper, subInventory, 0);
-    }
-
-    @Override
-    protected void closeInventory0(PlayerWrapper playerWrapper) {
-        Optional.ofNullable(playerWrapper.as(Player.class)).ifPresent(Player::closeInventory);
     }
 
     @Override
@@ -106,27 +99,6 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
             ex.printStackTrace();
             return configuration;
         }
-    }
-
-    @Override
-    protected boolean hasPlayerInInventory0(PlayerWrapper playerWrapper, Item item) {
-        return playerWrapper.as(Player.class).getInventory().contains(item.as(ItemStack.class));
-    }
-
-    @Override
-    protected List<Item> giveItemsToPlayer0(PlayerWrapper playerWrapper, List<Item> items) {
-        return playerWrapper.as(Player.class).getInventory()
-                .addItem(items.stream().map(item -> item.as(ItemStack.class)).toArray(ItemStack[]::new))
-                .values().stream().map(ItemFactory::build)
-                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
-    }
-
-    @Override
-    protected List<Item> removeItemsFromPlayer0(PlayerWrapper playerWrapper, List<Item> items) {
-        return playerWrapper.as(Player.class).getInventory()
-                .removeItem(items.stream().map(item -> item.as(ItemStack.class)).toArray(ItemStack[]::new))
-                .values().stream().map(ItemFactory::build)
-                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
     }
 
     @Override

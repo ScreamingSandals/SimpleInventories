@@ -8,7 +8,7 @@ import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.operations.conditions.Condition;
 import org.screamingsandals.simpleinventories.utils.MapReader;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;

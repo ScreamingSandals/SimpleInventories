@@ -1,7 +1,7 @@
 package org.screamingsandals.simpleinventories.operations;
 
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 public interface Operation {
 	@Deprecated

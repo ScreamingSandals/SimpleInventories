@@ -2,13 +2,14 @@ package org.screamingsandals.simpleinventories.events;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.utils.event.Cancellable;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.inventory.Price;
 import org.screamingsandals.simpleinventories.inventory.Property;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.simpleinventories.utils.ClickType;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class OnTradeEvent implements Cancellable {
     }
 
     public boolean hasPlayerInInventory(Item item) {
-        return player.hasInInventory(item);
+        return player.getPlayerInventory().contains(item);
     }
 
     public List<Item> sellStack() {
@@ -50,7 +51,7 @@ public class OnTradeEvent implements Cancellable {
     }
 
     public List<Item> sellStack(Item item) {
-        return player.removeItem(item);
+        return player.getPlayerInventory().removeItem(item);
     }
 
     public List<Item> buyStack() {
@@ -58,7 +59,7 @@ public class OnTradeEvent implements Cancellable {
     }
 
     public List<Item> buyStack(Item item) {
-        return player.addItem(item);
+        return player.getPlayerInventory().addItem(item);
     }
 
     public List<Property> getProperties() {

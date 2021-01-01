@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.player.PlayerUtils;
 import org.screamingsandals.simpleinventories.action.ClickActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
@@ -14,7 +15,7 @@ import org.screamingsandals.simpleinventories.bukkit.utils.BookUtils;
 import org.screamingsandals.simpleinventories.bukkit.utils.InventoryUtils;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.simpleinventories.utils.ClickType;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 public class BukkitClickActionHandler extends ClickActionHandler implements Listener {
 
@@ -30,7 +31,7 @@ public class BukkitClickActionHandler extends ClickActionHandler implements List
         if (possibleHolder instanceof AbstractHolder) {
             var player = (Player) event.getWhoClicked();
             var inventoryRenderer = ((AbstractHolder) possibleHolder).getInventoryRenderer();
-            if (!inventoryRenderer.getPlayer().equals(SimpleInventoriesBukkit.wrapPlayer(player))) {
+            if (!inventoryRenderer.getPlayer().equals(PlayerUtils.wrapPlayer(player))) {
                 event.setCancelled(true);
                 return; // HOW???
             }

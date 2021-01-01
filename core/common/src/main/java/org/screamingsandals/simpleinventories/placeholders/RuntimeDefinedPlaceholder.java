@@ -1,11 +1,10 @@
 package org.screamingsandals.simpleinventories.placeholders;
 
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RuntimeDefinedPlaceholder implements IPlaceholderParser {

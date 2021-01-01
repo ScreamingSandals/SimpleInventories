@@ -2,7 +2,7 @@ package org.screamingsandals.simpleinventories.operations.conditions;
 
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.operations.Operation;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 public interface Condition extends Operation {
 	default Object resolveFor(PlayerWrapper player, PlayerItemInfo info) {

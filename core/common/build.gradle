@@ -8,4 +8,5 @@ dependencies {
     shade 'org.spongepowered:configurate-yaml:' + CONFIGURATE_VERSION
 
     shade screaming('material-common', SCREAMING_LIB_VERSION)
+    shade screaming('player-common', SCREAMING_LIB_VERSION)
 }

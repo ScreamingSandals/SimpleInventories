@@ -7,7 +7,7 @@ import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.*;
 
@@ -223,9 +223,6 @@ import java.util.*;
 
     @Override
     public void openInventory(Wrapper wrapper) {
-        // TODO: change this method after removing org.screamingsandals.simpleinventories.wrapper.PlayerWrapper
-        if (wrapper instanceof PlayerWrapper) {
-            SimpleInventoriesCore.openInventory((PlayerWrapper) wrapper, this);
-        }
+        SimpleInventoriesCore.openInventory(wrapper.asOptional(PlayerWrapper.class).orElseThrow(), this);
     }
 }

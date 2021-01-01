@@ -4,7 +4,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 public class WorldPlaceholderParser implements IPlaceholderParser {
 

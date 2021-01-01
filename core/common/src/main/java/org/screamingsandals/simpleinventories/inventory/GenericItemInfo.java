@@ -2,11 +2,11 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.simpleinventories.events.EventManager;
 import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.utils.event.EventManager;
 import org.screamingsandals.simpleinventories.operations.conditions.Condition;
 import org.screamingsandals.simpleinventories.utils.MapReader;
-import org.screamingsandals.simpleinventories.wrapper.PlayerWrapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
