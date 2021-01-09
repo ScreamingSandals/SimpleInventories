@@ -360,4 +360,93 @@ public class ItemInfoBuilder extends CategoryBuilder {
     protected InventorySet getFormat() {
         return itemInfo.getFormat();
     }
+
+
+
+    /* TODO: Create annotation processor that will generate overrides of self-returning methods you can see below */
+
+    @Override
+    public ItemInfoBuilder categoryOptions(Consumer<LocalOptionsBuilder> consumer) {
+        return (ItemInfoBuilder) super.categoryOptions(consumer);
+    }
+
+    @Override
+    public ItemInfoBuilder category(Object material) {
+        return (ItemInfoBuilder) super.category(material);
+    }
+
+    @Override
+    public ItemInfoBuilder category(Object material, Consumer<ItemInfoBuilder> consumer) {
+        return (ItemInfoBuilder) super.category(material, consumer);
+    }
+
+    @Override
+    public ItemInfoBuilder item(Object material) {
+        return (ItemInfoBuilder) super.item(material);
+    }
+
+    @Override
+    public ItemInfoBuilder item(Object material, Consumer<ItemInfoBuilder> consumer) {
+        return (ItemInfoBuilder) super.item(material, consumer);
+    }
+
+    @Override
+    public ItemInfoBuilder cosmetic() {
+        return (ItemInfoBuilder) super.cosmetic();
+    }
+
+    @Override
+    public ItemInfoBuilder cosmetic(Consumer<ItemInfoBuilder> consumer) {
+        return (ItemInfoBuilder) super.cosmetic(consumer);
+    }
+
+    @Override
+    public ItemInfoBuilder itemClone(String link) {
+        return (ItemInfoBuilder) super.itemClone(link);
+    }
+
+    @Override
+    public ItemInfoBuilder itemClone(String link, Consumer<ItemInfoBuilder> consumer) {
+        return (ItemInfoBuilder) super.itemClone(link, consumer);
+    }
+
+    @Override
+    public ItemInfoBuilder include(String include) {
+        return (ItemInfoBuilder) super.include(include);
+    }
+
+    @Override
+    public ItemInfoBuilder include(Include include) {
+        return (ItemInfoBuilder) super.include(include);
+    }
+
+    @Override
+    public ItemInfoBuilder hidden(String id, Consumer<CategoryBuilder> consumer) {
+        return (ItemInfoBuilder) super.hidden(id, consumer);
+    }
+
+    @Override
+    public ItemInfoBuilder hidden(String id) {
+        return (ItemInfoBuilder) super.hidden(id);
+    }
+
+    @Override
+    public ItemInfoBuilder insert(String link, Consumer<CategoryBuilder> consumer) {
+        return (ItemInfoBuilder) super.insert(link, consumer);
+    }
+
+    @Override
+    public ItemInfoBuilder insert(String link, SubInventory prebuiltInventory) {
+        return (ItemInfoBuilder) super.insert(link, prebuiltInventory);
+    }
+
+    @Override
+    public ItemInfoBuilder insert(List<String> links, Consumer<CategoryBuilder> consumer) {
+        return (ItemInfoBuilder) super.insert(links, consumer);
+    }
+
+    @Override
+    public ItemInfoBuilder insert(List<String> links, SubInventory prebuiltInventory) {
+        return (ItemInfoBuilder) super.insert(links, prebuiltInventory);
+    }
 }

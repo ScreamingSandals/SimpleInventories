@@ -5,10 +5,12 @@
 rootProject.name = 'SimpleInventories-parent'
 include(':core-common')
 project(':core-common').projectDir = file('core/common')
-include(':core-minestom')
-project(':core-minestom').projectDir = file('core/minestom')
 include(':core-bukkit')
 project(':core-bukkit').projectDir = file('core/bukkit')
-//include(':plugin-bukkit')
-//project(':plugin-bukkit').projectDir = file('plugin/bukkit')
+include(':core-minestom')
+project(':core-minestom').projectDir = file('core/minestom')
+include(':core-sponge')
+project(':core-sponge').projectDir = file('core/sponge')
+include(':plugin-bukkit')
+project(':plugin-bukkit').projectDir = file('plugin/bukkit')
 

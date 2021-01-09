@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.screamingsandals.lib.bukkit.player.BukkitPlayerUtils;
+import org.screamingsandals.lib.utils.InitUtils;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitClickActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitCloseInventoryActionHandler;
@@ -46,8 +47,8 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
 
-        BukkitItemFactory.init();
-        BukkitPlayerUtils.init();
+        InitUtils.doIfNot(BukkitItemFactory::isInitialized, BukkitItemFactory::init);
+        InitUtils.doIfNot(BukkitPlayerUtils::isInitialized, BukkitPlayerUtils::init);
 
         Bukkit.getPluginManager().registerEvents(new BukkitClickActionHandler(), this.plugin);
         Bukkit.getPluginManager().registerEvents(new BukkitCloseInventoryActionHandler(), this.plugin);

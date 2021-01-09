@@ -135,7 +135,7 @@ public abstract class ConfigurateLoader implements ILoader {
                             builder.locate(locate.getString());
                         }
                         if (!options.empty()) {
-                            // TODO - Options
+                            builder.getSubInventory().getLocalOptions().fromNode(options);
                         }
                         if (!pagebreak.empty()) {
                             //noinspection ConstantConditions

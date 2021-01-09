@@ -7,6 +7,8 @@ import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Optional;
 
@@ -151,5 +153,93 @@ public class LocalOptions implements Cloneable {
         options.renderHeaderStart = renderHeaderStart;
         options.renderFooterStart = renderFooterStart;
         return options;
+    }
+
+    public void fromNode(ConfigurationNode configurationNode) {
+        var backItem = configurationNode.node("backItem");
+        if (!backItem.empty()) {
+            this.backItem = ItemFactory.build(backItem).orElse(null);
+        }
+        var pageBackItem = configurationNode.node("pageBackItem");
+        if (!pageBackItem.empty()) {
+            this.pageBackItem = ItemFactory.build(pageBackItem).orElse(null);
+        }
+        var pageForwardItem = configurationNode.node("pageForwardItem");
+        if (!pageForwardItem.empty()) {
+            this.pageForwardItem = ItemFactory.build(pageForwardItem).orElse(null);
+        }
+        var cosmeticItem = configurationNode.node("cosmeticItem");
+        if (!cosmeticItem.empty()) {
+            this.cosmeticItem = ItemFactory.build(cosmeticItem).orElse(null);
+        }
+
+        var rows = configurationNode.node("rows");
+        if (!rows.empty()) {
+            try {
+                this.rows = rows.get(Integer.class);
+            } catch (SerializationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        var renderActualRows = configurationNode.node("render_actual_rows");
+        if (!renderActualRows.empty()) {
+            try {
+                this.renderActualRows = renderActualRows.get(Integer.class);
+            } catch (SerializationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        var renderOffset = configurationNode.node("render_offset");
+        if (!renderOffset.empty()) {
+            try {
+                this.renderOffset = renderOffset.get(Integer.class);
+            } catch (SerializationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        var renderHeaderStart = configurationNode.node("render_header_start");
+        if (!renderHeaderStart.empty()) {
+            try {
+                this.renderHeaderStart = renderHeaderStart.get(Integer.class);
+            } catch (SerializationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        var renderFooterStart = configurationNode.node("render_footer_start");
+        if (!renderFooterStart.empty()) {
+            try {
+                this.renderFooterStart = renderFooterStart.get(Integer.class);
+            } catch (SerializationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        var itemsOnRow = configurationNode.node("items_on_row");
+        if (!itemsOnRow.empty()) {
+            try {
+                this.itemsOnRow = itemsOnRow.get(Integer.class);
+            } catch (SerializationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        var inventoryType = configurationNode.node("inventoryType");
+        if (!inventoryType.empty()) {
+            this.inventoryType = inventoryType.getString();
+        }
+
+        var prefix = configurationNode.node("prefix");
+        if (!prefix.empty()) {
+            this.prefix = prefix.getString();
+        }
+
+        var showPageNumber = configurationNode.node("showPageNumber");
+        if (!showPageNumber.empty()) {
+            this.showPageNumber = showPageNumber.getBoolean();
+        }
     }
 }
