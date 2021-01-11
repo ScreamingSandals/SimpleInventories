@@ -23,6 +23,31 @@ public class InventorySetBuilder extends CategoryBuilder {
         return subInventory;
     }
 
+    public InventorySetBuilder genericShop(boolean genericShop) {
+        inventory.setGenericShop(genericShop);
+        return this;
+    }
+
+    public InventorySetBuilder genericShopPriceTypeRequired(boolean genericShop) {
+        inventory.setGenericShopPriceTypeRequired(genericShop);
+        return this;
+    }
+
+    public InventorySetBuilder animationsEnabled(boolean animationsEnabled) {
+        inventory.setAnimationsEnabled(animationsEnabled);
+        return this;
+    }
+
+    public InventorySetBuilder allowAccessToConsole(boolean allowAccessToConsole) {
+        inventory.setAllowAccessToConsole(allowAccessToConsole);
+        return this;
+    }
+
+    public InventorySetBuilder allowBungeecordPlayerSending(boolean allowBungeecordPlayerSending) {
+        inventory.setAllowBungeecordPlayerSending(allowBungeecordPlayerSending);
+        return this;
+    }
+
     public InventorySetBuilder define(String definition) {
         BuilderUtils.buildDefinition(inventory, definition);
         return this;

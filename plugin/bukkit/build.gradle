@@ -1,7 +1,7 @@
 dependencies {
     shade screaming('material-bukkit', SCREAMING_LIB_VERSION)
     shade screaming('player-bukkit', SCREAMING_LIB_VERSION)
-    shade 'org.spongepowered:configurate-core:' + CONFIGURATE_VERSION
+    shade 'org.spongepowered:configurate-yaml:' + CONFIGURATE_VERSION
     shade project(':core-common')
     shade project(':core-bukkit')
 
@@ -26,11 +26,4 @@ spigot {
     authors = ['ScreamingSandals']
     apiVersion = '1.13'
     load = POST_WORLD
-    commands {
-        simpleinventories {
-            aliases = ['si']
-            description = 'Command of SimpleInventories'
-            usage = '/simpleinventories [subcommand]'
-        }
-    }
 }

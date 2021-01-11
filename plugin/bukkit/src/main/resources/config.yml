@@ -1,0 +1,6 @@
+inventories:
+  sample:
+    file: sample.yml
+    section: data
+# groovy:
+#   file: sample.groovy
