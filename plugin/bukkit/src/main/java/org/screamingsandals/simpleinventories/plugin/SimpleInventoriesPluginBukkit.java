@@ -170,7 +170,7 @@ public class SimpleInventoriesPluginBukkit extends JavaPlugin {
                         .categoryOptions(localOptionsBuilder ->
                             localOptionsBuilder.getLocalOptions().fromNode(configuration.node("options"))
                         )
-                        .include(Include.of(configuration.node("file").getString(), configuration.node("section").getString("data")))
+                        .include(":" + configuration.node("section").getString("data") + "@" + configuration.node("file").getString())
                         .process()
                         .getInventorySet());
             });

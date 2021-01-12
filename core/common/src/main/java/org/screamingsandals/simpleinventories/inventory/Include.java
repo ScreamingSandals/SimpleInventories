@@ -48,12 +48,12 @@ public class Include implements Queueable {
 
         var path = Path.of(pathString);
 
-        if (loader == null) {
+        if (loader == null || loader.isEmpty()) {
             var filename = path.getFileName().toString();
             loader = filename.substring(filename.lastIndexOf('.') + 1);
         }
 
-        if (section == null) {
+        if (section == null || section.isEmpty()) {
             section = "data";
         }
 
