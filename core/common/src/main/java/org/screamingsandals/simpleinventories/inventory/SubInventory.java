@@ -12,9 +12,10 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 import java.util.*;
 
 @Data
-            public class SubInventory implements Openable {
+public class SubInventory implements Openable {
     private final boolean main;
     @Nullable
+    @ToString.Exclude
     private final GenericItemInfo itemOwner;
     @ToString.Exclude
     private final InventorySet inventorySet;

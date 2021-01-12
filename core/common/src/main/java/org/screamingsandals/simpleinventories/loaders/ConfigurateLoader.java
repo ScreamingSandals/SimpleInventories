@@ -178,7 +178,7 @@ public abstract class ConfigurateLoader implements ILoader {
                         // TODO - find non-standard fields and fill the map
 
                         if (!items.empty()) {
-                            items.childrenList().forEach(child -> loadConfigurationNodeInto(builder.getSubInventory(), child));
+                            loadConfigurationNodeInto(builder.getSubInventory(), items);
                         }
 
                     }

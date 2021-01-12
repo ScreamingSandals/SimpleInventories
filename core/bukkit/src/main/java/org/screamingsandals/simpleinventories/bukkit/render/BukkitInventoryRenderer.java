@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories.bukkit.render;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -26,22 +27,20 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
 
     @Override
     protected void renderOnPlatform() {
-        boolean reopen = true;
         var options = subInventory.getLocalOptions();
         if (inventoryHolder != null && inventoryHolder.getInventory().getSize() == options.getRenderActualRows() * options.getItemsOnRow()
                 && (inventoryHolder.getInventory().getType().name().equalsIgnoreCase(options.getInventoryType()) ||
                 (SIZEABLE_CONTAINERS.contains(options.getInventoryType().toUpperCase()) &&
                         SIZEABLE_CONTAINERS.contains(inventoryHolder.getInventory().getType().name())))) {
             inventoryHolder.getInventory().clear();
-            reopen = false;
         } else {
             inventoryHolder = new StandardInventoryHolder();
         }
         Inventory inventory;
         if (SIZEABLE_CONTAINERS.contains(options.getInventoryType().toUpperCase())) {
-            inventory = Bukkit.createInventory(inventoryHolder, options.getRenderActualRows() * options.getItemsOnRow(), getTitle());
+            inventory = Bukkit.createInventory(inventoryHolder, options.getRenderActualRows() * options.getItemsOnRow(), ChatColor.translateAlternateColorCodes('&', getTitle()));
         } else {
-            inventory = Bukkit.createInventory(inventoryHolder, InventoryType.valueOf(options.getInventoryType().toUpperCase()), getTitle());
+            inventory = Bukkit.createInventory(inventoryHolder, InventoryType.valueOf(options.getInventoryType().toUpperCase()), ChatColor.translateAlternateColorCodes('&', getTitle()));
         }
         inventoryHolder.setInventoryRenderer(this);
         inventoryHolder.setInventory(inventory);
@@ -64,9 +63,7 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
             animator = task;
         }
 
-        if (reopen) {
-            Optional.ofNullable(player.as(Player.class)).ifPresent(p -> p.openInventory(inventory));
-        }
+        player.asOptional(Player.class).ifPresent(p -> p.openInventory(inventory));
     }
 
     @Override
