@@ -50,7 +50,7 @@ public class Position implements Cloneable {
         return nextPosition;
     }
 
-    public int calculateNextPositionOffset(int nextPosition, int columns, int rows) {
+    public int calculateNextPosition(int nextPosition, int columns, int rows) {
         boolean broken = false;
         if (linebreak != null && linebreak.get().isBreakingAfter()) {
             broken = true;

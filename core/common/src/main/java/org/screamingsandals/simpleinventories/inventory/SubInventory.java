@@ -8,6 +8,7 @@ import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.simpleinventories.utils.TimesFlags;
 
 import java.util.*;
 
@@ -196,7 +197,7 @@ public class SubInventory implements Openable {
                 }
                 item.setPosition(newPosition);
                 if (item.getRequestedPosition() != null) {
-                    newPosition += item.getRequestedPosition().calculateNextPositionOffset(newPosition, getLocalOptions().getItemsOnRow(), getLocalOptions().getRows());
+                    newPosition = item.getRequestedPosition().calculateNextPosition(newPosition, getLocalOptions().getItemsOnRow(), getLocalOptions().getRows());
                 } else {
                     newPosition++;
                 }
@@ -214,6 +215,12 @@ public class SubInventory implements Openable {
                     var clone = item.clone();
                     //noinspection ConstantConditions
                     clone.getRequestedTimes().setRepeat(times - 1);
+                    if (item.getRequestedTimes().getFlags().contains(TimesFlags.NO_ID)) {
+                        clone.setId(null);
+                    }
+                    if (item.getRequestedTimes().getFlags().contains(TimesFlags.CANCEL_POSITIONING)) {
+                        clone.setRequestedPosition(new Position());
+                    }
                     process(clone);
                 }
             }
