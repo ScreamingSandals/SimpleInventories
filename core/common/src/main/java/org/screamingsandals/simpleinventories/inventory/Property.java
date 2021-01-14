@@ -1,36 +1,29 @@
 package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
-import org.screamingsandals.simpleinventories.utils.MapReader;
-import org.screamingsandals.lib.player.PlayerWrapper;
-
-import java.util.Map;
+import org.spongepowered.configurate.BasicConfigurationNode;
+import org.spongepowered.configurate.ConfigurationNode;
 
 @Data
 @AllArgsConstructor
 public class Property implements Cloneable {
-    private final InventorySet format;
+    private final InventorySet inventorySet;
     @Setter(onMethod_ = @Deprecated)
     private String propertyName;
-    @Getter(onMethod_ = @Deprecated)
     @Setter(onMethod_ = @Deprecated)
-    private Map<String, Object> propertyData;
+    private ConfigurationNode propertyData;
+
+    public Property(InventorySet inventorySet, String propertyName) {
+        this(inventorySet, propertyName, BasicConfigurationNode.root());
+    }
 
     public boolean hasName() {
         return propertyName != null;
     }
 
-    public boolean hasData() {
-        return propertyData != null && !propertyData.isEmpty();
-    }
-
-    public MapReader getReader(PlayerWrapper player, PlayerItemInfo info) {
-        return new MapReader(format, propertyData != null ? propertyData : Map.of(), player, info);
-    }
-
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public Property clone() {
-        return new Property(format, propertyName, Map.copyOf(propertyData));
+        return new Property(inventorySet, propertyName, propertyData.copy());
     }
 }

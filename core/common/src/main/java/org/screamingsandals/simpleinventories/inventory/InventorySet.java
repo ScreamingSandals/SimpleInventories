@@ -27,6 +27,7 @@ public class InventorySet implements Openable {
 
     private final Map<String, IPlaceholderParser> placeholders = new HashMap<>();
     private final Map<String, GenericItemInfo> ids = new HashMap<>();
+    private final Map<String, String> variableToPropertyMap = new HashMap<>();
     private final SubInventory mainSubInventory = new SubInventory(true, null, this);
     @ToString.Exclude
     private final List<Insert> insertQueue = new ArrayList<>();

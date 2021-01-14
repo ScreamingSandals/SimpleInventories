@@ -15,6 +15,9 @@ import org.screamingsandals.simpleinventories.utils.BreakType;
 import org.screamingsandals.simpleinventories.utils.CloneMethod;
 import org.screamingsandals.simpleinventories.utils.Column;
 import org.screamingsandals.simpleinventories.utils.TimesFlags;
+import org.spongepowered.configurate.BasicConfigurationNode;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,18 +77,35 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     public ItemInfoBuilder property(String name) {
-        itemInfo.getProperties().add(new Property(itemInfo.getFormat(), name, null));
+        itemInfo.getProperties().add(new Property(itemInfo.getFormat(), name));
         return this;
     }
 
     public ItemInfoBuilder property(String name, Map<String, Object> map) {
-        itemInfo.getProperties().add(new Property(itemInfo.getFormat(), name, map));
+        try {
+            return property(name, BasicConfigurationNode.root().set(map));
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public ItemInfoBuilder property(String name, ConfigurationNode configurationNode) {
+        itemInfo.getProperties().add(new Property(itemInfo.getFormat(), name, configurationNode));
         return this;
     }
 
     public ItemInfoBuilder property(Map<String, Object> map) {
-        itemInfo.getProperties().add(new Property(itemInfo.getFormat(), map.containsKey("name") ? map.get("name").toString() : null, map));
+        try {
+            return property(BasicConfigurationNode.root().set(map));
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
         return this;
+    }
+
+    public ItemInfoBuilder property(ConfigurationNode configurationNode) {
+        return property(configurationNode.node("name").getString(), configurationNode);
     }
 
     public ItemInfoBuilder disabled(boolean disabled) {
@@ -325,22 +345,24 @@ public class ItemInfoBuilder extends CategoryBuilder {
      * @return itself
      */
     public ItemInfoBuilder upgrade(Map<String, Object> map) {
-        if (!itemInfo.hasData()) {
-            itemInfo.setData(new HashMap<>());
-        }
-        var itemMap = itemInfo.getData();
+        if (getFormat().getVariableToPropertyMap().containsKey("upgrade")) {
+            var propertyName = getFormat().getVariableToPropertyMap().get("upgrade");
+            var property = itemInfo.getProperties().stream()
+                    .filter(property1 -> property1.getPropertyName().equals(propertyName))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        var newProperty = new Property(getFormat(), propertyName, BasicConfigurationNode.root());
+                        itemInfo.getProperties().add(newProperty);
+                        return newProperty;
+                    });
 
-        if (!itemMap.containsKey("upgrade")) {
-            itemMap.put("upgrade", new HashMap<>());
-        }
-        var upgrades = (Map<String, Object>) itemMap.get("upgrade");
-        if (!upgrades.containsKey("entities")) {
-            upgrades.put("entities", new ArrayList<>());
-        }
-
-        var list = (List<Object>) upgrades.get("entities");
-        if (!list.contains(map)) {
-            list.add(map);
+            var upgrades = property.getPropertyData();
+            var entities = upgrades.node("entities");
+            try {
+                entities.appendListNode().set(map);
+            } catch (SerializationException e) {
+                e.printStackTrace();
+            }
         }
         return this;
     }

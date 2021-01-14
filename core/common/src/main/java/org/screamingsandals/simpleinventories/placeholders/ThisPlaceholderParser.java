@@ -1,7 +1,6 @@
 package org.screamingsandals.simpleinventories.placeholders;
 
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.utils.MapReader;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
 public class ThisPlaceholderParser implements IPlaceholderParser {
@@ -18,18 +17,6 @@ public class ThisPlaceholderParser implements IPlaceholderParser {
 					case "disabled":
 						return String.valueOf(item.isDisabled());
 				}
-			}
-			try {
-				MapReader reader = item.getReader();
-				for (int i = 0; i < arguments.length; i++) {
-					if (i == (arguments.length - 1)) {
-						return reader.getString(arguments[i]);
-					} else {
-						reader = reader.getMap(arguments[i]);
-					}
-				}
-			} catch (Throwable t) {
-				// Placeholder is not valid
 			}
 		}
 		return "%" + key + "%"; // ignore this placeholder

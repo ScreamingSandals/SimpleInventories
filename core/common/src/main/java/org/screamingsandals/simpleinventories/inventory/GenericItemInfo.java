@@ -4,14 +4,9 @@ import lombok.*;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.utils.event.EventManager;
-import org.screamingsandals.simpleinventories.operations.conditions.Condition;
-import org.screamingsandals.simpleinventories.utils.MapReader;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 @Data
@@ -27,13 +22,8 @@ public class GenericItemInfo implements Cloneable, Queueable {
     private Supplier<Boolean> disabled;
     private String id;
     private final List<Property> properties = new ArrayList<>();
-    @Getter(onMethod_ = @Deprecated)
-    @Setter(onMethod_ = @Deprecated)
-    private Map<String, Object> data;
     @Deprecated
     private Item book;
-    @Deprecated(forRemoval = true) // may be replaced by event handlers
-    private final Map<Condition, Map<String, Object>> conditions = new HashMap<>();
     private Supplier<Boolean> written;
     private final EventManager eventManager;
     private SubInventory childInventory;
@@ -67,21 +57,12 @@ public class GenericItemInfo implements Cloneable, Queueable {
         this.eventManager = new EventManager(format.getEventManager());
     }
 
-    @Deprecated
-    public MapReader getReader(PlayerWrapper owner) {
-        return new MapReader(getFormat(), data == null ? Map.of() : data, owner, null);
-    }
-
     public boolean hasId() {
         return id != null;
     }
 
     public boolean hasProperties() {
         return !properties.isEmpty();
-    }
-
-    public boolean hasData() {
-        return data != null && !data.isEmpty();
     }
 
     public boolean hasAnimation() {
@@ -120,9 +101,7 @@ public class GenericItemInfo implements Cloneable, Queueable {
         info.written = written;
         info.id = id;
         properties.stream().map(Property::clone).forEach(info.properties::add);
-        info.data = data != null ? Map.copyOf(data) : null; // TODO: deep copy
         info.book = book != null ? book.clone() : null;
-        info.conditions.putAll(conditions);
         info.eventManager.cloneEventManager(eventManager);
         info.executions.addAll(executions);
         prices.stream().map(Price::clone).forEach(info.prices::add);

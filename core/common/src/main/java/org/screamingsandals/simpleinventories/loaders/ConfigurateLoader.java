@@ -1,19 +1,19 @@
 package org.screamingsandals.simpleinventories.loaders;
 
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.simpleinventories.builder.BuilderUtils;
 import org.screamingsandals.simpleinventories.builder.ItemInfoBuilder;
-import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
-import org.screamingsandals.simpleinventories.inventory.Include;
-import org.screamingsandals.simpleinventories.inventory.Insert;
-import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.simpleinventories.inventory.*;
 import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.loader.AbstractConfigurationLoader;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
@@ -112,7 +112,63 @@ public abstract class ConfigurateLoader implements ILoader {
                             }
                         }
                         if (!conditions.empty()) {
-                            // TODO - conditions
+                            conditions.childrenList().forEach(condition -> {
+                                var statement = condition.node("if");
+                                var thenBody = condition.node("then");
+                                var elseBody = condition.node("else");
+                                if (!statement.empty() && (!thenBody.empty() || !elseBody.empty())) {
+                                    var parsedCondition = OperationParser.getFinalCondition(item.getFormat(), statement.getString());
+                                    builder.render(itemRenderEvent -> {
+                                        if (parsedCondition.process(itemRenderEvent.getPlayer(), itemRenderEvent.getItem())) {
+                                            if (!thenBody.empty()) {
+                                                var visibleRender = thenBody.node("visible");
+                                                var disabledRender = thenBody.node("disabled");
+                                                var stackRender = thenBody.node("stack");
+                                                var animationRender = thenBody.node("animation");
+
+                                                if (!visibleRender.empty()) {
+                                                    itemRenderEvent.setVisible(visibleRender.getBoolean());
+                                                }
+
+                                                if (!disabledRender.empty()) {
+                                                    itemRenderEvent.setDisabled(disabledRender.getBoolean());
+                                                }
+
+                                                if (!stackRender.empty()) {
+                                                    itemRenderEvent.setStack(ItemFactory.build(stackRender).orElse(itemRenderEvent.getStack()));
+                                                }
+
+                                                if (!animationRender.empty()) {
+                                                    itemRenderEvent.getAnimation().clear();
+                                                    animationRender.childrenList().forEach(itemRenderEvent.getAnimation()::stack);
+                                                }
+                                            }
+                                        } else if (!elseBody.empty()) {
+                                                var visibleRender = elseBody.node("visible");
+                                                var disabledRender = elseBody.node("disabled");
+                                                var stackRender = elseBody.node("stack");
+                                                var animationRender = elseBody.node("animation");
+
+                                                if (!visibleRender.empty()) {
+                                                    itemRenderEvent.setVisible(visibleRender.getBoolean());
+                                                }
+
+                                                if (!disabledRender.empty()) {
+                                                    itemRenderEvent.setDisabled(disabledRender.getBoolean());
+                                                }
+
+                                                if (!stackRender.empty()) {
+                                                    itemRenderEvent.setStack(ItemFactory.build(stackRender).orElse(itemRenderEvent.getStack()));
+                                                }
+
+                                                if (!animationRender.empty()) {
+                                                    itemRenderEvent.getAnimation().clear();
+                                                    animationRender.childrenList().forEach(itemRenderEvent.getAnimation()::stack);
+                                                }
+                                            }
+                                    });
+                                }
+                            });
                         }
                         if (!disabled.empty()) {
                             builder.disabled(disabled.getString());
@@ -148,7 +204,13 @@ public abstract class ConfigurateLoader implements ILoader {
                             builder.priceType(priceType.getString());
                         }
                         if (!properties.empty()) {
-                            // TODO - Properties
+                            if (properties.isList()) {
+                                properties.childrenList().forEach(builder::property);
+                            } else if (properties.isMap()) {
+                                builder.property(properties);
+                            } else {
+                                builder.property(properties.getString());
+                            }
                         }
                         if (!row.empty()) {
                             builder.row(row.getInt());
@@ -175,7 +237,12 @@ public abstract class ConfigurateLoader implements ILoader {
                             builder.write(write.getBoolean());
                         }
 
-                        // TODO - find non-standard fields and fill the map
+                        subInventory.getInventorySet().getVariableToPropertyMap().forEach((variable, property) -> {
+                            var node = itemNode.node(variable);
+                            if (!node.empty()) {
+                                item.getProperties().add(new Property(subInventory.getInventorySet(), property, node));
+                            }
+                        });
 
                         if (!items.empty()) {
                             loadConfigurationNodeInto(builder.getSubInventory(), items);

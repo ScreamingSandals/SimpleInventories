@@ -23,6 +23,18 @@ public class InventorySetBuilder extends CategoryBuilder {
         return subInventory;
     }
 
+    /**
+     * Custom variables were replaced with properties. This method remaps the old variables to properties.
+     *
+     * @param variable the name of custom variable
+     * @param property the name of property
+     * @return self
+     */
+    public InventorySetBuilder variableToProperty(String variable, String property) {
+        inventory.getVariableToPropertyMap().put(variable, property);
+        return this;
+    }
+
     public InventorySetBuilder genericShop(boolean genericShop) {
         inventory.setGenericShop(genericShop);
         return this;

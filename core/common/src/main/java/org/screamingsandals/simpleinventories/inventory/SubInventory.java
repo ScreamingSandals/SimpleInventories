@@ -155,33 +155,6 @@ public class SubInventory implements Openable {
                                 item.getExecutions().addAll(originalItem.getExecutions());
                             }
                         }
-                        if (originalItem.hasData()) {
-                            if (!item.hasData()) {
-                                item.setData(new HashMap<>());
-                            }
-                            originalItem.getData().forEach((key, val) -> {
-                                if (val instanceof Collection) {
-                                    if (!item.getData().containsKey(key)) {
-                                        item.getData().put(key, new ArrayList<>((Collection<?>) val));
-                                    } else if (clone.getCloneMethod().isIncrement()) {
-                                        //noinspection unchecked
-                                        ((Collection<Object>) item.getData().get(key)).addAll((Collection<?>) val);
-                                    } else if (clone.getCloneMethod().isOverride()) {
-                                        item.getData().put(key, new ArrayList<>((Collection<?>) val));
-                                    }
-                                } else if (!item.getData().containsKey(key) || clone.getCloneMethod().isOverride()) {
-                                    if (val instanceof Cloneable) {
-                                        try {
-                                            item.getData().put(key, val.getClass().getMethod("clone").invoke(val));
-                                        } catch (Exception ex) {
-                                            item.getData().put(key, val);
-                                        }
-                                    } else {
-                                        item.getData().put(key, val);
-                                    }
-                                }
-                            });
-                        }
                     }
                 }
             }
