@@ -90,6 +90,22 @@ public class GenericItemInfo implements Cloneable, Queueable {
         return visible != null ? visible.get() : true;
     }
 
+    public void moveAbsolute(int position) {
+        if (this.parent != null) {
+            this.parent.dropContentsOn(position);
+            this.position = position;
+            this.parent.forceReload();
+        }
+    }
+
+    public void moveRelative(int relative) {
+        if (this.parent != null) {
+            this.parent.dropContentsOn(this.position + relative);
+            this.position += relative;
+            this.parent.forceReload();
+        }
+    }
+
     @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public GenericItemInfo clone() {

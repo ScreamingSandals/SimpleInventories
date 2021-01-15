@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.UnaryOperator;
 
 import cloud.commandframework.arguments.standard.StringArgument;
@@ -161,6 +160,7 @@ public class SimpleInventoriesPluginBukkit extends JavaPlugin {
             var root = loader.load();
 
             root.node("inventories").childrenMap().forEach((key, configuration) -> {
+                //noinspection ConstantConditions
                 inventories.put(key.toString(), SimpleInventoriesBukkit.builder()
                         .genericShop(configuration.node("options", "genericShop").getBoolean())
                         .genericShopPriceTypeRequired(configuration.node("options", "genericShopPriceTypeRequired").getBoolean(true))
@@ -170,7 +170,7 @@ public class SimpleInventoriesPluginBukkit extends JavaPlugin {
                         .categoryOptions(localOptionsBuilder ->
                             localOptionsBuilder.getLocalOptions().fromNode(configuration.node("options"))
                         )
-                        .include(":" + configuration.node("section").getString("data") + "@" + configuration.node("file").getString())
+                        .include(Include.ofSection(configuration.node("file").getString(), configuration.node("section").getString("data")))
                         .process()
                         .getInventorySet());
             });

@@ -8,6 +8,7 @@ import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.simpleinventories.utils.Column;
 import org.screamingsandals.simpleinventories.utils.TimesFlags;
 
 import java.util.*;
@@ -56,7 +57,7 @@ public class SubInventory implements Openable {
         return contents.stream().mapToInt(item -> item.getPosition() / getLocalOptions().getItemsOnPage()).distinct().max().orElse(0);
     }
 
-    public void process() {
+    public SubInventory process() {
         inventorySet.getInsertQueue().stream().filter(i -> acceptsLink(i.getLink())).forEach(insert -> {
             inventorySet.getInsertQueue().remove(insert);
             insert.getSubInventory().getWaitingQueue().stream().map(e -> {
@@ -66,13 +67,15 @@ public class SubInventory implements Openable {
                 return e;
             }).forEach(this::process);
         });
-        process(waitingQueue);
+        return process(waitingQueue);
     }
-    public void process(Queue<Queueable> queue) {
+
+    public SubInventory process(Queue<Queueable> queue) {
         while (!queue.isEmpty()) {
             process(queue.remove());
         }
-        SimpleInventoriesCore.getAllInventoryRenderersForSubInventory(this).forEach(InventoryRenderer::render);
+        forceReload();
+        return this;
     }
 
     private void process(Queueable object) {
@@ -107,55 +110,7 @@ public class SubInventory implements Openable {
                     } else {
                         originalItem = inventorySet.resolveItemLink(clone.getCloneLink()).orElse(null);
                     }
-                    if (originalItem != null) {
-                        if (originalItem.getItem() != null && !originalItem.getItem().getMaterial().isAir() && (clone.getCloneMethod().isOverride() || item.getItem() == null || item.getItem().getMaterial().isAir())) {
-                            item.setItem(originalItem.getItem());
-                        }
-                        if (originalItem.hasAnimation()) {
-                            if (!item.hasAnimation() || clone.getCloneMethod().isIncrement()) {
-                                item.getAnimation().addAll(originalItem.getAnimation());
-                            } else if (clone.getCloneMethod().isOverride()) {
-                                item.getAnimation().clear();
-                                item.getAnimation().addAll(originalItem.getAnimation());
-                            }
-                        }
-                        if (originalItem.getVisible() != null && (clone.getCloneMethod().isOverride() || item.getVisible() == null)) {
-                            item.setVisible(originalItem.getVisible());
-                        }
-                        if (originalItem.getDisabled() != null && (clone.getCloneMethod().isOverride() || item.getDisabled() == null)) {
-                            item.setDisabled(originalItem.getDisabled());
-                        }
-                        item.getProperties().addAll(originalItem.getProperties());
-                        if (originalItem.hasBook() && (clone.getCloneMethod().isOverride() || !item.hasBook())) {
-                            item.setBook(originalItem.getBook().clone());
-                        }
-                        if (originalItem.getWritten() != null && (clone.getCloneMethod().isOverride() || item.getWritten() == null)) {
-                            item.setWritten(originalItem.getWritten());
-                        }
-                        item.getEventManager().cloneEventManager(originalItem.getEventManager());
-                        if (originalItem.hasChildInventory()) {
-                            if (!item.hasChildInventory()) {
-                                item.setChildInventory(new SubInventory(false, item, inventorySet));
-                                originalItem.getChildInventory().getContents().stream().map(GenericItemInfo::clone).forEach(item.getChildInventory().getWaitingQueue()::add);
-                            } else if (clone.getCloneMethod().isIncrement()) {
-                                originalItem.getChildInventory().getContents().stream().map(GenericItemInfo::clone).forEach(item.getChildInventory().getWaitingQueue()::add);
-                            } else if (clone.getCloneMethod().isOverride()) {
-                                item.setChildInventory(new SubInventory(false, item, inventorySet));
-                                originalItem.getChildInventory().getContents().stream().map(GenericItemInfo::clone).forEach(item.getChildInventory().getWaitingQueue()::add);
-                            }
-                        }
-                        if (originalItem.getLocate() != null && (item.getLocate() == null || clone.getCloneMethod().isOverride())) {
-                            item.setLocate(originalItem.getLocate());
-                        }
-                        if (!originalItem.getExecutions().isEmpty()) {
-                            if (clone.getCloneMethod().isIncrement() || item.getExecutions().isEmpty()) {
-                                item.getExecutions().addAll(originalItem.getExecutions());
-                            } else if (clone.getCloneMethod().isOverride()) {
-                                item.getExecutions().clear();
-                                item.getExecutions().addAll(originalItem.getExecutions());
-                            }
-                        }
-                    }
+                    clone.cloneInto(originalItem, item);
                 }
             }
 
@@ -175,6 +130,13 @@ public class SubInventory implements Openable {
                     newPosition++;
                 }
                 cursorPosition = newPosition;
+                // drop overridden items
+                contents.stream().filter(genericItemInfo -> genericItemInfo.getPosition() == item.getPosition()).findFirst().ifPresent(genericItemInfo -> {
+                    contents.remove(genericItemInfo);
+                    if (genericItemInfo.hasId()) {
+                        inventorySet.getIds().remove(genericItemInfo.getId());
+                    }
+                });
             }
 
             contents.add(item);
@@ -205,5 +167,124 @@ public class SubInventory implements Openable {
     @Override
     public void openInventory(Wrapper wrapper) {
         SimpleInventoriesCore.openInventory(wrapper.asOptional(PlayerWrapper.class).orElseThrow(), this);
+    }
+
+    // CURSOR MOVING
+    public SubInventory carriageReturn() {
+        this.cursorPosition -= (cursorPosition - localOptions.getItemsOnRow()) % localOptions.getItemsOnRow();
+        return this;
+    }
+
+    public SubInventory lineBreak() {
+        this.cursorPosition += (localOptions.getItemsOnRow() - (cursorPosition % localOptions.getItemsOnRow()));
+        return this;
+    }
+
+    public SubInventory pageBreak() {
+        this.cursorPosition += (localOptions.getItemsOnPage() - (cursorPosition % localOptions.getItemsOnPage()));
+        return this;
+    }
+
+    public SubInventory skip(int skip) {
+        this.cursorPosition += skip;
+        return this;
+    }
+
+    @Deprecated
+    public SubInventory absolute(int absolute) {
+        this.cursorPosition = absolute;
+        return this;
+    }
+
+    public SubInventory column(int column) {
+        this.cursorPosition = (this.cursorPosition - (this.cursorPosition % localOptions.getItemsOnRow())) + column;
+        return this;
+    }
+
+    public SubInventory column(Column column) {
+        return column(column.convert(localOptions.getItemsOnRow()));
+    }
+
+    public SubInventory row(int row) {
+        this.cursorPosition = this.cursorPosition - (this.cursorPosition % localOptions.getItemsOnPage()) + ((row - 1) * localOptions.getItemsOnRow())
+                + (this.cursorPosition % localOptions.getItemsOnRow());
+        return this;
+    }
+
+    public SubInventory dropContents() {
+        contents.stream().filter(GenericItemInfo::hasId).forEach(genericItemInfo ->
+            inventorySet.getIds().remove(genericItemInfo.getId())
+        );
+        contents.clear();
+        forceReload();
+        return this;
+    }
+
+    public SubInventory dropContentsOn(int position) {
+        return dropContentsOn(List.of(position));
+    }
+
+    public SubInventory dropContentsOn(List<Integer> positions) {
+        contents.removeIf(genericItemInfo -> {
+            if (positions.contains(genericItemInfo.getPosition())) {
+                if (genericItemInfo.hasId()) {
+                    inventorySet.getIds().remove(genericItemInfo.getId());
+                }
+                return true;
+            }
+            return false;
+        });
+        return this;
+    }
+
+    public SubInventory dropContentsAfter(int position) {
+        contents.removeIf(genericItemInfo -> {
+            if (genericItemInfo.getPosition() >= position) {
+                if (genericItemInfo.hasId()) {
+                    inventorySet.getIds().remove(genericItemInfo.getId());
+                }
+                return true;
+            }
+            return false;
+        });
+        forceReload();
+        return this;
+    }
+
+    public SubInventory dropContentsBefore(int position) {
+        contents.removeIf(genericItemInfo -> {
+            if (genericItemInfo.getPosition() < position) {
+                if (genericItemInfo.hasId()) {
+                    inventorySet.getIds().remove(genericItemInfo.getId());
+                }
+                return true;
+            }
+            return false;
+        });
+        forceReload();
+        return this;
+    }
+
+    public SubInventory dropContentsBetween(int start, int end) {
+        contents.removeIf(genericItemInfo -> {
+            if (genericItemInfo.getPosition() >= start && genericItemInfo.getPosition() <= end) {
+                if (genericItemInfo.hasId()) {
+                    inventorySet.getIds().remove(genericItemInfo.getId());
+                }
+                return true;
+            }
+            return false;
+        });
+        forceReload();
+        return this;
+    }
+
+    public SubInventory putIntoQueue(GenericItemInfo...items){
+        waitingQueue.addAll(Arrays.asList(items));
+        return this;
+    }
+
+    public void forceReload() {
+        SimpleInventoriesCore.getAllInventoryRenderersForSubInventory(this).forEach(InventoryRenderer::render);
     }
 }

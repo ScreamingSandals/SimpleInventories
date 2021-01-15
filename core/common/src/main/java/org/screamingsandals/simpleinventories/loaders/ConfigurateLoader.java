@@ -1,7 +1,6 @@
 package org.screamingsandals.simpleinventories.loaders;
 
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.simpleinventories.builder.BuilderUtils;
 import org.screamingsandals.simpleinventories.builder.ItemInfoBuilder;
 import org.screamingsandals.simpleinventories.inventory.*;
@@ -13,11 +12,10 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
-@RequiredArgsConstructor
-public abstract class ConfigurateLoader implements ILoader {
+@RequiredArgsConstructor(staticName = "of")
+public class ConfigurateLoader implements ILoader {
     private final Supplier<AbstractConfigurationLoader.Builder<?,?>> configurationLoaderBuilder;
 
     @Override
