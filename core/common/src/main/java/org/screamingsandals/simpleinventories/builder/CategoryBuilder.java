@@ -157,11 +157,11 @@ public class CategoryBuilder {
     }
 
     /**
-     * Groovy only
-     *
      * @param consumer Consumer that consumes AbstractSubInventoryBuilder
+     * @return returns self
      */
-    public void call(Consumer<CategoryBuilder> consumer) {
+    public CategoryBuilder call(Consumer<CategoryBuilder> consumer) {
         ConsumerExecutor.execute(consumer, this);
+        return this;
     }
 }

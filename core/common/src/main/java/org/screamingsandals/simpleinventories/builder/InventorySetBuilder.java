@@ -181,4 +181,9 @@ public class InventorySetBuilder extends CategoryBuilder {
     public InventorySetBuilder insert(List<String> links, SubInventory prebuiltInventory) {
         return (InventorySetBuilder) super.insert(links, prebuiltInventory);
     }
+
+    @Override
+    public InventorySetBuilder call(Consumer<CategoryBuilder> consumer) {
+        return (InventorySetBuilder) super.call(consumer);
+    }
 }
