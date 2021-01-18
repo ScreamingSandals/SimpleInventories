@@ -73,6 +73,15 @@ public abstract class SimpleInventoriesCore {
 
     protected abstract List<InventoryRenderer> getAllInventoryRenderersForSubInventory0(SubInventory subInventory);
 
+    public static List<InventoryRenderer> getAllInventoryRenderersForInventorySet(InventorySet inventorySet) {
+        if (core == null) {
+            throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
+        }
+        return core.getAllInventoryRenderersForInventorySet0(inventorySet);
+    }
+
+    protected abstract List<InventoryRenderer> getAllInventoryRenderersForInventorySet0(InventorySet inventorySet);
+
     public static Object readConfigurationSerializable(Map<String, Object> configuration) {
         if (core == null) {
             throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");

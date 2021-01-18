@@ -8,7 +8,9 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 public class PlayerItemInfo {
@@ -77,5 +79,13 @@ public class PlayerItemInfo {
 
     public SubInventory getParent() {
         return original.getParent();
+    }
+
+    public Stream<Property> getPropertiesByName(String name) {
+        return original.getPropertiesByName(name);
+    }
+
+    public Optional<Property> getFirstPropertyByName(String name) {
+        return original.getFirstPropertyByName(name);
     }
 }

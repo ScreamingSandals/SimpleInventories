@@ -20,6 +20,7 @@ import org.screamingsandals.simpleinventories.bukkit.placeholders.PermissionPlac
 import org.screamingsandals.simpleinventories.bukkit.placeholders.PlayerPlaceholderParser;
 import org.screamingsandals.simpleinventories.bukkit.placeholders.WorldPlaceholderParser;
 import org.screamingsandals.simpleinventories.bukkit.render.BukkitInventoryRenderer;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
@@ -89,7 +90,20 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
 
     @Override
     protected List<InventoryRenderer> getAllInventoryRenderersForSubInventory0(SubInventory subInventory) {
-        return Bukkit.getOnlinePlayers().stream().map(this::getInventoryRenderer0).filter(Objects::nonNull).collect(Collectors.toList());
+        return Bukkit.getOnlinePlayers().stream()
+                .map(this::getInventoryRenderer0)
+                .filter(Objects::nonNull)
+                .filter(inventoryRenderer -> inventoryRenderer.getSubInventory() == subInventory)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    protected List<InventoryRenderer> getAllInventoryRenderersForInventorySet0(InventorySet inventorySet) {
+        return Bukkit.getOnlinePlayers().stream()
+                .map(this::getInventoryRenderer0)
+                .filter(Objects::nonNull)
+                .filter(inventoryRenderer -> inventoryRenderer.getSubInventory().getInventorySet() == inventorySet)
+                .collect(Collectors.toList());
     }
 
     @Override

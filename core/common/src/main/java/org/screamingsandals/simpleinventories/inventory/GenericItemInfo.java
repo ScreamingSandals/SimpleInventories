@@ -7,7 +7,9 @@ import org.screamingsandals.lib.utils.event.EventManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @Data
 public class GenericItemInfo implements Cloneable, Queueable {
@@ -90,6 +92,14 @@ public class GenericItemInfo implements Cloneable, Queueable {
         return visible != null ? visible.get() : true;
     }
 
+    public Stream<Property> getPropertiesByName(String name) {
+        return properties.stream().filter(property -> property.getPropertyName().equalsIgnoreCase(name));
+    }
+
+    public Optional<Property> getFirstPropertyByName(String name) {
+        return getPropertiesByName(name).findFirst();
+    }
+
     public void moveAbsolute(int position) {
         if (this.parent != null) {
             this.parent.dropContentsOn(position);
@@ -103,6 +113,12 @@ public class GenericItemInfo implements Cloneable, Queueable {
             this.parent.dropContentsOn(this.position + relative);
             this.position += relative;
             this.parent.forceReload();
+        }
+    }
+
+    public void repaint() {
+        if (this.getParent() != null) {
+            this.getParent().forceReload();
         }
     }
 
