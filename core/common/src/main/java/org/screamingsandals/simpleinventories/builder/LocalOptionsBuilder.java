@@ -60,6 +60,26 @@ public class LocalOptionsBuilder {
         return this;
     }
 
+    public LocalOptionsBuilder backItem(Object stack, Consumer<ItemBuilder> consumer) {
+        localOptions.setBackItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
+        return this;
+    }
+
+    public LocalOptionsBuilder pageBackItem(Object stack, Consumer<ItemBuilder> consumer) {
+        localOptions.setPageBackItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
+        return this;
+    }
+
+    public LocalOptionsBuilder pageForwardItem(Object stack, Consumer<ItemBuilder> consumer) {
+        localOptions.setPageForwardItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
+        return this;
+    }
+
+    public LocalOptionsBuilder cosmeticItem(Object stack, Consumer<ItemBuilder> consumer) {
+        localOptions.setCosmeticItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
+        return this;
+    }
+
     public LocalOptionsBuilder rows(int rows) {
         localOptions.setRows(rows);
         return this;

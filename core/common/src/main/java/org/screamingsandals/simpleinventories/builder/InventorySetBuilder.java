@@ -6,6 +6,7 @@ import org.screamingsandals.simpleinventories.events.*;
 import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -13,12 +14,12 @@ import java.util.function.Consumer;
 @Getter
 @RequiredArgsConstructor(staticName = "of")
 public class InventorySetBuilder extends CategoryBuilder {
-    private final InventorySet inventory;
+    private final InventorySet inventorySet;
 
     @Override
     public SubInventory getSubInventory() {
         if (subInventory == null) {
-            subInventory = inventory.getMainSubInventory();
+            subInventory = inventorySet.getMainSubInventory();
         }
         return subInventory;
     }
@@ -31,67 +32,77 @@ public class InventorySetBuilder extends CategoryBuilder {
      * @return self
      */
     public InventorySetBuilder variableToProperty(String variable, String property) {
-        inventory.getVariableToPropertyMap().put(variable, property);
+        inventorySet.getVariableToPropertyMap().put(variable, property);
         return this;
     }
 
     public InventorySetBuilder genericShop(boolean genericShop) {
-        inventory.setGenericShop(genericShop);
+        inventorySet.setGenericShop(genericShop);
         return this;
     }
 
     public InventorySetBuilder genericShopPriceTypeRequired(boolean genericShop) {
-        inventory.setGenericShopPriceTypeRequired(genericShop);
+        inventorySet.setGenericShopPriceTypeRequired(genericShop);
         return this;
     }
 
     public InventorySetBuilder animationsEnabled(boolean animationsEnabled) {
-        inventory.setAnimationsEnabled(animationsEnabled);
+        inventorySet.setAnimationsEnabled(animationsEnabled);
         return this;
     }
 
     public InventorySetBuilder allowAccessToConsole(boolean allowAccessToConsole) {
-        inventory.setAllowAccessToConsole(allowAccessToConsole);
+        inventorySet.setAllowAccessToConsole(allowAccessToConsole);
         return this;
     }
 
     public InventorySetBuilder allowBungeecordPlayerSending(boolean allowBungeecordPlayerSending) {
-        inventory.setAllowBungeecordPlayerSending(allowBungeecordPlayerSending);
+        inventorySet.setAllowBungeecordPlayerSending(allowBungeecordPlayerSending);
         return this;
     }
 
     public InventorySetBuilder define(String definition) {
-        BuilderUtils.buildDefinition(inventory, definition);
+        BuilderUtils.buildDefinition(inventorySet, definition);
+        return this;
+    }
+
+    public InventorySetBuilder define(String placeholder, IPlaceholderParser placeholderParser) {
+        inventorySet.registerPlaceholder(placeholder, placeholderParser);
+        return this;
+    }
+
+    public InventorySetBuilder define(String placeholder, String value) {
+        inventorySet.registerPlaceholder(placeholder, value);
         return this;
     }
 
     public InventorySetBuilder render(Consumer<ItemRenderEvent> consumer) {
-        inventory.getEventManager().register(ItemRenderEvent.class, consumer);
+        inventorySet.getEventManager().register(ItemRenderEvent.class, consumer);
         return this;
     }
 
     public InventorySetBuilder preClick(Consumer<PreClickEvent> consumer) {
-        inventory.getEventManager().register(PreClickEvent.class, consumer);
+        inventorySet.getEventManager().register(PreClickEvent.class, consumer);
         return this;
     }
 
     public InventorySetBuilder click(Consumer<PostClickEvent> consumer) {
-        inventory.getEventManager().register(PostClickEvent.class, consumer);
+        inventorySet.getEventManager().register(PostClickEvent.class, consumer);
         return this;
     }
 
     public InventorySetBuilder open(Consumer<SubInventoryOpenEvent> consumer) {
-        inventory.getEventManager().register(SubInventoryOpenEvent.class, consumer);
+        inventorySet.getEventManager().register(SubInventoryOpenEvent.class, consumer);
         return this;
     }
 
     public InventorySetBuilder close(Consumer<SubInventoryCloseEvent> consumer) {
-        inventory.getEventManager().register(SubInventoryCloseEvent.class, consumer);
+        inventorySet.getEventManager().register(SubInventoryCloseEvent.class, consumer);
         return this;
     }
 
     public InventorySetBuilder buy(Consumer<OnTradeEvent> consumer) {
-        inventory.getEventManager().register(OnTradeEvent.class, consumer);
+        inventorySet.getEventManager().register(OnTradeEvent.class, consumer);
         return this;
     }
 
