@@ -43,7 +43,7 @@ public class OnTradeEvent implements Cancellable {
     }
 
     public boolean hasPlayerInInventory(Item item) {
-        return player.getPlayerInventory().contains(item);
+        return player.getPlayerInventory().containsAtLeast(item, item.getAmount());
     }
 
     public List<Item> sellStack() {
