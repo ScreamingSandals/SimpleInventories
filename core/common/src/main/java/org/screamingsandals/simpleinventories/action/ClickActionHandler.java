@@ -70,7 +70,7 @@ public abstract class ClickActionHandler {
         }
 
         if (playerItemInfo.getFormat().isGenericShop() && !playerItemInfo.getOriginal().getPrices().isEmpty()) {
-            var stream = playerItemInfo.getOriginal().getPrices().stream().map(price -> {
+            var list = playerItemInfo.getOriginal().getPrices().stream().map(price -> {
                 var price1 = price.clone();
                 if (price1.getCurrency() == null) {
                     price1.setCurrency(playerItemInfo.getOriginal().getDefaultCurrency());
@@ -79,9 +79,9 @@ public abstract class ClickActionHandler {
                     price1 = null;
                 }
                 return price1;
-            }).filter(Objects::nonNull);
-            if (stream.count() > 0) {
-                var tradeEvent = new OnTradeEvent(playerWrapper, stream.collect(Collectors.toList()), playerItemInfo.getOriginal().getItem().clone(), playerItemInfo, clickType);
+            }).filter(Objects::nonNull).collect(Collectors.toList());
+            if (!list.isEmpty()) {
+                var tradeEvent = new OnTradeEvent(playerWrapper, list, playerItemInfo.getOriginal().getItem().clone(), playerItemInfo, clickType);
                 playerItemInfo.getOriginal().getEventManager().fireEvent(tradeEvent);
 
                 if (inventoryRenderer.isOpened()) {
