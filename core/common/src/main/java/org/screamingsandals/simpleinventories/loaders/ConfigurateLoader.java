@@ -214,7 +214,7 @@ public class ConfigurateLoader implements ILoader {
                             builder.row(row.getInt());
                         }
                         if (!skip.empty()) {
-                            builder.skip(times.getInt(0));
+                            builder.skip(skip.getInt(0));
                         }
                         if (!times.empty()) {
                             builder.times(times.getInt(1));
