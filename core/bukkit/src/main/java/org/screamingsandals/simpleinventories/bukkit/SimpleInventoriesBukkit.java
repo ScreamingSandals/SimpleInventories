@@ -4,9 +4,8 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.screamingsandals.lib.bukkit.player.BukkitPlayerUtils;
+import org.screamingsandals.lib.bukkit.player.BukkitPlayerMapper;
 import org.screamingsandals.lib.utils.InitUtils;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitClickActionHandler;
@@ -22,8 +21,6 @@ import org.screamingsandals.simpleinventories.bukkit.placeholders.WorldPlacehold
 import org.screamingsandals.simpleinventories.bukkit.render.BukkitInventoryRenderer;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -33,7 +30,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -49,7 +45,7 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
         this.logger = plugin.getLogger();
 
         InitUtils.doIfNot(BukkitItemFactory::isInitialized, BukkitItemFactory::init);
-        InitUtils.doIfNot(BukkitPlayerUtils::isInitialized, BukkitPlayerUtils::init);
+        InitUtils.doIfNot(BukkitPlayerMapper::isInitialized, BukkitPlayerMapper::init);
 
         Bukkit.getPluginManager().registerEvents(new BukkitClickActionHandler(), this.plugin);
         Bukkit.getPluginManager().registerEvents(new BukkitCloseInventoryActionHandler(), this.plugin);

@@ -18,7 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.screamingsandals.lib.player.PlayerUtils;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
@@ -71,7 +71,7 @@ public class SimpleInventoriesPluginBukkit extends JavaPlugin {
                                 context.getSender().sendMessage("§cInventory " + inventory + " doesn't exist!");
                                 return;
                             }
-                            PlayerUtils.wrapPlayer(context.getSender()).openInventory(inv);
+                            PlayerMapper.wrapPlayer(context.getSender()).openInventory(inv);
                         })
         );
 
@@ -102,7 +102,7 @@ public class SimpleInventoriesPluginBukkit extends JavaPlugin {
                                 context.getSender().sendMessage("§cInventory " + inventoryName + " doesn't exist!");
                                 return;
                             }
-                            PlayerUtils.wrapPlayer(player).openInventory(inv);
+                            PlayerMapper.wrapPlayer(player).openInventory(inv);
                         })
         );
 
@@ -131,7 +131,7 @@ public class SimpleInventoriesPluginBukkit extends JavaPlugin {
     @Override
     public void onDisable() {
         Bukkit.getOnlinePlayers().forEach(player ->
-                SimpleInventoriesBukkit.getInventoryRenderer(PlayerUtils.wrapPlayer(player)).ifPresent(InventoryRenderer::close)
+                SimpleInventoriesBukkit.getInventoryRenderer(PlayerMapper.wrapPlayer(player)).ifPresent(InventoryRenderer::close)
         );
         inventories.clear();
     }

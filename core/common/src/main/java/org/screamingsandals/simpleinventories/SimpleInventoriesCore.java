@@ -1,6 +1,6 @@
 package org.screamingsandals.simpleinventories;
 
-import org.screamingsandals.lib.player.PlayerUtils;
+import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.utils.event.EventManager;
 import org.screamingsandals.simpleinventories.builder.InventorySetBuilder;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
@@ -33,7 +33,7 @@ public abstract class SimpleInventoriesCore {
         core = supplier.get();
 
         assert ItemFactory.isInitialized();
-        assert PlayerUtils.isInitialized();
+        assert PlayerMapper.isInitialized();
         assert core.logger != null;
     }
 
