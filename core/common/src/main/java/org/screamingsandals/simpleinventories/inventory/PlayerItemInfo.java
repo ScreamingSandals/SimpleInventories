@@ -34,8 +34,10 @@ public class PlayerItemInfo {
         if (stack.getDisplayName() != null) {
             stack.setDisplayName(original.getFormat().processPlaceholders(player, stack.getDisplayName(), this));
         }
-        if (stack.getLore() != null) {
-            stack.setLore(stack.getLore().stream().map(e -> original.getFormat().processPlaceholders(player, e, this)).collect(Collectors.toList()));
+        if (!stack.getLore().isEmpty()) {
+            var newLore = stack.getLore().stream().map(e -> original.getFormat().processPlaceholders(player, e, this)).collect(Collectors.toList());
+            stack.getLore().clear();
+            stack.getLore().addAll(newLore);
         }
 
         original.getEventManager().fireEvent(new ItemRenderEvent(this));
