@@ -1,4 +1,5 @@
 dependencies {
-    shade screaming('material-minestom', SCREAMING_LIB_VERSION)
+    api screaming('material-minestom', SCREAMING_LIB_VERSION)
+    api project(':core-common')
     compileOnly 'com.github.Minestom:Minestom:' + MINESTOM_VERSION
 }

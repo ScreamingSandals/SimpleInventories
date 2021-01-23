@@ -1,4 +1,5 @@
 dependencies {
-    shade screaming('material-sponge', SCREAMING_LIB_VERSION)
+    api screaming('material-sponge', SCREAMING_LIB_VERSION)
+    api project(':core-common')
     compileOnly 'org.spongepowered:spongeapi:' + SPONGE_VERSION
 }

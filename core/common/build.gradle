@@ -2,11 +2,11 @@ dependencies {
     compileOnly 'com.univocity:univocity-parsers:2.8.3'
     compileOnly 'org.codehaus.groovy:groovy:3.0.7'
 
-    shade 'org.spongepowered:configurate-gson:' + CONFIGURATE_VERSION
-    shade 'org.spongepowered:configurate-hocon:' + CONFIGURATE_VERSION
-    shade 'org.spongepowered:configurate-xml:' + CONFIGURATE_VERSION
-    shade 'org.spongepowered:configurate-yaml:' + CONFIGURATE_VERSION
+    api 'org.spongepowered:configurate-gson:' + CONFIGURATE_VERSION
+    api 'org.spongepowered:configurate-hocon:' + CONFIGURATE_VERSION
+    api 'org.spongepowered:configurate-xml:' + CONFIGURATE_VERSION
+    api 'org.spongepowered:configurate-yaml:' + CONFIGURATE_VERSION
 
-    shade screaming('material-common', SCREAMING_LIB_VERSION)
-    shade screaming('player-common', SCREAMING_LIB_VERSION)
+    api screaming('material-common', SCREAMING_LIB_VERSION)
+    api screaming('player-common', SCREAMING_LIB_VERSION)
 }

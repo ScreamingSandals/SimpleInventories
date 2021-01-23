@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories;
 
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.utils.annotations.AbstractMapping;
 import org.screamingsandals.lib.utils.event.EventManager;
 import org.screamingsandals.simpleinventories.builder.InventorySetBuilder;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
@@ -18,6 +19,10 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+@AbstractMapping(
+        pattern = "^(?<basePackage>.+)\\.(?<className>.+)$",
+        replaceRule = "{basePackage}.{platform}.{Platform}{className}"
+)
 public abstract class SimpleInventoriesCore {
 
     protected final EventManager eventManager = new EventManager(null);

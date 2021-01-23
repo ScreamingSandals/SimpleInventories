@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.screamingsandals.lib.bukkit.player.BukkitPlayerMapper;
 import org.screamingsandals.lib.utils.InitUtils;
+import org.screamingsandals.lib.utils.PlatformType;
+import org.screamingsandals.lib.utils.annotations.PlatformMapping;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitClickActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitCloseInventoryActionHandler;
@@ -33,6 +35,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
+@PlatformMapping(platform = PlatformType.BUKKIT, loadAfter = {
+        BukkitItemFactory.class,
+        BukkitPlayerMapper.class
+})
 public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
     private final Plugin plugin;
 
@@ -45,7 +51,7 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
         this.logger = plugin.getLogger();
 
         InitUtils.doIfNot(BukkitItemFactory::isInitialized, BukkitItemFactory::init);
-        InitUtils.doIfNot(BukkitPlayerMapper::isInitialized, BukkitPlayerMapper::init);
+        InitUtils.doIfNot(BukkitPlayerMapper::isInitialized, () -> BukkitPlayerMapper.init(plugin));
 
         Bukkit.getPluginManager().registerEvents(new BukkitClickActionHandler(), this.plugin);
         Bukkit.getPluginManager().registerEvents(new BukkitCloseInventoryActionHandler(), this.plugin);
