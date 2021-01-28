@@ -2,8 +2,8 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
 import org.jetbrains.annotations.Nullable;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.utils.event.EventManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,8 @@ public class GenericItemInfo implements Cloneable, Queueable {
 
     public GenericItemInfo(InventorySet format) {
         this.format = format;
-        this.eventManager = new EventManager(format.getEventManager());
+        this.eventManager = new EventManager();
+        this.eventManager.setCustomManager(eventManager);
     }
 
     public boolean hasId() {

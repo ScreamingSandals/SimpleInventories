@@ -1,48 +1,47 @@
 package org.screamingsandals.simpleinventories.plugin;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.UnaryOperator;
 
 import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.CommandMeta;
-import cloud.commandframework.paper.PaperCommandManager;
 import cloud.commandframework.permission.OrPermission;
 import cloud.commandframework.permission.Permission;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.screamingsandals.lib.bukkit.command.PaperScreamingCloudManager;
 import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.plugin.PluginContainer;
+import org.screamingsandals.lib.utils.annotations.Init;
+import org.screamingsandals.lib.utils.annotations.Plugin;
+import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+import org.screamingsandals.simpleinventories.VersionInfo;
 
-public class SimpleInventoriesPluginBukkit extends JavaPlugin {
+@Plugin(id = "SimpleInventories", authors = {"Misat11"}, version = VersionInfo.VERSION)
+@Init(services = {
+        SimpleInventoriesCore.class
+})
+public class SimpleInventoriesPluginBukkit extends PluginContainer {
     private Map<String, InventorySet> inventories;
-    private PaperCommandManager<CommandSender> manager;
+    private PaperScreamingCloudManager manager;
 
     @SneakyThrows
     @Override
-    public void onEnable() {
-        SimpleInventoriesBukkit.init(this);
-
+    public void enable() {
         this.inventories = new HashMap<>();
 
-        load();
+        loadSimpleInventories();
 
-        manager = new PaperCommandManager<>(this,
-                CommandExecutionCoordinator.simpleCoordinator(),
-                UnaryOperator.identity(),
-                UnaryOperator.identity());
+        // TODO: use Slib instead of platform call
+        manager = new PaperScreamingCloudManager(getPluginDescription().as(org.bukkit.plugin.Plugin.class));
 
         var builder = manager.commandBuilder("simpleinventories", "si");
 
@@ -63,7 +62,7 @@ public class SimpleInventoriesPluginBukkit extends JavaPlugin {
                         .literal("open")
                         .permission(OrPermission.of(List.of(Permission.of("simpleinventories.use"), Permission.of("simpleinventories.admin"))))
                         .argument(StringArgument.of("inventory"))
-                        .senderType(Player.class)
+                        .senderType(PlayerWrapper.class)
                         .handler(context -> {
                             String inventory = context.get("inventory");
                             var inv = inventories.get(inventory);
@@ -91,7 +90,7 @@ public class SimpleInventoriesPluginBukkit extends JavaPlugin {
                         .handler(context -> {
                             String playerName = context.get("player");
                             String inventoryName = context.get("inventory");
-                            var player = Bukkit.getPlayer(playerName);
+                            var player = PlayerMapper.getPlayer(playerName);
                             if (player == null) {
                                 context.getSender().sendMessage("§cPlayer " + playerName + " doesn't exist! or is offline");
                                 return;
@@ -112,40 +111,40 @@ public class SimpleInventoriesPluginBukkit extends JavaPlugin {
         );
 
 
-        Bukkit.getConsoleSender().sendMessage("§6=========§f=============  by ScreamingSandals <Misat11, Ceph>");
-        Bukkit.getConsoleSender()
-                .sendMessage("§6+ Simple §fInventories +  §6Version: " + getDescription().getVersion());
-        Bukkit.getConsoleSender()
-                .sendMessage("§6=========§f=============  " + (getDescription().getVersion().contains("SNAPSHOT") ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
+        PlayerMapper.getConsoleSender().sendMessage("§6=========§f=============  by ScreamingSandals <Misat11, Ceph>");
+        PlayerMapper.getConsoleSender()
+                .sendMessage("§6+ Simple §fInventories +  §6Version: " + getPluginDescription().getVersion());
+        PlayerMapper.getConsoleSender()
+                .sendMessage("§6=========§f=============  " + (getPluginDescription().getVersion().contains("SNAPSHOT") ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
 
         this.inventories.values().forEach(inv -> {
             try {
                 inv.getMainSubInventory().process();
             } catch (Exception e) {
-                getLogger().severe("Your configuration is bad!");
+                getLogger().error("Your configuration is bad!");
                 e.printStackTrace();
             }
         });
     }
 
     @Override
-    public void onDisable() {
-        Bukkit.getOnlinePlayers().forEach(player ->
-                SimpleInventoriesBukkit.getInventoryRenderer(PlayerMapper.wrapPlayer(player)).ifPresent(InventoryRenderer::close)
+    public void disable() {
+        PlayerMapper.getPlayers().forEach(player ->
+                SimpleInventoriesBukkit.getInventoryRenderer(player).ifPresent(InventoryRenderer::close)
         );
         inventories.clear();
     }
 
     public void reload() {
-        onDisable();
+        disable();
 
         this.inventories = new HashMap<>();
 
-        load();
+        loadSimpleInventories();
     }
 
-    private void load() {
-        var config = new File(getDataFolder(), "config.yml");
+    private void loadSimpleInventories() {
+        var config = new File(getPluginDescription().getDataFolder().toFile(), "config.yml");
         if (!config.exists()) {
             saveResource("config.yml", false);
             saveResource("sample.yml", false);
@@ -153,7 +152,7 @@ public class SimpleInventoriesPluginBukkit extends JavaPlugin {
         }
 
         var loader = YamlConfigurationLoader.builder()
-                .path(Path.of(getDataFolder().toString(), "config.yml"))
+                .path(getPluginDescription().getDataFolder().resolve("config.yml"))
                 .build();
 
         try {

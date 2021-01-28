@@ -2,9 +2,9 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.Data;
 import lombok.ToString;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.material.container.Openable;
 import org.screamingsandals.lib.utils.Wrapper;
-import org.screamingsandals.lib.utils.event.EventManager;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
