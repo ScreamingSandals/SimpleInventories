@@ -57,7 +57,7 @@ public class GenericItemInfo implements Cloneable, Queueable {
     public GenericItemInfo(InventorySet format) {
         this.format = format;
         this.eventManager = new EventManager();
-        this.eventManager.setCustomManager(eventManager);
+        this.eventManager.setCustomManager(format.getEventManager());
     }
 
     public boolean hasId() {
