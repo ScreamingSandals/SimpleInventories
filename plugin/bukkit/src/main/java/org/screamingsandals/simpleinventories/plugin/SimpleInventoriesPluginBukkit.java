@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import cloud.commandframework.arguments.standard.StringArgument;
+import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.permission.OrPermission;
 import cloud.commandframework.permission.Permission;
@@ -41,7 +42,9 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
         loadSimpleInventories();
 
         // TODO: use Slib instead of platform call
-        manager = new PaperScreamingCloudManager(getPluginDescription().as(org.bukkit.plugin.Plugin.class));
+        manager = new PaperScreamingCloudManager(
+                getPluginDescription().as(org.bukkit.plugin.Plugin.class),
+                CommandExecutionCoordinator.simpleCoordinator());
 
         var builder = manager.commandBuilder("simpleinventories", "si");
 

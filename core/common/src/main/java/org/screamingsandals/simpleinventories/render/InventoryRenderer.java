@@ -1,7 +1,6 @@
 package org.screamingsandals.simpleinventories.render;
 
 import lombok.*;
-import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.events.SubInventoryOpenEvent;
 import org.screamingsandals.simpleinventories.inventory.*;
 import org.screamingsandals.lib.material.Item;
@@ -13,12 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-@RequiredArgsConstructor
 public abstract class InventoryRenderer {
     protected final PlayerWrapper player;
-    @NonNull
     protected SubInventory subInventory;
-    @NonNull
     protected int page;
 
     protected final Map<Integer, PlayerItemInfo> itemInfoMap = new HashMap<>();
@@ -27,6 +23,12 @@ public abstract class InventoryRenderer {
     protected RepeatingTask animator;
     protected int nextAnimationPosition = 0;
     protected boolean mainEventCalled = false;
+
+    public InventoryRenderer(PlayerWrapper player, SubInventory subInventory, int page) {
+        this.player = player;
+        this.subInventory = subInventory;
+        this.page = page;
+    }
 
     public boolean nextPage() {
         if (subInventory.getHighestPage() > page) {
