@@ -6,6 +6,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.screamingsandals.lib.bukkit.player.BukkitPlayerMapper;
+import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.utils.Controllable;
 import org.screamingsandals.lib.utils.InitUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Service(dependsOn = {
+        EventManager.class,
         BukkitItemFactory.class,
         BukkitPlayerMapper.class
 })
@@ -50,8 +52,9 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
 
+        InitUtils.doIfNot(EventManager::isDefaultInitialized, () -> EventManager.init(controllable.child()));
         InitUtils.doIfNot(BukkitItemFactory::isInitialized, BukkitItemFactory::init);
-        InitUtils.doIfNot(BukkitPlayerMapper::isInitialized, () -> BukkitPlayerMapper.init(plugin, controllable.child()));
+        InitUtils.doIfNot(BukkitItemFactory::isInitialized, BukkitItemFactory::init);
 
         controllable.enable(() -> {
             Bukkit.getPluginManager().registerEvents(new BukkitClickActionHandler(), this.plugin);
