@@ -47,9 +47,12 @@ public class SubInventory implements Openable {
                 && link.substring(1).equals(itemOwner.getId());
     }
 
+    @SuppressWarnings("ConstantConditions")
     public LocalOptions getLocalOptions() {
-        //noinspection ConstantConditions
-        localOptions.setParent(main ? null : itemOwner.getParent().getLocalOptions());
+        // while loading parent can be null
+        if (itemOwner.getParent() != null) {
+            localOptions.setParent(main ? null : itemOwner.getParent().getLocalOptions());
+        }
         return localOptions;
     }
 
