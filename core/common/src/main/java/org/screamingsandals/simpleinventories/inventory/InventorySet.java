@@ -3,9 +3,9 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.Data;
 import lombok.ToString;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.material.container.Openable;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
@@ -57,8 +57,7 @@ public class InventorySet implements Openable {
     }
 
     public Component processPlaceholders(PlayerWrapper player, Component text, PlayerItemInfo info) {
-        return LegacyComponentSerializer.legacySection()
-                .deserialize(processPlaceholders(player, LegacyComponentSerializer.legacySection().serialize(text), info));
+        return AdventureHelper.toComponent(processPlaceholders(player, AdventureHelper.toLegacy(text), info));
     }
 
     public String processPlaceholders(PlayerWrapper player, String text, PlayerItemInfo info) {
