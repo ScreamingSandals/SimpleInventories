@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.holder.StandardInventoryHolder;
 import org.screamingsandals.simpleinventories.bukkit.tasks.BukkitRepeatingTask;
@@ -38,9 +39,13 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
         }
         Inventory inventory;
         if (SIZEABLE_CONTAINERS.contains(options.getInventoryType().toUpperCase())) {
-            inventory = Bukkit.createInventory(inventoryHolder, options.getRenderActualRows() * options.getItemsOnRow(), ChatColor.translateAlternateColorCodes('&', getTitle()));
+            inventory = Bukkit.createInventory(
+                    inventoryHolder, options.getRenderActualRows() * options.getItemsOnRow(),
+                    AdventureHelper.toLegacy(getTitle()));
         } else {
-            inventory = Bukkit.createInventory(inventoryHolder, InventoryType.valueOf(options.getInventoryType().toUpperCase()), ChatColor.translateAlternateColorCodes('&', getTitle()));
+            inventory = Bukkit.createInventory(
+                    inventoryHolder, InventoryType.valueOf(options.getInventoryType().toUpperCase()),
+                    AdventureHelper.toLegacy(getTitle()));
         }
         inventoryHolder.setInventoryRenderer(this);
         inventoryHolder.setInventory(inventory);

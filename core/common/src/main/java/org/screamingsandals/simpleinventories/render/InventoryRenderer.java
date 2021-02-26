@@ -1,6 +1,8 @@
 package org.screamingsandals.simpleinventories.render;
 
 import lombok.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.screamingsandals.simpleinventories.events.SubInventoryOpenEvent;
 import org.screamingsandals.simpleinventories.inventory.*;
 import org.screamingsandals.lib.material.Item;
@@ -156,11 +158,13 @@ public abstract class InventoryRenderer {
         animations.clear();
     }
 
-    protected String getTitle() {
+    protected Component getTitle() {
         var options = subInventory.getLocalOptions();
         var prefix = options.getPrefix();
         if (options.isShowPageNumber()) {
-            prefix += "&r - " + (page + 1);
+            prefix = prefix
+                    .append(Component.text(" - "))
+                    .append(Component.text(page + 1));
         }
         return prefix;
     }
