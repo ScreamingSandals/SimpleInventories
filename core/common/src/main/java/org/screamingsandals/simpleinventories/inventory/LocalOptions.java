@@ -4,12 +4,15 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Data
@@ -26,7 +29,7 @@ public class LocalOptions implements Cloneable {
 
     public static final boolean SHOW_PAGE_NUMBER = true;
     public static final String INVENTORY_TYPE = "CHEST";
-    public static final String PREFIX = "Inventory";
+    public static final Component PREFIX = Component.text("Inventory");
 
     public static final Item BACK_ITEM = ItemFactory.build("BARRIER").orElse(ItemFactory.getAir());
     public static final Item PAGE_BACK_ITEM = ItemFactory.build("ARROW").orElse(ItemFactory.getAir());
@@ -55,7 +58,7 @@ public class LocalOptions implements Cloneable {
     @Nullable
     private Boolean showPageNumber;
     @Nullable
-    private String prefix;
+    private Component prefix;
     @Nullable
     private String inventoryType;
 
@@ -97,7 +100,7 @@ public class LocalOptions implements Cloneable {
         return Optional.ofNullable(showPageNumber).orElseGet(parent != null ? parent::isShowPageNumber : () -> SHOW_PAGE_NUMBER);
     }
 
-    public String getPrefix() {
+    public Component getPrefix() {
         return Optional.ofNullable(prefix).orElseGet(parent != null ? parent::getPrefix : () -> PREFIX);
     }
 
@@ -234,7 +237,15 @@ public class LocalOptions implements Cloneable {
 
         var prefix = configurationNode.node("prefix");
         if (!prefix.empty()) {
-            this.prefix = prefix.getString();
+            try {
+                this.prefix = prefix.get(Component.class);
+            } catch (SerializationException ignored) {
+                try {
+                    this.prefix = AdventureHelper.toComponent(prefix.getString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         var showPageNumber = configurationNode.node("showPageNumber");

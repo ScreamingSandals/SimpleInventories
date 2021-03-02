@@ -2,6 +2,8 @@ package org.screamingsandals.simpleinventories.builder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
+import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.screamingsandals.lib.material.builder.ItemBuilder;
 import org.screamingsandals.lib.material.builder.ItemFactory;
@@ -121,6 +123,11 @@ public class LocalOptionsBuilder {
     }
 
     public LocalOptionsBuilder prefix(String prefix) {
+        localOptions.setPrefix(AdventureHelper.toComponent(prefix));
+        return this;
+    }
+
+    public LocalOptionsBuilder prefix(Component prefix) {
         localOptions.setPrefix(prefix);
         return this;
     }

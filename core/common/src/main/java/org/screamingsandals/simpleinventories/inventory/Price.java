@@ -1,8 +1,12 @@
 package org.screamingsandals.simpleinventories.inventory;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor(staticName = "of")
 public class Price implements Cloneable {
     private int amount;
     private String currency;
