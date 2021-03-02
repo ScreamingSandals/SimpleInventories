@@ -15,7 +15,7 @@ import org.screamingsandals.simpleinventories.utils.TimesFlags;
 import java.util.*;
 
 @Data
-public class SubInventory implements Openable {
+public class SubInventory implements Openable, SubInventoryLike<SubInventory> {
     private final boolean main;
     @Nullable
     @ToString.Exclude
@@ -67,13 +67,13 @@ public class SubInventory implements Openable {
     }
 
     public SubInventory process() {
-        inventorySet.getInsertQueue()
+        List.copyOf(inventorySet.getInsertQueue())
                 .stream()
                 .filter(Objects::nonNull)
                 .filter(i -> acceptsLink(i.getLink()))
                 .forEach(insert -> {
                     inventorySet.getInsertQueue().remove(insert);
-                    insert.getSubInventory().getWaitingQueue().stream().map(e -> {
+                    insert.getTemporaryInventory().getQueue().stream().map(e -> {
                         if (e instanceof GenericItemInfo) {
                             return ((GenericItemInfo) e).clone();
                         }
@@ -97,7 +97,7 @@ public class SubInventory implements Openable {
             var linkedInventory = inventorySet.resolveCategoryLink(insert.getLink());
             linkedInventory.ifPresentOrElse(subInventory -> {
                 var clone = new LinkedList<Queueable>();
-                insert.getSubInventory().getWaitingQueue().stream().map(e -> {
+                insert.getTemporaryInventory().getQueue().stream().map(e -> {
                     if (e instanceof GenericItemInfo) {
                         return ((GenericItemInfo) e).clone();
                     }
@@ -292,9 +292,14 @@ public class SubInventory implements Openable {
         return this;
     }
 
-    public SubInventory putIntoQueue(GenericItemInfo... items) {
+    public SubInventory putIntoQueue(Queueable... items) {
         waitingQueue.addAll(Arrays.asList(items));
         return this;
+    }
+
+    @Override
+    public Queue<Queueable> getQueue() {
+        return waitingQueue;
     }
 
     public void forceReload() {

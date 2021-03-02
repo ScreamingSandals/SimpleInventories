@@ -32,7 +32,7 @@ public class InventorySet implements Openable {
     private final Map<String, String> variableToPropertyMap = new HashMap<>();
     private final SubInventory mainSubInventory = new SubInventory(true, null, this);
     @ToString.Exclude
-    private final List<Insert> insertQueue = new ArrayList<>();
+    private final Deque<Insert> insertQueue = new LinkedList<>();
 
     {
         var thisPlaceholder = new ThisPlaceholderParser();

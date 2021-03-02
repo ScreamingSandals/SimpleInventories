@@ -453,22 +453,22 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     @Override
-    public ItemInfoBuilder insert(String link, Consumer<CategoryBuilder> consumer) {
+    public ItemInfoBuilder insert(String link, Consumer<QueueBuilder> consumer) {
         return (ItemInfoBuilder) super.insert(link, consumer);
     }
 
     @Override
-    public ItemInfoBuilder insert(String link, SubInventory prebuiltInventory) {
+    public ItemInfoBuilder insert(String link, SubInventoryLike<?> prebuiltInventory) {
         return (ItemInfoBuilder) super.insert(link, prebuiltInventory);
     }
 
     @Override
-    public ItemInfoBuilder insert(List<String> links, Consumer<CategoryBuilder> consumer) {
+    public ItemInfoBuilder insert(List<String> links, Consumer<QueueBuilder> consumer) {
         return (ItemInfoBuilder) super.insert(links, consumer);
     }
 
     @Override
-    public ItemInfoBuilder insert(List<String> links, SubInventory prebuiltInventory) {
+    public ItemInfoBuilder insert(List<String> links, SubInventoryLike<?> prebuiltInventory) {
         return (ItemInfoBuilder) super.insert(links, prebuiltInventory);
     }
 }

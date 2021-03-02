@@ -6,6 +6,7 @@ import org.screamingsandals.simpleinventories.events.*;
 import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.simpleinventories.inventory.SubInventoryLike;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 
 import java.util.List;
@@ -174,22 +175,22 @@ public class InventorySetBuilder extends CategoryBuilder {
     }
 
     @Override
-    public InventorySetBuilder insert(String link, Consumer<CategoryBuilder> consumer) {
+    public InventorySetBuilder insert(String link, Consumer<QueueBuilder> consumer) {
         return (InventorySetBuilder) super.insert(link, consumer);
     }
 
     @Override
-    public InventorySetBuilder insert(String link, SubInventory prebuiltInventory) {
+    public InventorySetBuilder insert(String link, SubInventoryLike<?> prebuiltInventory) {
         return (InventorySetBuilder) super.insert(link, prebuiltInventory);
     }
 
     @Override
-    public InventorySetBuilder insert(List<String> links, Consumer<CategoryBuilder> consumer) {
+    public InventorySetBuilder insert(List<String> links, Consumer<QueueBuilder> consumer) {
         return (InventorySetBuilder) super.insert(links, consumer);
     }
 
     @Override
-    public InventorySetBuilder insert(List<String> links, SubInventory prebuiltInventory) {
+    public InventorySetBuilder insert(List<String> links, SubInventoryLike<?> prebuiltInventory) {
         return (InventorySetBuilder) super.insert(links, prebuiltInventory);
     }
 

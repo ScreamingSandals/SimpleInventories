@@ -7,5 +7,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Insert implements Queueable {
     private final String link;
-    private final SubInventory subInventory;
+    private final SubInventoryLike<?> temporaryInventory;
 }
