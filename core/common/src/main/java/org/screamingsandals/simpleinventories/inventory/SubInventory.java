@@ -70,15 +70,16 @@ public class SubInventory implements Openable {
         inventorySet.getInsertQueue()
                 .stream()
                 .filter(Objects::nonNull)
-                .filter(i -> acceptsLink(i.getLink())).forEach(insert -> {
-            inventorySet.getInsertQueue().remove(insert);
-            insert.getSubInventory().getWaitingQueue().stream().map(e -> {
-                if (e instanceof GenericItemInfo) {
-                    return ((GenericItemInfo) e).clone();
-                }
-                return e;
-            }).forEach(this::process);
-        });
+                .filter(i -> acceptsLink(i.getLink()))
+                .forEach(insert -> {
+                    inventorySet.getInsertQueue().remove(insert);
+                    insert.getSubInventory().getWaitingQueue().stream().map(e -> {
+                        if (e instanceof GenericItemInfo) {
+                            return ((GenericItemInfo) e).clone();
+                        }
+                        return e;
+                    }).forEach(this::process);
+                });
         return process(waitingQueue);
     }
 
@@ -225,7 +226,7 @@ public class SubInventory implements Openable {
 
     public SubInventory dropContents() {
         contents.stream().filter(GenericItemInfo::hasId).forEach(genericItemInfo ->
-            inventorySet.getIds().remove(genericItemInfo.getId())
+                inventorySet.getIds().remove(genericItemInfo.getId())
         );
         contents.clear();
         forceReload();
@@ -291,7 +292,7 @@ public class SubInventory implements Openable {
         return this;
     }
 
-    public SubInventory putIntoQueue(GenericItemInfo...items){
+    public SubInventory putIntoQueue(GenericItemInfo... items) {
         waitingQueue.addAll(Arrays.asList(items));
         return this;
     }

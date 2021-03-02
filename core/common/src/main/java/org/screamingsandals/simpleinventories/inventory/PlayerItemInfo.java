@@ -2,6 +2,7 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.Data;
 import lombok.Getter;
+import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
 import org.screamingsandals.lib.material.Item;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -26,7 +27,7 @@ public class PlayerItemInfo {
     public PlayerItemInfo(PlayerWrapper player, GenericItemInfo original) {
         this.player = player;
         this.original = original;
-        this.stack = original.getItem().clone();
+        this.stack = original.getItem() != null ? original.getItem().clone() : ItemFactory.getAir();
         this.visible = original.isVisible();
         this.disabled = original.isDisabled();
         original.getAnimation().stream().map(Item::clone).forEach(animation::add);
