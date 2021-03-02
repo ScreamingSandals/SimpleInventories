@@ -67,7 +67,10 @@ public class SubInventory implements Openable {
     }
 
     public SubInventory process() {
-        inventorySet.getInsertQueue().stream().filter(i -> acceptsLink(i.getLink())).forEach(insert -> {
+        inventorySet.getInsertQueue()
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(i -> acceptsLink(i.getLink())).forEach(insert -> {
             inventorySet.getInsertQueue().remove(insert);
             insert.getSubInventory().getWaitingQueue().stream().map(e -> {
                 if (e instanceof GenericItemInfo) {
