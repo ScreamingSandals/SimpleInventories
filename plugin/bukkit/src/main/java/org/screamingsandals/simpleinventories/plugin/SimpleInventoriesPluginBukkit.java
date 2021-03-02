@@ -5,20 +5,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.permission.OrPermission;
 import cloud.commandframework.permission.Permission;
 import lombok.SneakyThrows;
-import org.screamingsandals.lib.bukkit.command.PaperScreamingCloudManager;
+import org.screamingsandals.lib.command.CloudConstructor;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
+import org.screamingsandals.lib.sender.CommandSenderWrapper;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
-import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
@@ -28,11 +29,12 @@ import org.screamingsandals.simpleinventories.VersionInfo;
 
 @Plugin(id = "SimpleInventories", authors = {"Misat11"}, version = VersionInfo.VERSION)
 @Init(services = {
-        SimpleInventoriesCore.class
+        SimpleInventoriesCore.class,
+        CloudConstructor.class
 })
 public class SimpleInventoriesPluginBukkit extends PluginContainer {
     private Map<String, InventorySet> inventories;
-    private PaperScreamingCloudManager manager;
+    private CommandManager<CommandSenderWrapper> manager;
 
     @SneakyThrows
     @Override
@@ -41,10 +43,7 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
 
         loadSimpleInventories();
 
-        // TODO: use Slib instead of platform call
-        manager = new PaperScreamingCloudManager(
-                getPluginDescription().as(org.bukkit.plugin.Plugin.class),
-                CommandExecutionCoordinator.simpleCoordinator());
+        manager = CloudConstructor.construct(CommandExecutionCoordinator.simpleCoordinator());
 
         var builder = manager.commandBuilder("simpleinventories", "si");
 
@@ -73,7 +72,7 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
                                 context.getSender().sendMessage("§cInventory " + inventory + " doesn't exist!");
                                 return;
                             }
-                            PlayerMapper.wrapPlayer(context.getSender()).openInventory(inv);
+                            context.getSender().as(PlayerWrapper.class).openInventory(inv);
                         })
         );
 
@@ -94,7 +93,7 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
                             String playerName = context.get("player");
                             String inventoryName = context.get("inventory");
                             var player = PlayerMapper.getPlayer(playerName);
-                            if (player == null) {
+                            if (player.isEmpty()) {
                                 context.getSender().sendMessage("§cPlayer " + playerName + " doesn't exist! or is offline");
                                 return;
                             }
@@ -104,7 +103,7 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
                                 context.getSender().sendMessage("§cInventory " + inventoryName + " doesn't exist!");
                                 return;
                             }
-                            PlayerMapper.wrapPlayer(player).openInventory(inv);
+                            player.get().openInventory(inv);
                         })
         );
 
@@ -133,7 +132,7 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
     @Override
     public void disable() {
         PlayerMapper.getPlayers().forEach(player ->
-                SimpleInventoriesBukkit.getInventoryRenderer(player).ifPresent(InventoryRenderer::close)
+                SimpleInventoriesCore.getInventoryRenderer(player).ifPresent(InventoryRenderer::close)
         );
         inventories.clear();
     }
@@ -163,7 +162,7 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
 
             root.node("inventories").childrenMap().forEach((key, configuration) -> {
                 //noinspection ConstantConditions
-                inventories.put(key.toString(), SimpleInventoriesBukkit.builder()
+                inventories.put(key.toString(), SimpleInventoriesCore.builder()
                         .genericShop(configuration.node("options", "genericShop").getBoolean())
                         .genericShopPriceTypeRequired(configuration.node("options", "genericShopPriceTypeRequired").getBoolean(true))
                         .animationsEnabled(configuration.node("options", "animationsEnabled").getBoolean())

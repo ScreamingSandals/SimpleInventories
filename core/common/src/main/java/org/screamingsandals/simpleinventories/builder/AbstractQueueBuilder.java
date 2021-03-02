@@ -80,9 +80,7 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
     }
 
     public T hidden(String id, Consumer<CategoryBuilder> consumer) {
-        var itemInfo = new GenericItemInfo(getFormat());
-        itemInfo.setWritten(() -> false);
-        itemInfo.setId(id);
+        var itemInfo = new HiddenCategory(getFormat(), id);
         itemInfo.setChildInventory(new SubInventory(false, itemInfo, getFormat()));
         putObjectToQueue(itemInfo);
         ConsumerExecutor.execute(consumer, CategoryBuilder.of(itemInfo.getChildInventory()));
@@ -90,9 +88,8 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
     }
 
     public T hidden(String id) {
-        var itemInfo = new GenericItemInfo(getFormat());
-        itemInfo.setWritten(() -> false);
-        itemInfo.setId(id);
+        var itemInfo = new HiddenCategory(getFormat(), id);
+        itemInfo.setChildInventory(new SubInventory(false, itemInfo, getFormat()));
         putObjectToQueue(itemInfo);
         return self();
     }

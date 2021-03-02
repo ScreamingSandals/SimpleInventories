@@ -51,9 +51,17 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
         inventoryHolder.setInventory(inventory);
         inventoryHolder.setSubInventory(subInventory);
 
+        var emptyItem = options.getEmptySlotItem();
+        for (int i = 0; i < inventory.getSize(); i++) {
+            inventory.setItem(i, emptyItem.as(ItemStack.class));
+        }
+
         itemStacksInInventory.forEach((position, item) -> {
             if (position < inventory.getSize()) {
-                inventory.setItem(position, item.as(ItemStack.class));
+                var asStack = item.as(ItemStack.class);
+                if (!asStack.getType().isAir()) {
+                    inventory.setItem(position, asStack);
+                }
             }
         });
 

@@ -4,6 +4,7 @@ import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 import org.screamingsandals.simpleinventories.events.PostClickEvent;
 import org.screamingsandals.simpleinventories.events.PreClickEvent;
 import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.simpleinventories.utils.ClickType;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -35,7 +36,7 @@ public abstract class ClickActionHandler {
             if (slot == options.getRenderHeaderStart()) {
                 if (!subInventory.isMain() && parentItem != null) {
                     var parent = parentItem.getParent();
-                    var pageOfParent = parentItem.isWritten() ? parentItem.getPosition() / parent.getLocalOptions().getItemsOnPage() : 0;
+                    var pageOfParent = parentItem instanceof GenericItemInfo ? ((GenericItemInfo) parentItem).getPosition() / parent.getLocalOptions().getItemsOnPage() : 0;
                     inventoryRenderer.jump(parent, pageOfParent);
                 }
             } else if (slot == options.getRenderFooterStart()) {

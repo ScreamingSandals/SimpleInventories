@@ -4,10 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.event.CancellableAbstractEvent;
-import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
-import org.screamingsandals.simpleinventories.inventory.InventorySet;
-import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.simpleinventories.inventory.*;
 import org.screamingsandals.simpleinventories.utils.ClickType;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
@@ -28,7 +25,7 @@ public class PreClickEvent extends CancellableAbstractEvent {
         return item.getFormat();
     }
 
-    public GenericItemInfo getParent() {
+    public IdentifiableEntry getParent() {
         return subInventory.getItemOwner();
     }
 }

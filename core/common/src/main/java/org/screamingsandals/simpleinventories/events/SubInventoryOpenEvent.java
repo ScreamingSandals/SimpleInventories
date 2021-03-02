@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.event.CancellableAbstractEvent;
-import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
+import org.screamingsandals.simpleinventories.inventory.IdentifiableEntry;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
@@ -21,7 +21,7 @@ public class SubInventoryOpenEvent extends CancellableAbstractEvent {
         return subInventory.getInventorySet();
     }
 
-    public GenericItemInfo getParent() {
+    public IdentifiableEntry getParent() {
         return subInventory.getItemOwner();
     }
 }

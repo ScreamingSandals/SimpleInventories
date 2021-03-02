@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Data
-public class GenericItemInfo implements Cloneable, Queueable {
+public class GenericItemInfo implements Cloneable, IdentifiableEntry {
     @ToString.Exclude
     @NotNull
     private InventorySet format;
@@ -155,6 +155,7 @@ public class GenericItemInfo implements Cloneable, Queueable {
         info.requestedClone = requestedClone != null ? requestedClone.clone() : null;
         info.requestedTimes = requestedTimes != null ? requestedTimes.clone() : null;
         info.defaultCurrency = defaultCurrency;
+        info.locate = locate;
         if (hasChildInventory()) {
             info.childInventory = new SubInventory(false, info, format);
             childInventory.getContents().stream().map(GenericItemInfo::clone).forEach(info.childInventory.getWaitingQueue()::add);

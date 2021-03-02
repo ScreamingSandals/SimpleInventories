@@ -35,6 +35,7 @@ public class LocalOptions implements Cloneable {
     public static final Item PAGE_BACK_ITEM = ItemFactory.build("ARROW").orElse(ItemFactory.getAir());
     public static final Item PAGE_FORWARD_ITEM = ItemFactory.build("ARROW").orElse(ItemFactory.getAir());
     public static final Item COSMETIC_ITEM = ItemFactory.getAir();
+    public static final Item EMPTY_SLOT_ITEM = ItemFactory.getAir();
 
     /*
         CURRENT VALUES
@@ -54,6 +55,8 @@ public class LocalOptions implements Cloneable {
     private Item pageForwardItem;
     @Nullable
     private Item cosmeticItem;
+    @Nullable
+    private Item emptySlotItem;
 
     @Nullable
     private Boolean showPageNumber;
@@ -94,6 +97,10 @@ public class LocalOptions implements Cloneable {
 
     public Item getCosmeticItem() {
         return Optional.ofNullable(cosmeticItem).orElseGet(parent != null ? parent::getCosmeticItem : COSMETIC_ITEM::clone);
+    }
+
+    public Item getEmptySlotItem() {
+        return Optional.ofNullable(emptySlotItem).orElseGet(parent != null ? parent::getEmptySlotItem : EMPTY_SLOT_ITEM::clone);
     }
 
     public boolean isShowPageNumber() {

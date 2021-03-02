@@ -42,6 +42,11 @@ public class LocalOptionsBuilder {
         return this;
     }
 
+    public LocalOptionsBuilder emptySlotItem(Consumer<ItemBuilder> consumer) {
+        localOptions.setEmptySlotItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
+        return this;
+    }
+
     public LocalOptionsBuilder backItem(Object stack) {
         localOptions.setBackItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
         return this;
@@ -62,6 +67,11 @@ public class LocalOptionsBuilder {
         return this;
     }
 
+    public LocalOptionsBuilder emptySlotItem(Object stack) {
+        localOptions.setEmptySlotItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
+        return this;
+    }
+
     public LocalOptionsBuilder backItem(Object stack, Consumer<ItemBuilder> consumer) {
         localOptions.setBackItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
         return this;
@@ -79,6 +89,11 @@ public class LocalOptionsBuilder {
 
     public LocalOptionsBuilder cosmeticItem(Object stack, Consumer<ItemBuilder> consumer) {
         localOptions.setCosmeticItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
+        return this;
+    }
+
+    public LocalOptionsBuilder emptySlotItem(Object stack, Consumer<ItemBuilder> consumer) {
+        localOptions.setEmptySlotItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
         return this;
     }
 

@@ -19,7 +19,7 @@ public class SubInventory implements Openable, SubInventoryLike<SubInventory> {
     private final boolean main;
     @Nullable
     @ToString.Exclude
-    private final GenericItemInfo itemOwner;
+    private final IdentifiableEntry itemOwner;
     @ToString.Exclude
     @NotNull
     @NonNull // include in required args constructor
@@ -107,69 +107,81 @@ public class SubInventory implements Openable, SubInventoryLike<SubInventory> {
             }, () -> inventorySet.getInsertQueue().add(insert));
         } else if (object instanceof Include) {
             ((Include) object).apply(this);
-        } else if (object instanceof GenericItemInfo) {
-            var item = (GenericItemInfo) object;
-            item.setParent(this);
-            if (item.getRequestedClone() != null) {
-                var clone = item.getRequestedClone();
-                if (clone.getCloneLink().equalsIgnoreCase("cosmetic")) {
-                    if (clone.getCloneMethod().isOverride() || item.getItem() == null || item.getItem().getMaterial().equals(ItemFactory.getAir().getMaterial())) {
-                        item.setItem(getLocalOptions().getCosmeticItem());
-                    }
-                } else {
-                    GenericItemInfo originalItem;
-                    if (clone.getCloneLink().equalsIgnoreCase("previous")) {
-                        originalItem = lastItem;
+        } else if (object instanceof IdentifiableEntry) {
+            if (object instanceof GenericItemInfo) { // Item
+                var item = (GenericItemInfo) object;
+                item.setParent(this);
+                if (item.getRequestedClone() != null) {
+                    var clone = item.getRequestedClone();
+                    if (clone.getCloneLink().equalsIgnoreCase("cosmetic")) {
+                        if (clone.getCloneMethod().isOverride() || item.getItem() == null || item.getItem().getMaterial().equals(ItemFactory.getAir().getMaterial())) {
+                            item.setItem(getLocalOptions().getCosmeticItem());
+                        }
                     } else {
-                        originalItem = inventorySet.resolveItemLink(clone.getCloneLink()).orElse(null);
+                        GenericItemInfo originalItem;
+                        if (clone.getCloneLink().equalsIgnoreCase("previous")) {
+                            originalItem = lastItem;
+                        } else {
+                            originalItem = inventorySet.resolveItemLink(clone.getCloneLink()).orElse(null);
+                        }
+                        clone.cloneInto(originalItem, item);
                     }
-                    clone.cloneInto(originalItem, item);
                 }
-            }
 
-            if (item.hasId()) {
-                inventorySet.getIds().put(item.getId(), item);
-            }
-
-            if (item.isWritten()) {
-                var newPosition = cursorPosition;
-                if (item.getRequestedPosition() != null) {
-                    newPosition = item.getRequestedPosition().calculateThatPosition(newPosition, getLocalOptions().getItemsOnRow(), getLocalOptions().getRows());
+                if (item.hasId()) {
+                    inventorySet.getIds().put(item.getId(), item);
                 }
-                item.setPosition(newPosition);
-                if (item.getRequestedPosition() != null) {
-                    newPosition = item.getRequestedPosition().calculateNextPosition(newPosition, getLocalOptions().getItemsOnRow(), getLocalOptions().getRows());
-                } else {
-                    newPosition++;
-                }
-                cursorPosition = newPosition;
-                // drop overridden items
-                contents.stream().filter(genericItemInfo -> genericItemInfo.getPosition() == item.getPosition()).findFirst().ifPresent(genericItemInfo -> {
-                    contents.remove(genericItemInfo);
-                    if (genericItemInfo.hasId()) {
-                        inventorySet.getIds().remove(genericItemInfo.getId());
-                    }
-                });
-            }
 
-            contents.add(item);
-            lastItem = item;
-            if (item.hasChildInventory()) {
-                item.getChildInventory().process();
-            }
-            if (item.getRequestedTimes() != null) {
-                int times = item.getRequestedTimes().getRepeat();
-                if (times > 1) {
-                    var clone = item.clone();
-                    //noinspection ConstantConditions
-                    clone.getRequestedTimes().setRepeat(times - 1);
-                    if (item.getRequestedTimes().getFlags().contains(TimesFlags.NO_ID)) {
-                        clone.setId(null);
+                if (item.isWritten()) {
+                    var newPosition = cursorPosition;
+                    if (item.getRequestedPosition() != null) {
+                        newPosition = item.getRequestedPosition().calculateThatPosition(newPosition, getLocalOptions().getItemsOnRow(), getLocalOptions().getRows());
                     }
-                    if (item.getRequestedTimes().getFlags().contains(TimesFlags.CANCEL_POSITIONING)) {
-                        clone.setRequestedPosition(new Position());
+                    item.setPosition(newPosition);
+                    if (item.getRequestedPosition() != null) {
+                        newPosition = item.getRequestedPosition().calculateNextPosition(newPosition, getLocalOptions().getItemsOnRow(), getLocalOptions().getRows());
+                    } else {
+                        newPosition++;
                     }
-                    process(clone);
+                    cursorPosition = newPosition;
+                    // drop overridden items
+                    contents.stream().filter(genericItemInfo -> genericItemInfo.getPosition() == item.getPosition()).findFirst().ifPresent(genericItemInfo -> {
+                        contents.remove(genericItemInfo);
+                        if (genericItemInfo.hasId()) {
+                            inventorySet.getIds().remove(genericItemInfo.getId());
+                        }
+                    });
+                }
+
+                contents.add(item);
+                lastItem = item;
+                if (item.hasChildInventory()) {
+                    item.getChildInventory().process();
+                }
+                if (item.getRequestedTimes() != null) {
+                    int times = item.getRequestedTimes().getRepeat();
+                    if (times > 1) {
+                        var clone = item.clone();
+                        //noinspection ConstantConditions
+                        clone.getRequestedTimes().setRepeat(times - 1);
+                        if (item.getRequestedTimes().getFlags().contains(TimesFlags.NO_ID)) {
+                            clone.setId(null);
+                        }
+                        if (item.getRequestedTimes().getFlags().contains(TimesFlags.CANCEL_POSITIONING)) {
+                            clone.setRequestedPosition(new Position());
+                        }
+                        process(clone);
+                    }
+                }
+            } else { // Hidden category
+                var category = (IdentifiableEntry) object;
+                if (category.getId() == null) {
+                    throw new RuntimeException("Hidden category must have an ID!");
+                }
+                category.setParent(this);
+                inventorySet.getIds().put(category.getId(), category);
+                if (category.hasChildInventory()) {
+                    category.getChildInventory().process();
                 }
             }
         } else {
