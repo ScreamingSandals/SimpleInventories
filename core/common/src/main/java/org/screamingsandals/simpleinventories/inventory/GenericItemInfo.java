@@ -1,12 +1,14 @@
 package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.material.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -14,7 +16,8 @@ import java.util.stream.Stream;
 @Data
 public class GenericItemInfo implements Cloneable, Queueable {
     @ToString.Exclude
-    private final InventorySet format;
+    @NotNull
+    private InventorySet format;
     @ToString.Exclude
     private SubInventory parent;
     private int position;
@@ -54,10 +57,17 @@ public class GenericItemInfo implements Cloneable, Queueable {
     @Nullable
     private String defaultCurrency;
 
-    public GenericItemInfo(InventorySet format) {
+    public GenericItemInfo(@NotNull InventorySet format) {
         this.format = format;
         this.eventManager = new EventManager();
         this.eventManager.setCustomManager(format.getEventManager());
+    }
+
+    @Deprecated // unsafe
+    public void setFormat(@NotNull InventorySet format) {
+        this.format = format;
+        this.eventManager.setCustomManager(format.getEventManager());
+        this.properties.forEach(property -> property.setInventorySet(format));
     }
 
     public boolean hasId() {
@@ -93,8 +103,10 @@ public class GenericItemInfo implements Cloneable, Queueable {
         return visible != null ? visible.get() : true;
     }
 
-    public Stream<Property> getPropertiesByName(String name) {
-        return properties.stream().filter(property -> property.getPropertyName().equalsIgnoreCase(name));
+    public Stream<Property> getPropertiesByName(@NotNull String name) {
+        return properties.stream()
+                .filter(Objects::nonNull)
+                .filter(property -> name.equalsIgnoreCase(property.getPropertyName()));
     }
 
     public Optional<Property> getFirstPropertyByName(String name) {

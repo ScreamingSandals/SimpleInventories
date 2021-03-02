@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.material.container.Openable;
 import org.screamingsandals.lib.utils.Wrapper;
@@ -20,7 +21,10 @@ public class SubInventory implements Openable {
     @ToString.Exclude
     private final GenericItemInfo itemOwner;
     @ToString.Exclude
-    private final InventorySet inventorySet;
+    @NotNull
+    @NonNull // include in required args constructor
+    @Setter(onMethod_ = @Deprecated) // unsafe
+    private InventorySet inventorySet;
     private final LocalOptions localOptions = new LocalOptions();
 
     @Setter(AccessLevel.NONE)

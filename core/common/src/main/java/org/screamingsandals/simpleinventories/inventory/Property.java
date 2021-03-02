@@ -1,19 +1,22 @@
 package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
 
 @Data
 @AllArgsConstructor
 public class Property implements Cloneable {
-    private final InventorySet inventorySet;
-    @Setter(onMethod_ = @Deprecated)
+    @NotNull
+    @Setter(onMethod_ = @Deprecated) // unsafe
+    private InventorySet inventorySet;
+    @Setter(onMethod_ = @Deprecated) // unsafe
     private String propertyName;
-    @Setter(onMethod_ = @Deprecated)
+    @Setter(onMethod_ = @Deprecated) // unsafe
     private ConfigurationNode propertyData;
 
-    public Property(InventorySet inventorySet, String propertyName) {
+    public Property(@NotNull InventorySet inventorySet, String propertyName) {
         this(inventorySet, propertyName, BasicConfigurationNode.root());
     }
 
