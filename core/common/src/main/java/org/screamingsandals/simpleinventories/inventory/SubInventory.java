@@ -13,6 +13,7 @@ import org.screamingsandals.simpleinventories.utils.Column;
 import org.screamingsandals.simpleinventories.utils.TimesFlags;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 @Data
 public class SubInventory implements Openable, SubInventoryLike<SubInventory> {
@@ -236,6 +237,12 @@ public class SubInventory implements Openable, SubInventoryLike<SubInventory> {
         return this;
     }
 
+    public SubInventory addItem(@NotNull Queueable queueable) {
+        process(queueable);
+        forceReload();
+        return this;
+    }
+
     public SubInventory dropContents() {
         contents.stream().filter(GenericItemInfo::hasId).forEach(genericItemInfo ->
                 inventorySet.getIds().remove(genericItemInfo.getId())
@@ -259,6 +266,7 @@ public class SubInventory implements Openable, SubInventoryLike<SubInventory> {
             }
             return false;
         });
+        forceReload();
         return this;
     }
 
@@ -296,6 +304,37 @@ public class SubInventory implements Openable, SubInventoryLike<SubInventory> {
                 if (genericItemInfo.hasId()) {
                     inventorySet.getIds().remove(genericItemInfo.getId());
                 }
+                return true;
+            }
+            return false;
+        });
+        forceReload();
+        return this;
+    }
+
+    public SubInventory dropContentsByFilter(Predicate<GenericItemInfo> filter) {
+        contents.removeIf(genericItemInfo -> {
+            if (filter.test(genericItemInfo)) {
+                if (genericItemInfo.hasId()) {
+                    inventorySet.getIds().remove(genericItemInfo.getId());
+                }
+                return true;
+            }
+            return false;
+        });
+        forceReload();
+        return this;
+    }
+
+    public SubInventory dropContentsById(@NotNull String id) {
+        if (id.startsWith("$") || id.startsWith("§")) {
+            id = id.substring(1);
+        }
+
+        final var finalId = id;
+        contents.removeIf(genericItemInfo -> {
+            if (genericItemInfo.hasId() && finalId.equals(genericItemInfo.getId())) {
+                inventorySet.getIds().remove(genericItemInfo.getId());
                 return true;
             }
             return false;

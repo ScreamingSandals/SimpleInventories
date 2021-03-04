@@ -215,7 +215,7 @@ public abstract class InventoryRenderer {
 
     protected boolean isOnThisPage(GenericItemInfo item) {
         var options = subInventory.getLocalOptions();
-        return page == item.getPosition() / options.getItemsOnPage();
+        return item.isWritten() && page == item.getPosition() / options.getItemsOnPage();
     }
 
     protected abstract void renderOnPlatform();
