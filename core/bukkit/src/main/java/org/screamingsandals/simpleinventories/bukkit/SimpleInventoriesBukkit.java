@@ -53,8 +53,7 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
         this.logger = plugin.getLogger();
 
         InitUtils.doIfNot(EventManager::isDefaultInitialized, () -> EventManager.init(controllable.child()));
-        InitUtils.doIfNot(BukkitItemFactory::isInitialized, BukkitItemFactory::init);
-        InitUtils.doIfNot(BukkitItemFactory::isInitialized, BukkitItemFactory::init);
+        InitUtils.doIfNot(BukkitItemFactory::isInitialized, () -> BukkitItemFactory.init(this.plugin));
 
         controllable.enable(() -> {
             Bukkit.getPluginManager().registerEvents(new BukkitClickActionHandler(), this.plugin);
