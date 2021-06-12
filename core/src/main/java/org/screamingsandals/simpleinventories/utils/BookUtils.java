@@ -21,7 +21,7 @@ public class BookUtils {
                                 pds.getConstructor(ByteBuf.class).newInstance(
                                         Unpooled.buffer(256).setByte(0, (byte) 0).writerIndex(1))));
             } else if (number == 113) {
-                Class<?> mk = getNMSClass("MinecraftKey");
+                Class<?> mk = getNMSClass("MinecraftKey", "net.minecraft.resources");
                 pc.getMethod("sendPacket", p).invoke(getConnection(player),
                         ppocp.getConstructor(mk, pds).newInstance(
                                 mk.getMethod("a", String.class).invoke(mk, "minecraft:book_open"),
@@ -36,10 +36,14 @@ public class BookUtils {
         }
     }
 
-    private static Class<?> getNMSClass(String nmsClassString) {
+    private static Class<?> getNMSClass(String nmsClassString, String newPackage) {
         try {
             return Class.forName("net.minecraft.server." + version + "." + nmsClassString);
         } catch (Throwable ignore) {
+            try {
+                return Class.forName(newPackage + "." + nmsClassString);
+            } catch (Throwable ignore2) {
+            }
         }
         return null;
     }
@@ -47,15 +51,19 @@ public class BookUtils {
     private static Object getConnection(Player player) throws SecurityException, NoSuchMethodException,
             NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
         Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
-        return nmsPlayer.getClass().getField("playerConnection").get(nmsPlayer);
+        try {
+            return nmsPlayer.getClass().getField("playerConnection").get(nmsPlayer);
+        } catch (Throwable ignored) {
+            return nmsPlayer.getClass().getField("connection").get(nmsPlayer);
+        }
     }
 
     private static final String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",")
             .split(",")[3];
-    private static final Class<?> ppocp = getNMSClass("PacketPlayOutCustomPayload");
-    private static final Class<?> pc = getNMSClass("PlayerConnection");
-    private static final Class<?> pds = getNMSClass("PacketDataSerializer");
-    private static final Class<?> ppoob = getNMSClass("PacketPlayOutOpenBook");
-    private static final Class<?> eh = getNMSClass("EnumHand");
-    private static final Class<?> p = getNMSClass("Packet");
+    private static final Class<?> ppocp = getNMSClass("PacketPlayOutCustomPayload", "net.minecraft.network.protocol.game");
+    private static final Class<?> pc = getNMSClass("PlayerConnection", "net.minecraft.server.network");
+    private static final Class<?> pds = getNMSClass("PacketDataSerializer", "net.minecraft.network");
+    private static final Class<?> ppoob = getNMSClass("PacketPlayOutOpenBook", "net.minecraft.network.protocol.game");
+    private static final Class<?> eh = getNMSClass("EnumHand", "net.minecraft.world");
+    private static final Class<?> p = getNMSClass("Packet", "net.minecraft.network.protocol");
 }

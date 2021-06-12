@@ -5,5 +5,5 @@
 rootProject.name = 'SimpleInventories-parent'
 include(':SimpleInventories-Core')
 project(':SimpleInventories-Core').projectDir = file('core')
-include(':SimpleInventories-Plugin')
-project(':SimpleInventories-Plugin').projectDir = file('plugin')
+//include(':SimpleInventories-Plugin')
+//project(':SimpleInventories-Plugin').projectDir = file('plugin')

@@ -32,6 +32,20 @@ public class MaterialSearchEngine {
 	}
 
 	@AllArgsConstructor
+	public enum FCTNTranslator {
+		DIRT_PATH("GRASS_PATH");
+
+		private String translate;
+	}
+
+	@AllArgsConstructor
+	public enum FNTCTranslator {
+		GRASS_PATH("DIRT_PATH");
+
+		private String translate;
+	}
+
+	@AllArgsConstructor
 	public static enum FNTBTranslator {
 		ZOMBIFIED_PIGLIN_SPAWN_EGG("ZOMBIE_PIGMAN_SPAWN_EGG");
 
@@ -650,8 +664,16 @@ public class MaterialSearchEngine {
 			FFTLTranslator translate = FFTLTranslator.valueOf(material.toUpperCase());
 			Material mat = Material.matchMaterial(translate.translate);
 			return new Result(mat, translate.damage);
+		}).attempt(versionNumber > 116, (material, damage) -> {
+			FNTCTranslator translate = FNTCTranslator.valueOf(material.toUpperCase());
+			Material mat = Material.matchMaterial(translate.translate);
+			return new Result(mat, damage);
 		}).attempt(versionNumber > 115, (material, damage) -> {
 			FBTNTranslator translate = FBTNTranslator.valueOf(material.toUpperCase());
+			Material mat = Material.matchMaterial(translate.translate);
+			return new Result(mat, damage);
+		}).attempt(versionNumber < 117 && !isLegacy, (material, damage) -> {
+			FCTNTranslator translate = FCTNTranslator.valueOf(material.toUpperCase());
 			Material mat = Material.matchMaterial(translate.translate);
 			return new Result(mat, damage);
 		}).attempt(versionNumber < 116 && !isLegacy, (material, damage) -> {
