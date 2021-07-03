@@ -2,8 +2,7 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.10.4'
     compileOnly 'io.netty:netty-all:4.1.42.Final'
 
-    api screaming('material-bukkit', SCREAMING_LIB_VERSION)
-    api screaming('player-bukkit', SCREAMING_LIB_VERSION)
+    api screaming('core-bukkit', SCREAMING_LIB_VERSION)
     api project(':core-common')
     compileOnly paper(PAPER_VERSION)
 }
