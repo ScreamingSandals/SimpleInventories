@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.holder.StandardInventoryHolder;
@@ -59,7 +60,7 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
         itemStacksInInventory.forEach((position, item) -> {
             if (position < inventory.getSize()) {
                 var asStack = item.as(ItemStack.class);
-                if (!asStack.getType().isAir()) {
+                if (asStack.getType() != Material.AIR) {
                     inventory.setItem(position, asStack);
                 }
             }
