@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.Data;
+import net.kyori.adventure.inventory.Book;
 import org.screamingsandals.simpleinventories.utils.CloneMethod;
 
 @Data
@@ -38,7 +39,7 @@ public class Clone implements Cloneable {
             }
             newOne.getProperties().addAll(original.getProperties());
             if (original.hasBook() && (cloneMethod.isOverride() || !newOne.hasBook())) {
-                newOne.setBook(original.getBook().clone());
+                newOne.setBook(Book.book(original.getBook().title(), original.getBook().author(), original.getBook().pages()));
             }
             if (original.getWritten() != null && (cloneMethod.isOverride() || newOne.getWritten() == null)) {
                 newOne.setWritten(original.getWritten());

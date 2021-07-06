@@ -1,6 +1,7 @@
 package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
+import net.kyori.adventure.inventory.Book;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.event.EventManager;
@@ -28,7 +29,7 @@ public class GenericItemInfo implements Cloneable, IdentifiableEntry {
     private String id;
     private final List<Property> properties = new ArrayList<>();
     @Deprecated
-    private Item book;
+    private Book book;
     private Supplier<Boolean> written;
     private final EventManager eventManager;
     private SubInventory childInventory;
@@ -146,7 +147,7 @@ public class GenericItemInfo implements Cloneable, IdentifiableEntry {
         info.written = written;
         info.id = id;
         properties.stream().map(Property::clone).forEach(info.properties::add);
-        info.book = book != null ? book.clone() : null;
+        info.book = book != null ? Book.book(book.title(), book.author(), book.pages()) : null;
         info.eventManager.cloneEventManager(eventManager);
         info.executions.addAll(executions);
         prices.stream().map(Price::clone).forEach(info.prices::add);

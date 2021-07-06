@@ -29,8 +29,7 @@ import org.screamingsandals.simpleinventories.VersionInfo;
 
 @Plugin(id = "SimpleInventories", authors = {"Misat11"}, version = VersionInfo.VERSION)
 @Init(services = {
-        SimpleInventoriesCore.class,
-        CloudConstructor.class
+        SimpleInventoriesCore.class
 })
 public class SimpleInventoriesPluginBukkit extends PluginContainer {
     private Map<String, InventorySet> inventories;

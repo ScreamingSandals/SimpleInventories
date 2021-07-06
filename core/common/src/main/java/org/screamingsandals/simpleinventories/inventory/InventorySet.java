@@ -3,8 +3,8 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.Data;
 import lombok.ToString;
 import net.kyori.adventure.text.Component;
+import org.screamingsandals.lib.container.Openable;
 import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.material.container.Openable;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
@@ -149,7 +149,7 @@ public class InventorySet implements Openable {
     }
 
     @Override
-    public void openInventory(Wrapper wrapper) {
+    public void openInventory(PlayerWrapper wrapper) {
         mainSubInventory.openInventory(wrapper);
     }
 }

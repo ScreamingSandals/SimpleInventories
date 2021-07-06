@@ -1,4 +1,4 @@
-apply plugin: 'de.fuerstenau.buildconfig'
+apply plugin: "com.github.gmazzo.buildconfig"
 
 enableShadowPlugin()
 
@@ -8,7 +8,7 @@ dependencies {
     implementation screaming('plugin-bukkit', SCREAMING_LIB_VERSION)
     annotationProcessor screaming('screaming-annotation', SCREAMING_LIB_VERSION)
 
-    compileOnly paper("1.16.4")
+    compileOnly paperLegacy(PAPER_VERSION)
 }
 
 shadowJar {
@@ -19,9 +19,9 @@ shadowJar {
 }
 
 buildConfig {
-    version = project.version
+    className('VersionInfo')
+    packageName('org.screamingsandals.simpleinventories')
 
-    clsName = 'VersionInfo'
-    packageName = 'org.screamingsandals.simpleinventories'
-    charset = 'UTF-8'
+    buildConfigField('String', 'NAME', "\"${project.name}\"")
+    buildConfigField('String', 'VERSION', "\"${project.version}\"")
 }

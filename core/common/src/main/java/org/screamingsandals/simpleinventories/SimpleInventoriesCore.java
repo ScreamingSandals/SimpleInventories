@@ -1,11 +1,12 @@
 package org.screamingsandals.simpleinventories;
 
-import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.Core;
+import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.AbstractService;
+import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.simpleinventories.builder.InventorySetBuilder;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -15,29 +16,29 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 @AbstractService(
         pattern = "^(?<basePackage>.+)\\.(?<className>.+)Core$",
         replaceRule = "{basePackage}.{platform}.{className}{Platform}"
 )
+@ServiceDependencies(dependsOn = {
+        Core.class,
+        Tasker.class
+})
 public abstract class SimpleInventoriesCore {
 
     protected Logger logger;
 
     protected static SimpleInventoriesCore core;
 
-    public static void init(Supplier<SimpleInventoriesCore> supplier) {
+    protected SimpleInventoriesCore(Logger logger) {
         if (core != null) {
             throw new UnsupportedOperationException("SimpleInventoriesCore is already initialized.");
         }
 
-        core = supplier.get();
-
-        assert ItemFactory.isInitialized();
-        assert PlayerMapper.isInitialized();
-        assert core.logger != null;
+        core = this;
+        this.logger = logger;
     }
 
     public static boolean isInitialized() {

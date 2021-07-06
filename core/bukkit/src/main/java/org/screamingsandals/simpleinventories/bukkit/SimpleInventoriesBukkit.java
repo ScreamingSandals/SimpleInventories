@@ -5,18 +5,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.screamingsandals.lib.bukkit.player.BukkitPlayerMapper;
-import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.utils.Controllable;
-import org.screamingsandals.lib.utils.InitUtils;
 import org.screamingsandals.lib.utils.annotations.Service;
+import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitClickActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitCloseInventoryActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitItemDragActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitItemMoveActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
-import org.screamingsandals.lib.bukkit.material.builder.BukkitItemFactory;
 import org.screamingsandals.simpleinventories.bukkit.placeholders.PAPIPlaceholderParser;
 import org.screamingsandals.simpleinventories.bukkit.placeholders.PermissionPlaceholderParser;
 import org.screamingsandals.simpleinventories.bukkit.placeholders.PlayerPlaceholderParser;
@@ -36,31 +32,21 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
-@Service(dependsOn = {
-        EventManager.class,
-        BukkitItemFactory.class,
-        BukkitPlayerMapper.class
-})
+@Service
 public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
     private final Plugin plugin;
 
-    public static void init(Plugin plugin, Controllable controllable) {
-        SimpleInventoriesCore.init(() -> new SimpleInventoriesBukkit(plugin, controllable));
+    public SimpleInventoriesBukkit(Plugin plugin) {
+        super(plugin.getLogger());
+        this.plugin = plugin;
     }
 
-    public SimpleInventoriesBukkit(Plugin plugin, Controllable controllable) {
-        this.plugin = plugin;
-        this.logger = plugin.getLogger();
-
-        InitUtils.doIfNot(EventManager::isDefaultInitialized, () -> EventManager.init(controllable.child()));
-        InitUtils.doIfNot(BukkitItemFactory::isInitialized, () -> BukkitItemFactory.init(this.plugin));
-
-        controllable.enable(() -> {
-            Bukkit.getPluginManager().registerEvents(new BukkitClickActionHandler(), this.plugin);
-            Bukkit.getPluginManager().registerEvents(new BukkitCloseInventoryActionHandler(), this.plugin);
-            Bukkit.getPluginManager().registerEvents(new BukkitItemDragActionHandler(), this.plugin);
-            Bukkit.getPluginManager().registerEvents(new BukkitItemMoveActionHandler(), this.plugin);
-        });
+    @OnEnable
+    public void onEnable() {
+        Bukkit.getPluginManager().registerEvents(new BukkitClickActionHandler(), this.plugin);
+        Bukkit.getPluginManager().registerEvents(new BukkitCloseInventoryActionHandler(), this.plugin);
+        Bukkit.getPluginManager().registerEvents(new BukkitItemDragActionHandler(), this.plugin);
+        Bukkit.getPluginManager().registerEvents(new BukkitItemMoveActionHandler(), this.plugin);
     }
 
     public static Plugin getPlugin() {

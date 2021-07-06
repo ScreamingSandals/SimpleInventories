@@ -3,8 +3,7 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.lib.material.container.Openable;
-import org.screamingsandals.lib.utils.Wrapper;
+import org.screamingsandals.lib.container.Openable;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.lib.material.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
@@ -191,8 +190,8 @@ public class SubInventory implements Openable, SubInventoryLike<SubInventory> {
     }
 
     @Override
-    public void openInventory(Wrapper wrapper) {
-        SimpleInventoriesCore.openInventory(wrapper.asOptional(PlayerWrapper.class).orElseThrow(), this);
+    public void openInventory(PlayerWrapper wrapper) {
+        SimpleInventoriesCore.openInventory(wrapper, this);
     }
 
     // CURSOR MOVING

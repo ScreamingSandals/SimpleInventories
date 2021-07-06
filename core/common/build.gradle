@@ -8,4 +8,5 @@ dependencies {
     api 'org.spongepowered:configurate-yaml:' + CONFIGURATE_VERSION
 
     api screaming('core-common', SCREAMING_LIB_VERSION)
+    api screaming('tasker-common', SCREAMING_LIB_VERSION)
 }

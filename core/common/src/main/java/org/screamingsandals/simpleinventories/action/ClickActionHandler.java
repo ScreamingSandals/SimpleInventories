@@ -58,7 +58,7 @@ public abstract class ClickActionHandler {
 
         if (playerItemInfo.getOriginal().hasBook()) {
             inventoryRenderer.close();
-            openBook(playerWrapper, playerItemInfo.getOriginal().getBook());
+            playerWrapper.openBook(playerItemInfo.getOriginal().getBook());
             return;
         }
 
@@ -124,6 +124,4 @@ public abstract class ClickActionHandler {
     protected abstract void dispatchConsoleCommand(String command);
 
     protected abstract void movePlayerOnProxy(PlayerWrapper playerWrapper, String server);
-
-    protected abstract void openBook(PlayerWrapper playerWrapper, Item book);
 }

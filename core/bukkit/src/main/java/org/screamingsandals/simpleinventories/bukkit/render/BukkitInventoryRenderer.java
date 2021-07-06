@@ -1,22 +1,20 @@
 package org.screamingsandals.simpleinventories.bukkit.render;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Material;
+import org.screamingsandals.lib.tasker.Tasker;
+import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.holder.StandardInventoryHolder;
-import org.screamingsandals.simpleinventories.bukkit.tasks.BukkitRepeatingTask;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.List;
-import java.util.Optional;
 
 public class BukkitInventoryRenderer extends InventoryRenderer {
     private AbstractHolder inventoryHolder;
@@ -60,24 +58,23 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
         itemStacksInInventory.forEach((position, item) -> {
             if (position < inventory.getSize()) {
                 var asStack = item.as(ItemStack.class);
-                if (asStack.getType() != Material.AIR) {
+                if (!item.getMaterial().isAir()) {
                     inventory.setItem(position, asStack);
                 }
             }
         });
 
-        if (!animations.isEmpty()) {
-            var task = new BukkitRepeatingTask();
-            task.setPeriod(20L);
-            task.setDelay(1L);
-            task.setTask(() ->
-                animations.forEach((position, items) ->
-                    inventory.setItem(position, items.get(nextAnimationPosition % items.size()).as(ItemStack.class))
-                ));
-            animator = task;
-        }
-
         player.asOptional(Player.class).ifPresent(p -> p.openInventory(inventory));
+
+        if (!animations.isEmpty()) {
+            animator = Tasker.build(() ->
+                    animations.forEach((position, items) ->
+                            inventory.setItem(position, items.get(nextAnimationPosition % items.size()).as(ItemStack.class))
+                    ))
+                    .delay(1L, TaskerTime.TICKS)
+                    .repeat(20L, TaskerTime.TICKS)
+                    .start();
+        }
     }
 
     @Override

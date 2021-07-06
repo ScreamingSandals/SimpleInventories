@@ -2,11 +2,10 @@ package org.screamingsandals.simpleinventories.render;
 
 import lombok.*;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
+import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.simpleinventories.events.SubInventoryOpenEvent;
 import org.screamingsandals.simpleinventories.inventory.*;
 import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.simpleinventories.tasks.RepeatingTask;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.HashMap;
@@ -22,7 +21,7 @@ public abstract class InventoryRenderer {
     protected final Map<Integer, PlayerItemInfo> itemInfoMap = new HashMap<>();
     protected final Map<Integer, Item> itemStacksInInventory = new HashMap<>();
     protected final Map<Integer, List<Item>> animations = new HashMap<>();
-    protected RepeatingTask animator;
+    protected TaskerTask animator;
     protected int nextAnimationPosition = 0;
     protected boolean mainEventCalled = false;
 
@@ -137,10 +136,6 @@ public abstract class InventoryRenderer {
 
         generateNewData();
         renderOnPlatform();
-
-        if (animator != null) {
-            animator.start();
-        }
     }
 
     public void close() {

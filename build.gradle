@@ -11,8 +11,8 @@ buildscript {
         maven { url 'https://repo.screamingsandals.org/public/' }
     }
     dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.41'
-        classpath 'gradle.plugin.de.fuerstenau:BuildConfigPlugin:1.1.8'
+		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:' + SCREAMING_PLUGIN_BUILDER_VERSION
+        classpath "com.github.gmazzo:gradle-buildconfig-plugin:3.0.0"
     }
 }
 
