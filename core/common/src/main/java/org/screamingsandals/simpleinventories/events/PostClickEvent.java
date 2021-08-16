@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.event.CancellableAbstractEvent;
+import org.screamingsandals.lib.utils.ClickType;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.simpleinventories.utils.ClickType;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
 @EqualsAndHashCode(callSuper = true)

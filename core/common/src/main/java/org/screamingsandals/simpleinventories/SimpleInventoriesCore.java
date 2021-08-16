@@ -41,10 +41,6 @@ public abstract class SimpleInventoriesCore {
         this.logger = logger;
     }
 
-    public static boolean isInitialized() {
-        return core != null;
-    }
-
     public static InventoryRenderer openInventory(PlayerWrapper playerWrapper, SubInventory subInventory) {
         if (core == null) {
             throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
