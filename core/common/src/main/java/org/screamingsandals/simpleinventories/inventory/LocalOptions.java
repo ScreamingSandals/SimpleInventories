@@ -6,13 +6,12 @@ import lombok.Setter;
 import lombok.ToString;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Data

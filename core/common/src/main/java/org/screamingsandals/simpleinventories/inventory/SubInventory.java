@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.container.Openable;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.simpleinventories.utils.Column;

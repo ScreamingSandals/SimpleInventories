@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.screamingsandals.simpleinventories.builder.BuilderUtils;
 import org.screamingsandals.simpleinventories.builder.ItemInfoBuilder;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.loader.AbstractConfigurationLoader;

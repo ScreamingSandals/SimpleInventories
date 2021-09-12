@@ -9,9 +9,9 @@ import org.screamingsandals.simpleinventories.builder.AnimationBuilder;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.lib.material.Item;
-import org.screamingsandals.lib.material.builder.ItemBuilder;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.builder.ItemBuilder;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.utils.ConsumerExecutor;
 import org.screamingsandals.lib.player.PlayerWrapper;
 

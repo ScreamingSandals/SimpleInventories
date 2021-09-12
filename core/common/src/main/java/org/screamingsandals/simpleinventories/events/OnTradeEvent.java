@@ -9,7 +9,7 @@ import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.inventory.Price;
 import org.screamingsandals.simpleinventories.inventory.Property;
-import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.List;

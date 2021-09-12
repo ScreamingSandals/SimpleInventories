@@ -11,7 +11,7 @@ public class ThisPlaceholderParser implements IPlaceholderParser {
 			if (arguments.length == 1) {
 				switch(arguments[0]) {
 					case "stack":
-						return item.getStack().getMaterial().getPlatformName();
+						return item.getStack().getMaterial().platformName();
 					case "visible":
 						return String.valueOf(item.isVisible());
 					case "disabled":

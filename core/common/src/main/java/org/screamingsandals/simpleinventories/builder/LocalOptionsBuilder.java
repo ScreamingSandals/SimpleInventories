@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
-import org.screamingsandals.lib.material.builder.ItemBuilder;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemBuilder;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 
 import java.util.function.Consumer;
 

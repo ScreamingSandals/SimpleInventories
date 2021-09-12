@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.simpleinventories.events.SubInventoryOpenEvent;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.HashMap;

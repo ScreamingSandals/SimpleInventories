@@ -2,9 +2,9 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.Data;
 import lombok.Getter;
-import org.screamingsandals.lib.material.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
-import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;

@@ -1,3 +1,8 @@
+plugins {
+    id 'org.screamingsandals.plugin-builder' version "${SCREAMING_PLUGIN_BUILDER_VERSION}" apply false
+    id 'com.github.gmazzo.buildconfig' version "${BUILDCONFIG_VERSION}" apply false
+}
+
 defaultTasks 'clean', 'screamCompile', 'allowJavadocUpload'
 
 allprojects {
@@ -5,20 +10,9 @@ allprojects {
     version = SIMPLE_INVENTORIES_VERSION
 }
 
-buildscript {
-    repositories {
-        maven { url 'https://plugins.gradle.org/m2' }
-        maven { url 'https://repo.screamingsandals.org/public/' }
-    }
-    dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:' + SCREAMING_PLUGIN_BUILDER_VERSION
-        classpath "com.github.gmazzo:gradle-buildconfig-plugin:3.0.0"
-    }
-}
-
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'org.screamingsandals.gradle.builder'
+    apply plugin: 'org.screamingsandals.plugin-builder'
 
     configurations.all {
         // Check for updates every build

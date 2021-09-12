@@ -5,7 +5,7 @@ import net.kyori.adventure.inventory.Book;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.material.Item;
+import org.screamingsandals.lib.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
