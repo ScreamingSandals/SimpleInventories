@@ -60,7 +60,7 @@ public class GenericItemInfo implements Cloneable, IdentifiableEntry {
 
     public GenericItemInfo(@NotNull InventorySet format) {
         this.format = format;
-        this.eventManager = new EventManager();
+        this.eventManager = EventManager.createChildManager();
         this.eventManager.setCustomManager(format.getEventManager());
     }
 

@@ -6,7 +6,6 @@ import net.kyori.adventure.text.Component;
 import org.screamingsandals.lib.container.Openable;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.utils.AdventureHelper;
-import org.screamingsandals.lib.utils.Wrapper;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
@@ -25,7 +24,7 @@ public class InventorySet implements Openable {
     private boolean allowAccessToConsole = false;
     private boolean allowBungeecordPlayerSending = false;
 
-    private final EventManager eventManager = new EventManager();
+    private final EventManager eventManager = EventManager.createChildManager();
 
     private final Map<String, IPlaceholderParser> placeholders = new HashMap<>();
     private final Map<String, IdentifiableEntry> ids = new HashMap<>();

@@ -12,6 +12,7 @@ import cloud.commandframework.meta.CommandMeta;
 import cloud.commandframework.permission.OrPermission;
 import cloud.commandframework.permission.Permission;
 import lombok.SneakyThrows;
+import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.command.CloudConstructor;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
@@ -130,7 +131,7 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
 
     @Override
     public void disable() {
-        PlayerMapper.getPlayers().forEach(player ->
+        Server.getConnectedPlayers().forEach(player ->
                 SimpleInventoriesCore.getInventoryRenderer(player).ifPresent(InventoryRenderer::close)
         );
         inventories.clear();
