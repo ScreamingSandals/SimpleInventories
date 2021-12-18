@@ -1,21 +1,20 @@
 package org.screamingsandals.simpleinventories.events;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.lib.event.CancellableAbstractEvent;
+import org.screamingsandals.lib.event.SCancellableEvent;
 import org.screamingsandals.lib.utils.ClickType;
 import org.screamingsandals.simpleinventories.inventory.*;
 import org.screamingsandals.lib.player.PlayerWrapper;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @RequiredArgsConstructor
-public class PreClickEvent extends CancellableAbstractEvent {
+public class PreClickEvent implements SCancellableEvent {
     private final PlayerWrapper player;
     private final PlayerItemInfo item;
     private final ClickType clickType;
     private final SubInventory subInventory;
+    private boolean cancelled;
 
     public boolean hasItem() {
         return item != null;

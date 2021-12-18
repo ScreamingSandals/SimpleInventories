@@ -1,9 +1,8 @@
 package org.screamingsandals.simpleinventories.events;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.lib.event.CancellableAbstractEvent;
+import org.screamingsandals.lib.event.SCancellableEvent;
 import org.screamingsandals.lib.utils.ClickType;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
@@ -14,15 +13,15 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @RequiredArgsConstructor
-public class OnTradeEvent extends CancellableAbstractEvent {
+public class OnTradeEvent implements SCancellableEvent {
     private final PlayerWrapper player;
     private final List<Price> prices;
     private final Item stack;
     private final PlayerItemInfo item;
     private final ClickType clickType;
+    private boolean cancelled;
 
     public InventorySet getFormat() {
         return item.getFormat();

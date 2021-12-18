@@ -1,10 +1,9 @@
 package org.screamingsandals.simpleinventories.events;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
-import org.screamingsandals.lib.event.AbstractEvent;
+import org.screamingsandals.lib.event.SEvent;
 import org.screamingsandals.simpleinventories.builder.AnimationBuilder;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
@@ -17,10 +16,9 @@ import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.function.Consumer;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @RequiredArgsConstructor
-public class ItemRenderEvent extends AbstractEvent {
+public class ItemRenderEvent implements SEvent {
     private final PlayerItemInfo item;
 
     public InventorySet getFormat() {
