@@ -2,7 +2,7 @@
 
 SimpleInventories used is small library for making guis in minecraft! It's also available as plugin.
 
-[![Build Status](https://ci.screamingsandals.org/job/SimpleInventories/badge/icon?style=flat-square)](https://ci.screamingsandals.org/job/SimpleInventories/)
+[![Simple Inventories CI](https://github.com/ScreamingSandals/SimpleInventories/actions/workflows/gradle.yml/badge.svg)](https://github.com/ScreamingSandals/SimpleInventories/actions/workflows/gradle.yml)
 
 Look into our wiki: https://github.com/ScreamingSandals/SimpleInventories/wiki
 
