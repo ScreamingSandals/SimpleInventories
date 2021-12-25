@@ -2,6 +2,7 @@ package org.screamingsandals.simpleinventories.builder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.utils.*;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
@@ -29,16 +30,28 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor(staticName = "of")
 public class ItemInfoBuilder extends CategoryBuilder {
     private final GenericItemInfo itemInfo;
+    private ItemBuilder builder;
 
     public static final Pattern PRICE_PATTERN = Pattern.compile("(?<price>\\d+)(\\s+of\\s+|\\s+)(?<currency>[a-zA-Z0-9]+)?");
 
     public ItemInfoBuilder stack(Consumer<ItemBuilder> consumer) {
         ConsumerExecutor.execute(consumer, getStack());
+        processItemBuilderIfOpened();
         return this;
     }
 
     public ItemBuilder getStack() {
-        return new ItemBuilder(itemInfo.getItem());
+        if (builder == null) {
+            builder = itemInfo.getItem() != null ? itemInfo.getItem().builder() : ItemFactory.builder();
+        }
+        return builder;
+    }
+
+    public void processItemBuilderIfOpened() {
+        if (builder != null) {
+            builder.build().ifPresent(itemInfo::setItem);
+            builder = null;
+        }
     }
 
     public ItemInfoBuilder price(String price) {

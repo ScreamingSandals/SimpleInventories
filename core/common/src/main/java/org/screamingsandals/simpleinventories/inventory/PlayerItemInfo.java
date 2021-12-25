@@ -33,12 +33,10 @@ public class PlayerItemInfo {
         original.getAnimation().stream().map(Item::clone).forEach(animation::add);
 
         if (stack.getDisplayName() != null) {
-            stack.setDisplayName(original.getFormat().processPlaceholders(player, stack.getDisplayName(), this));
+            stack = stack.withDisplayName(original.getFormat().processPlaceholders(player, stack.getDisplayName(), this));
         }
         if (!stack.getLore().isEmpty()) {
-            var newLore = stack.getLore().stream().map(e -> original.getFormat().processPlaceholders(player, e, this)).collect(Collectors.toList());
-            stack.getLore().clear();
-            stack.getLore().addAll(newLore);
+            stack = stack.withItemLore(stack.getLore().stream().map(e -> original.getFormat().processPlaceholders(player, e, this)).collect(Collectors.toList()));
         }
 
         original.getEventManager().fireEvent(new ItemRenderEvent(this));

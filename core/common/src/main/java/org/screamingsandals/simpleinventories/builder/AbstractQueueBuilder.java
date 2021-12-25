@@ -27,7 +27,9 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
     public T item(Object material, Consumer<ItemInfoBuilder> consumer) {
         var itemInfo = build(material);
         putObjectToQueue(itemInfo);
-        ConsumerExecutor.execute(consumer, ItemInfoBuilder.of(itemInfo));
+        var builder = ItemInfoBuilder.of(itemInfo);
+        ConsumerExecutor.execute(consumer, builder);
+        builder.processItemBuilderIfOpened();
         return self();
     }
 
@@ -46,7 +48,9 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
         clone.setCloneLink("cosmetic");
         itemInfo.setRequestedClone(clone);
         putObjectToQueue(itemInfo);
-        ConsumerExecutor.execute(consumer, ItemInfoBuilder.of(itemInfo));
+        var builder = ItemInfoBuilder.of(itemInfo);
+        ConsumerExecutor.execute(consumer, builder);
+        builder.processItemBuilderIfOpened();
         return self();
     }
 
@@ -65,7 +69,9 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
         clone.setCloneLink(link);
         itemInfo.setRequestedClone(clone);
         putObjectToQueue(itemInfo);
-        ConsumerExecutor.execute(consumer, ItemInfoBuilder.of(itemInfo));
+        var builder = ItemInfoBuilder.of(itemInfo);
+        ConsumerExecutor.execute(consumer, builder);
+        builder.processItemBuilderIfOpened();
         return self();
     }
 

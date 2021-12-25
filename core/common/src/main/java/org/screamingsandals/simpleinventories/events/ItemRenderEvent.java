@@ -77,13 +77,16 @@ public class ItemRenderEvent implements SEvent {
     }
 
     public ItemRenderEvent stack(Consumer<ItemBuilder> consumer) {
-        item.setStack(ItemFactory.getAir());
-        ConsumerExecutor.execute(consumer, new ItemBuilder(item.getStack()));
+        var builder = item.getStack().builder();
+        ConsumerExecutor.execute(consumer, builder);
+        item.setStack(builder.build().orElse(ItemFactory.getAir()));
         return this;
     }
 
     public ItemRenderEvent clearStack(Consumer<ItemBuilder> consumer) {
-        ConsumerExecutor.execute(consumer, new ItemBuilder(item.getStack()));
+        var builder = ItemFactory.builder();
+        ConsumerExecutor.execute(consumer, builder);
+        item.setStack(builder.build().orElse(ItemFactory.getAir()));
         return this;
     }
 
