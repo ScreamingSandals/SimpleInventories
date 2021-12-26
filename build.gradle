@@ -3,11 +3,15 @@ plugins {
     id 'com.github.gmazzo.buildconfig' version "${BUILDCONFIG_VERSION}" apply false
 }
 
-defaultTasks 'clean', 'screamCompile', 'allowJavadocUpload'
-
 allprojects {
     group = 'org.screamingsandals.simpleinventories'
     version = SIMPLE_INVENTORIES_VERSION
+}
+
+if (version.toString().endsWith('-SNAPSHOT')) {
+    defaultTasks 'clean', 'screamCompile'
+} else {
+    defaultTasks 'clean', 'screamCompile', 'allowJavadocUpload'
 }
 
 subprojects {

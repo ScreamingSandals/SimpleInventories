@@ -1,10 +1,10 @@
 package org.screamingsandals.simpleinventories.inventory;
 
-import org.screamingsandals.lib.utils.annotations.internal.InternalOnly;
+import org.jetbrains.annotations.ApiStatus;
 
 public interface InventoryChild {
     SubInventory getParent();
 
-    @InternalOnly
+    @ApiStatus.Internal
     void setParent(SubInventory subInventory);
 }
