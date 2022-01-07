@@ -19,9 +19,9 @@ package org.screamingsandals.simpleinventories.events;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 @Data
 @RequiredArgsConstructor
@@ -33,5 +33,15 @@ public class SubInventoryCloseEvent implements SCancellableEvent {
 
     public InventorySet getFormat() {
         return subInventory.getInventorySet();
+    }
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
     }
 }

@@ -42,7 +42,7 @@ public abstract class ClickActionHandler {
             subInventory.getInventorySet().getEventManager().fireEvent(preClickEvent);
         }
 
-        if (preClickEvent.isCancelled()) {
+        if (preClickEvent.cancelled()) {
             inventoryRenderer.close();
             return;
         }

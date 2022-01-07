@@ -19,10 +19,10 @@ package org.screamingsandals.simpleinventories.events;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.event.SCancellableEvent;
-import org.screamingsandals.simpleinventories.inventory.InventorySet;
-import org.screamingsandals.simpleinventories.inventory.IdentifiableEntry;
-import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.simpleinventories.inventory.IdentifiableEntry;
+import org.screamingsandals.simpleinventories.inventory.InventorySet;
+import org.screamingsandals.simpleinventories.inventory.SubInventory;
 
 @Data
 @RequiredArgsConstructor
@@ -38,5 +38,15 @@ public class SubInventoryOpenEvent implements SCancellableEvent {
 
     public IdentifiableEntry getParent() {
         return subInventory.getItemOwner();
+    }
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
     }
 }

@@ -19,13 +19,13 @@ package org.screamingsandals.simpleinventories.events;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.event.SCancellableEvent;
+import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.utils.ClickType;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.inventory.Price;
 import org.screamingsandals.simpleinventories.inventory.Property;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.List;
 
@@ -83,5 +83,15 @@ public class OnTradeEvent implements SCancellableEvent {
 
     public boolean hasProperties() {
         return item.hasProperties();
+    }
+
+    @Override
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void cancelled(boolean cancel) {
+        cancelled = cancel;
     }
 }
