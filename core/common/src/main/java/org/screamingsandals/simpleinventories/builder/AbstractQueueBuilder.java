@@ -17,11 +17,10 @@
 package org.screamingsandals.simpleinventories.builder;
 
 import lombok.NonNull;
-import org.screamingsandals.lib.utils.ConsumerExecutor;
+import org.screamingsandals.lib.utils.ReceiverConsumer;
 import org.screamingsandals.simpleinventories.inventory.*;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
     public T category(Object material) {
@@ -29,7 +28,7 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
         return self();
     }
 
-    public T category(Object material, Consumer<ItemInfoBuilder> consumer) {
+    public T category(Object material, ReceiverConsumer<ItemInfoBuilder> consumer) {
         item(material, consumer);
         return self();
     }
@@ -40,11 +39,11 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
         return self();
     }
 
-    public T item(Object material, Consumer<ItemInfoBuilder> consumer) {
+    public T item(Object material, ReceiverConsumer<ItemInfoBuilder> consumer) {
         var itemInfo = build(material);
         putObjectToQueue(itemInfo);
         var builder = ItemInfoBuilder.of(itemInfo);
-        ConsumerExecutor.execute(consumer, builder);
+        consumer.accept(builder);
         builder.processItemBuilderIfOpened();
         return self();
     }
@@ -58,14 +57,14 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
         return self();
     }
 
-    public T cosmetic(Consumer<ItemInfoBuilder> consumer) {
+    public T cosmetic(ReceiverConsumer<ItemInfoBuilder> consumer) {
         var itemInfo = new GenericItemInfo(getFormat());
         var clone = new Clone();
         clone.setCloneLink("cosmetic");
         itemInfo.setRequestedClone(clone);
         putObjectToQueue(itemInfo);
         var builder = ItemInfoBuilder.of(itemInfo);
-        ConsumerExecutor.execute(consumer, builder);
+        consumer.accept(builder);
         builder.processItemBuilderIfOpened();
         return self();
     }
@@ -79,14 +78,14 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
         return self();
     }
 
-    public T itemClone(String link, Consumer<ItemInfoBuilder> consumer) {
+    public T itemClone(String link, ReceiverConsumer<ItemInfoBuilder> consumer) {
         var itemInfo = new GenericItemInfo(getFormat());
         var clone = new Clone();
         clone.setCloneLink(link);
         itemInfo.setRequestedClone(clone);
         putObjectToQueue(itemInfo);
         var builder = ItemInfoBuilder.of(itemInfo);
-        ConsumerExecutor.execute(consumer, builder);
+        consumer.accept(builder);
         builder.processItemBuilderIfOpened();
         return self();
     }
@@ -101,11 +100,11 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
         return self();
     }
 
-    public T hidden(String id, Consumer<CategoryBuilder> consumer) {
+    public T hidden(String id, ReceiverConsumer<CategoryBuilder> consumer) {
         var itemInfo = new HiddenCategory(getFormat(), id);
         itemInfo.setChildInventory(new SubInventory(false, itemInfo, getFormat()));
         putObjectToQueue(itemInfo);
-        ConsumerExecutor.execute(consumer, CategoryBuilder.of(itemInfo.getChildInventory()));
+        consumer.accept(CategoryBuilder.of(itemInfo.getChildInventory()));
         return self();
     }
 
@@ -116,11 +115,11 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
         return self();
     }
 
-    public T insert(String link, Consumer<QueueBuilder> consumer) {
+    public T insert(String link, ReceiverConsumer<QueueBuilder> consumer) {
         var prebuiltInventory = SimpleItemQueue.of();
         var insert = new Insert(link, prebuiltInventory);
         putObjectToQueue(insert);
-        ConsumerExecutor.execute(consumer, QueueBuilder.of(getFormat(), prebuiltInventory));
+        consumer.accept(QueueBuilder.of(getFormat(), prebuiltInventory));
         return self();
     }
 
@@ -130,9 +129,9 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
         return self();
     }
 
-    public T insert(List<String> links, Consumer<QueueBuilder> consumer) {
+    public T insert(List<String> links, ReceiverConsumer<QueueBuilder> consumer) {
         var prebuiltInventory = SimpleItemQueue.of();
-        ConsumerExecutor.execute(consumer, QueueBuilder.of(getFormat(), prebuiltInventory));
+        consumer.accept(QueueBuilder.of(getFormat(), prebuiltInventory));
         return insert(links, prebuiltInventory);
     }
 
@@ -149,8 +148,8 @@ public abstract class AbstractQueueBuilder<T extends AbstractQueueBuilder<T>> {
      * @param consumer Consumer that consumes AbstractSubInventoryBuilder
      * @return returns self
      */
-    public T call(Consumer<T> consumer) {
-        ConsumerExecutor.execute(consumer, self());
+    public T call(ReceiverConsumer<T> consumer) {
+        consumer.accept(self());
         return self();
     }
 

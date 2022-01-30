@@ -18,6 +18,7 @@ package org.screamingsandals.simpleinventories.builder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.utils.ReceiverConsumer;
 import org.screamingsandals.simpleinventories.events.*;
 import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
@@ -26,7 +27,6 @@ import org.screamingsandals.simpleinventories.inventory.SubInventoryLike;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 @Getter
 @RequiredArgsConstructor(staticName = "of")
@@ -93,32 +93,32 @@ public class InventorySetBuilder extends CategoryBuilder {
         return this;
     }
 
-    public InventorySetBuilder render(Consumer<ItemRenderEvent> consumer) {
+    public InventorySetBuilder render(ReceiverConsumer<ItemRenderEvent> consumer) {
         inventorySet.getEventManager().register(ItemRenderEvent.class, consumer);
         return this;
     }
 
-    public InventorySetBuilder preClick(Consumer<PreClickEvent> consumer) {
+    public InventorySetBuilder preClick(ReceiverConsumer<PreClickEvent> consumer) {
         inventorySet.getEventManager().register(PreClickEvent.class, consumer);
         return this;
     }
 
-    public InventorySetBuilder click(Consumer<PostClickEvent> consumer) {
+    public InventorySetBuilder click(ReceiverConsumer<PostClickEvent> consumer) {
         inventorySet.getEventManager().register(PostClickEvent.class, consumer);
         return this;
     }
 
-    public InventorySetBuilder open(Consumer<SubInventoryOpenEvent> consumer) {
+    public InventorySetBuilder open(ReceiverConsumer<SubInventoryOpenEvent> consumer) {
         inventorySet.getEventManager().register(SubInventoryOpenEvent.class, consumer);
         return this;
     }
 
-    public InventorySetBuilder close(Consumer<SubInventoryCloseEvent> consumer) {
+    public InventorySetBuilder close(ReceiverConsumer<SubInventoryCloseEvent> consumer) {
         inventorySet.getEventManager().register(SubInventoryCloseEvent.class, consumer);
         return this;
     }
 
-    public InventorySetBuilder buy(Consumer<OnTradeEvent> consumer) {
+    public InventorySetBuilder buy(ReceiverConsumer<OnTradeEvent> consumer) {
         inventorySet.getEventManager().register(OnTradeEvent.class, consumer);
         return this;
     }
@@ -126,7 +126,7 @@ public class InventorySetBuilder extends CategoryBuilder {
     /* TODO: Create annotation processor that will generate overrides of self-returning methods you can see below */
 
     @Override
-    public InventorySetBuilder categoryOptions(Consumer<LocalOptionsBuilder> consumer) {
+    public InventorySetBuilder categoryOptions(ReceiverConsumer<LocalOptionsBuilder> consumer) {
         return (InventorySetBuilder) super.categoryOptions(consumer);
     }
 
@@ -136,7 +136,7 @@ public class InventorySetBuilder extends CategoryBuilder {
     }
 
     @Override
-    public InventorySetBuilder category(Object material, Consumer<ItemInfoBuilder> consumer) {
+    public InventorySetBuilder category(Object material, ReceiverConsumer<ItemInfoBuilder> consumer) {
         return (InventorySetBuilder) super.category(material, consumer);
     }
 
@@ -146,7 +146,7 @@ public class InventorySetBuilder extends CategoryBuilder {
     }
 
     @Override
-    public InventorySetBuilder item(Object material, Consumer<ItemInfoBuilder> consumer) {
+    public InventorySetBuilder item(Object material, ReceiverConsumer<ItemInfoBuilder> consumer) {
         return (InventorySetBuilder) super.item(material, consumer);
     }
 
@@ -156,7 +156,7 @@ public class InventorySetBuilder extends CategoryBuilder {
     }
 
     @Override
-    public InventorySetBuilder cosmetic(Consumer<ItemInfoBuilder> consumer) {
+    public InventorySetBuilder cosmetic(ReceiverConsumer<ItemInfoBuilder> consumer) {
         return (InventorySetBuilder) super.cosmetic(consumer);
     }
 
@@ -166,7 +166,7 @@ public class InventorySetBuilder extends CategoryBuilder {
     }
 
     @Override
-    public InventorySetBuilder itemClone(String link, Consumer<ItemInfoBuilder> consumer) {
+    public InventorySetBuilder itemClone(String link, ReceiverConsumer<ItemInfoBuilder> consumer) {
         return (InventorySetBuilder) super.itemClone(link, consumer);
     }
 
@@ -181,7 +181,7 @@ public class InventorySetBuilder extends CategoryBuilder {
     }
 
     @Override
-    public InventorySetBuilder hidden(String id, Consumer<CategoryBuilder> consumer) {
+    public InventorySetBuilder hidden(String id, ReceiverConsumer<CategoryBuilder> consumer) {
         return (InventorySetBuilder) super.hidden(id, consumer);
     }
 
@@ -191,7 +191,7 @@ public class InventorySetBuilder extends CategoryBuilder {
     }
 
     @Override
-    public InventorySetBuilder insert(String link, Consumer<QueueBuilder> consumer) {
+    public InventorySetBuilder insert(String link, ReceiverConsumer<QueueBuilder> consumer) {
         return (InventorySetBuilder) super.insert(link, consumer);
     }
 
@@ -201,7 +201,7 @@ public class InventorySetBuilder extends CategoryBuilder {
     }
 
     @Override
-    public InventorySetBuilder insert(List<String> links, Consumer<QueueBuilder> consumer) {
+    public InventorySetBuilder insert(List<String> links, ReceiverConsumer<QueueBuilder> consumer) {
         return (InventorySetBuilder) super.insert(links, consumer);
     }
 
@@ -211,7 +211,7 @@ public class InventorySetBuilder extends CategoryBuilder {
     }
 
     @Override
-    public InventorySetBuilder call(Consumer<CategoryBuilder> consumer) {
+    public InventorySetBuilder call(ReceiverConsumer<CategoryBuilder> consumer) {
         return (InventorySetBuilder) super.call(consumer);
     }
 }

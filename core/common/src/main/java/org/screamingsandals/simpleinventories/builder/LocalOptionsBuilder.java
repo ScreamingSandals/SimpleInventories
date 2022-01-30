@@ -20,11 +20,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.utils.ReceiverConsumer;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.screamingsandals.lib.item.builder.ItemBuilder;
 import org.screamingsandals.lib.item.builder.ItemFactory;
-
-import java.util.function.Consumer;
 
 @RequiredArgsConstructor(staticName = "of")
 @Getter
@@ -38,27 +37,27 @@ public class LocalOptionsBuilder {
     public static final int RENDER_HEADER_START = LocalOptions.RENDER_HEADER_START;
     public static final int RENDER_FOOTER_START = LocalOptions.RENDER_FOOTER_START;
 
-    public LocalOptionsBuilder backItem(Consumer<ItemBuilder> consumer) {
+    public LocalOptionsBuilder backItem(ReceiverConsumer<ItemBuilder> consumer) {
         localOptions.setBackItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
         return this;
     }
 
-    public LocalOptionsBuilder pageBackItem(Consumer<ItemBuilder> consumer) {
+    public LocalOptionsBuilder pageBackItem(ReceiverConsumer<ItemBuilder> consumer) {
         localOptions.setPageBackItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
         return this;
     }
 
-    public LocalOptionsBuilder pageForwardItem(Consumer<ItemBuilder> consumer) {
+    public LocalOptionsBuilder pageForwardItem(ReceiverConsumer<ItemBuilder> consumer) {
         localOptions.setPageForwardItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
         return this;
     }
 
-    public LocalOptionsBuilder cosmeticItem(Consumer<ItemBuilder> consumer) {
+    public LocalOptionsBuilder cosmeticItem(ReceiverConsumer<ItemBuilder> consumer) {
         localOptions.setCosmeticItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
         return this;
     }
 
-    public LocalOptionsBuilder emptySlotItem(Consumer<ItemBuilder> consumer) {
+    public LocalOptionsBuilder emptySlotItem(ReceiverConsumer<ItemBuilder> consumer) {
         localOptions.setEmptySlotItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
         return this;
     }
@@ -88,27 +87,27 @@ public class LocalOptionsBuilder {
         return this;
     }
 
-    public LocalOptionsBuilder backItem(Object stack, Consumer<ItemBuilder> consumer) {
+    public LocalOptionsBuilder backItem(Object stack, ReceiverConsumer<ItemBuilder> consumer) {
         localOptions.setBackItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
         return this;
     }
 
-    public LocalOptionsBuilder pageBackItem(Object stack, Consumer<ItemBuilder> consumer) {
+    public LocalOptionsBuilder pageBackItem(Object stack, ReceiverConsumer<ItemBuilder> consumer) {
         localOptions.setPageBackItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
         return this;
     }
 
-    public LocalOptionsBuilder pageForwardItem(Object stack, Consumer<ItemBuilder> consumer) {
+    public LocalOptionsBuilder pageForwardItem(Object stack, ReceiverConsumer<ItemBuilder> consumer) {
         localOptions.setPageForwardItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
         return this;
     }
 
-    public LocalOptionsBuilder cosmeticItem(Object stack, Consumer<ItemBuilder> consumer) {
+    public LocalOptionsBuilder cosmeticItem(Object stack, ReceiverConsumer<ItemBuilder> consumer) {
         localOptions.setCosmeticItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
         return this;
     }
 
-    public LocalOptionsBuilder emptySlotItem(Object stack, Consumer<ItemBuilder> consumer) {
+    public LocalOptionsBuilder emptySlotItem(Object stack, ReceiverConsumer<ItemBuilder> consumer) {
         localOptions.setEmptySlotItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
         return this;
     }

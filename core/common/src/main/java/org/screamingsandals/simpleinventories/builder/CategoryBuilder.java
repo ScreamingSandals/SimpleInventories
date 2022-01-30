@@ -18,9 +18,7 @@ package org.screamingsandals.simpleinventories.builder;
 
 import lombok.*;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.lib.utils.ConsumerExecutor;
-
-import java.util.function.Consumer;
+import org.screamingsandals.lib.utils.ReceiverConsumer;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,8 +34,8 @@ public class CategoryBuilder extends AbstractQueueBuilder<CategoryBuilder> {
         getSubInventory().putIntoQueue(queueable);
     }
 
-    public CategoryBuilder categoryOptions(Consumer<LocalOptionsBuilder> consumer) {
-        ConsumerExecutor.execute(consumer, getCategoryOptions());
+    public CategoryBuilder categoryOptions(ReceiverConsumer<LocalOptionsBuilder> consumer) {
+        consumer.accept(getCategoryOptions());
         return this;
     }
 

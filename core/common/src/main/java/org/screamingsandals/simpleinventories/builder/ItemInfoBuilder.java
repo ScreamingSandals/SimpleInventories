@@ -38,7 +38,6 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
@@ -50,8 +49,8 @@ public class ItemInfoBuilder extends CategoryBuilder {
 
     public static final Pattern PRICE_PATTERN = Pattern.compile("(?<price>\\d+)(\\s+of\\s+|\\s+)(?<currency>[a-zA-Z0-9]+)?");
 
-    public ItemInfoBuilder stack(Consumer<ItemBuilder> consumer) {
-        ConsumerExecutor.execute(consumer, getStack());
+    public ItemInfoBuilder stack(ReceiverConsumer<ItemBuilder> consumer) {
+        consumer.accept(getStack());
         processItemBuilderIfOpened();
         return this;
     }
@@ -310,8 +309,8 @@ public class ItemInfoBuilder extends CategoryBuilder {
         return AnimationBuilder.of(itemInfo.getAnimation());
     }
 
-    public ItemInfoBuilder animation(Consumer<AnimationBuilder> consumer) {
-        ConsumerExecutor.execute(consumer, getAnimation());
+    public ItemInfoBuilder animation(ReceiverConsumer<AnimationBuilder> consumer) {
+        consumer.accept(getAnimation());
         return this;
     }
 
@@ -345,22 +344,22 @@ public class ItemInfoBuilder extends CategoryBuilder {
         return this;
     }
 
-    public ItemInfoBuilder render(Consumer<ItemRenderEvent> consumer) {
+    public ItemInfoBuilder render(ReceiverConsumer<ItemRenderEvent> consumer) {
         itemInfo.getEventManager().register(ItemRenderEvent.class, consumer);
         return this;
     }
 
-    public ItemInfoBuilder preClick(Consumer<PreClickEvent> consumer) {
+    public ItemInfoBuilder preClick(ReceiverConsumer<PreClickEvent> consumer) {
         itemInfo.getEventManager().register(PreClickEvent.class, consumer);
         return this;
     }
 
-    public ItemInfoBuilder click(Consumer<PostClickEvent> consumer) {
+    public ItemInfoBuilder click(ReceiverConsumer<PostClickEvent> consumer) {
         itemInfo.getEventManager().register(PostClickEvent.class, consumer);
         return this;
     }
 
-    public ItemInfoBuilder buy(Consumer<OnTradeEvent> consumer) {
+    public ItemInfoBuilder buy(ReceiverConsumer<OnTradeEvent> consumer) {
         itemInfo.getEventManager().register(OnTradeEvent.class, consumer);
         return this;
     }
@@ -415,7 +414,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     /* TODO: Create annotation processor that will generate overrides of self-returning methods you can see below */
 
     @Override
-    public ItemInfoBuilder categoryOptions(Consumer<LocalOptionsBuilder> consumer) {
+    public ItemInfoBuilder categoryOptions(ReceiverConsumer<LocalOptionsBuilder> consumer) {
         return (ItemInfoBuilder) super.categoryOptions(consumer);
     }
 
@@ -425,7 +424,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     @Override
-    public ItemInfoBuilder category(Object material, Consumer<ItemInfoBuilder> consumer) {
+    public ItemInfoBuilder category(Object material, ReceiverConsumer<ItemInfoBuilder> consumer) {
         return (ItemInfoBuilder) super.category(material, consumer);
     }
 
@@ -435,7 +434,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     @Override
-    public ItemInfoBuilder item(Object material, Consumer<ItemInfoBuilder> consumer) {
+    public ItemInfoBuilder item(Object material, ReceiverConsumer<ItemInfoBuilder> consumer) {
         return (ItemInfoBuilder) super.item(material, consumer);
     }
 
@@ -445,7 +444,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     @Override
-    public ItemInfoBuilder cosmetic(Consumer<ItemInfoBuilder> consumer) {
+    public ItemInfoBuilder cosmetic(ReceiverConsumer<ItemInfoBuilder> consumer) {
         return (ItemInfoBuilder) super.cosmetic(consumer);
     }
 
@@ -455,7 +454,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     @Override
-    public ItemInfoBuilder itemClone(String link, Consumer<ItemInfoBuilder> consumer) {
+    public ItemInfoBuilder itemClone(String link, ReceiverConsumer<ItemInfoBuilder> consumer) {
         return (ItemInfoBuilder) super.itemClone(link, consumer);
     }
 
@@ -470,7 +469,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     @Override
-    public ItemInfoBuilder hidden(String id, Consumer<CategoryBuilder> consumer) {
+    public ItemInfoBuilder hidden(String id, ReceiverConsumer<CategoryBuilder> consumer) {
         return (ItemInfoBuilder) super.hidden(id, consumer);
     }
 
@@ -480,7 +479,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     @Override
-    public ItemInfoBuilder insert(String link, Consumer<QueueBuilder> consumer) {
+    public ItemInfoBuilder insert(String link, ReceiverConsumer<QueueBuilder> consumer) {
         return (ItemInfoBuilder) super.insert(link, consumer);
     }
 
@@ -490,7 +489,7 @@ public class ItemInfoBuilder extends CategoryBuilder {
     }
 
     @Override
-    public ItemInfoBuilder insert(List<String> links, Consumer<QueueBuilder> consumer) {
+    public ItemInfoBuilder insert(List<String> links, ReceiverConsumer<QueueBuilder> consumer) {
         return (ItemInfoBuilder) super.insert(links, consumer);
     }
 

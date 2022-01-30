@@ -23,13 +23,11 @@ import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemBuilder;
 import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.lib.player.PlayerWrapper;
-import org.screamingsandals.lib.utils.ConsumerExecutor;
+import org.screamingsandals.lib.utils.ReceiverConsumer;
 import org.screamingsandals.simpleinventories.builder.AnimationBuilder;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-
-import java.util.function.Consumer;
 
 @Data
 @RequiredArgsConstructor
@@ -86,21 +84,21 @@ public class ItemRenderEvent implements SEvent {
         return AnimationBuilder.of(item.getAnimation());
     }
 
-    public ItemRenderEvent animation(Consumer<AnimationBuilder> consumer) {
-        ConsumerExecutor.execute(consumer, getAnimation());
+    public ItemRenderEvent animation(ReceiverConsumer<AnimationBuilder> consumer) {
+        consumer.accept(getAnimation());
         return this;
     }
 
-    public ItemRenderEvent stack(Consumer<ItemBuilder> consumer) {
+    public ItemRenderEvent stack(ReceiverConsumer<ItemBuilder> consumer) {
         var builder = item.getStack().builder();
-        ConsumerExecutor.execute(consumer, builder);
+        consumer.accept(builder);
         item.setStack(builder.build().orElse(ItemFactory.getAir()));
         return this;
     }
 
-    public ItemRenderEvent clearStack(Consumer<ItemBuilder> consumer) {
+    public ItemRenderEvent clearStack(ReceiverConsumer<ItemBuilder> consumer) {
         var builder = ItemFactory.builder();
-        ConsumerExecutor.execute(consumer, builder);
+        consumer.accept(builder);
         item.setStack(builder.build().orElse(ItemFactory.getAir()));
         return this;
     }
@@ -113,8 +111,8 @@ public class ItemRenderEvent implements SEvent {
         return item.getPlayer();
     }
 
-    public ItemRenderEvent player(Consumer<PlayerWrapper> consumer) {
-        ConsumerExecutor.execute(consumer, getPlayer());
+    public ItemRenderEvent player(ReceiverConsumer<PlayerWrapper> consumer) {
+        consumer.accept(getPlayer());
         return this;
     }
 }
