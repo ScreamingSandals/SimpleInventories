@@ -3,7 +3,9 @@
 
 name: Simple Inventories CI
 
-on: push
+on:
+  push:
+    branches: [ v2.0 ]
 
 jobs:
   build:
