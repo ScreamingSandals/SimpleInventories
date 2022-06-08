@@ -17,11 +17,11 @@
 package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.*;
-import net.kyori.adventure.inventory.Book;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.spectator.Book;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,7 +163,7 @@ public class GenericItemInfo implements Cloneable, IdentifiableEntry {
         info.written = written;
         info.id = id;
         properties.stream().map(Property::clone).forEach(info.properties::add);
-        info.book = book != null ? Book.book(book.title(), book.author(), book.pages()) : null;
+        info.book = book != null ? Book.builder().title(book.title()).author(book.author()).pages(book.pages()).build() : null;
         info.eventManager.cloneEventManager(eventManager);
         info.executions.addAll(executions);
         prices.stream().map(Price::clone).forEach(info.prices::add);

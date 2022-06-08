@@ -17,7 +17,7 @@
 package org.screamingsandals.simpleinventories.render;
 
 import lombok.*;
-import net.kyori.adventure.text.Component;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.tasker.task.TaskerTask;
 import org.screamingsandals.simpleinventories.events.SubInventoryOpenEvent;
 import org.screamingsandals.simpleinventories.inventory.*;
@@ -174,8 +174,8 @@ public abstract class InventoryRenderer {
         var prefix = options.getPrefix();
         if (options.isShowPageNumber()) {
             prefix = prefix
-                    .append(Component.text(" - "))
-                    .append(Component.text(page + 1));
+                    .withAppendix(Component.text(" - "))
+                    .withAppendix(Component.text(page + 1));
         }
         return prefix;
     }

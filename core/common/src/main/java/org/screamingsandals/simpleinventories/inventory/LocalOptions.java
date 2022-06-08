@@ -20,11 +20,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.item.Item;
 import org.screamingsandals.lib.item.builder.ItemFactory;
-import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.spectator.Component;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -263,7 +262,7 @@ public class LocalOptions implements Cloneable {
                 this.prefix = prefix.get(Component.class);
             } catch (SerializationException ignored) {
                 try {
-                    this.prefix = AdventureHelper.toComponent(prefix.getString());
+                    this.prefix = Component.fromLegacy(prefix.getString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

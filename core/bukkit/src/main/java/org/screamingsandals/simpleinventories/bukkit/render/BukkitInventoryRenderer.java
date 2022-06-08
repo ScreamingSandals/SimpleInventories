@@ -23,7 +23,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
-import org.screamingsandals.lib.utils.AdventureHelper;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.holder.StandardInventoryHolder;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
@@ -56,11 +55,11 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
         if (SIZEABLE_CONTAINERS.contains(options.getInventoryType().toUpperCase())) {
             inventory = Bukkit.createInventory(
                     inventoryHolder, options.getRenderActualRows() * options.getItemsOnRow(),
-                    AdventureHelper.toLegacy(getTitle()));
+                    getTitle().toLegacy());
         } else {
             inventory = Bukkit.createInventory(
                     inventoryHolder, InventoryType.valueOf(options.getInventoryType().toUpperCase()),
-                    AdventureHelper.toLegacy(getTitle()));
+                    getTitle().toLegacy());
         }
         inventoryHolder.setInventoryRenderer(this);
         inventoryHolder.setInventory(inventory);

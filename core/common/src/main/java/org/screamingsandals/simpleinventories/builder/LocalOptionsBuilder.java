@@ -18,8 +18,7 @@ package org.screamingsandals.simpleinventories.builder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.Component;
-import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.ReceiverConsumer;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.screamingsandals.lib.item.builder.ItemBuilder;
@@ -153,7 +152,7 @@ public class LocalOptionsBuilder {
     }
 
     public LocalOptionsBuilder prefix(String prefix) {
-        localOptions.setPrefix(AdventureHelper.toComponent(prefix));
+        localOptions.setPrefix(Component.fromLegacy(prefix));
         return this;
     }
 

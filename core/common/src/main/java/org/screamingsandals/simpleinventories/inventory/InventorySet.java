@@ -18,10 +18,9 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.Data;
 import lombok.ToString;
-import net.kyori.adventure.text.Component;
 import org.screamingsandals.lib.container.Openable;
 import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.utils.AdventureHelper;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
@@ -72,7 +71,7 @@ public class InventorySet implements Openable {
     }
 
     public Component processPlaceholders(PlayerWrapper player, Component text, PlayerItemInfo info) {
-        return AdventureHelper.toComponent(processPlaceholders(player, AdventureHelper.toLegacy(text), info));
+        return Component.fromLegacy(processPlaceholders(player, text.toLegacy(), info)); // Misat, tell me, what tf is this?
     }
 
     public String processPlaceholders(PlayerWrapper player, String text, PlayerItemInfo info) {
