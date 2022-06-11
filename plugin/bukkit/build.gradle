@@ -5,7 +5,7 @@ enableShadowPlugin()
 dependencies {
     implementation project(':core-bukkit')
     implementation screaming('cloud-bukkit', SCREAMING_LIB_VERSION)
-    annotationProcessor screaming('screaming-annotation', SCREAMING_LIB_VERSION)
+    annotationProcessor screaming('annotation', SCREAMING_LIB_VERSION)
 
     compileOnly paperLegacy(PAPER_VERSION)
 }
