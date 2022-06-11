@@ -29,7 +29,7 @@ import cloud.commandframework.permission.OrPermission;
 import cloud.commandframework.permission.Permission;
 import lombok.SneakyThrows;
 import org.screamingsandals.lib.Server;
-import org.screamingsandals.lib.command.CloudConstructor;
+import org.screamingsandals.lib.cloud.CloudConstructor;
 import org.screamingsandals.lib.player.PlayerMapper;
 import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.lib.plugin.PluginContainer;
