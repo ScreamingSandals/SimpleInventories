@@ -645,7 +645,11 @@ public class MaterialSearchEngine {
 
         isLegacy = versionNumber < 113;
 	}
-	
+
+	public static int getVersionNumber() {
+		return versionNumber;
+	}
+
 	public static Result find(String materialArgument) {
 		String[] splitByColon = materialArgument.split(":");
 		String materialString = splitByColon[0];

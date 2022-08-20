@@ -11,9 +11,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
-import org.screamingsandals.simpleinventories.utils.EnchantmentSearchEngine;
-import org.screamingsandals.simpleinventories.utils.PotionTypeSearchEngine;
-import org.screamingsandals.simpleinventories.utils.StackParser;
+import org.screamingsandals.simpleinventories.utils.*;
 
 import java.util.List;
 
@@ -117,10 +115,14 @@ public class GroovyBukkitStackBuilder implements IGroovyStackBuilder {
 
     @Override
     public void potion(String potion) {
-        ItemMeta meta = stack.getItemMeta();
-        if (meta instanceof PotionMeta) {
-            ((PotionMeta) meta).setBasePotionData(PotionTypeSearchEngine.find(potion));
-            stack.setItemMeta(meta);
+        if (MaterialSearchEngine.getVersionNumber() == 108) {
+            stack.setDurability(PotionTypeSearchEngine1_8_8.find(potion).toDamageValue());
+        } else {
+            ItemMeta meta = stack.getItemMeta();
+            if (meta instanceof PotionMeta) {
+                ((PotionMeta) meta).setBasePotionData(PotionTypeSearchEngine.find(potion));
+                stack.setItemMeta(meta);
+            }
         }
     }
 

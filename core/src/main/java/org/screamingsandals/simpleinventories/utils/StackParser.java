@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
@@ -302,10 +303,22 @@ public class StackParser {
 		if (obj.containsKey("potion-type") && meta instanceof PotionMeta) {
 			Object ob = obj.get("potion-type");
 			PotionMeta potion = (PotionMeta) meta;
-			if (ob instanceof PotionType) {
-				potion.setBasePotionData(new PotionData((PotionType) ob));
+			if (MaterialSearchEngine.getVersionNumber() == 108) {
+				stack.setItemMeta(meta); // we cannot access ItemMeta#setDurability anymore due to newer api version in dependencies, so we have to unpack it
+
+				if (ob instanceof PotionType) {
+					stack.setDurability(new Potion((PotionType) ob).toDamageValue());
+				} else {
+					stack.setDurability(PotionTypeSearchEngine1_8_8.find(ob.toString()).toDamageValue());
+				}
+
+				return stack; // return earlier
 			} else {
-				potion.setBasePotionData(PotionTypeSearchEngine.find(ob.toString()));
+				if (ob instanceof PotionType) {
+					potion.setBasePotionData(new PotionData((PotionType) ob));
+				} else {
+					potion.setBasePotionData(PotionTypeSearchEngine.find(ob.toString()));
+				}
 			}
 		}
 		
