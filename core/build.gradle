@@ -1,6 +1,6 @@
 dependencies {
     compileOnly 'com.univocity:univocity-parsers:2.8.3'
-    compileOnly 'org.codehaus.groovy:groovy:3.0.3'
-    compileOnly 'me.clip:placeholderapi:2.10.4'
+    compileOnly 'org.codehaus.groovy:groovy:3.0.16'
+    compileOnly 'me.clip:placeholderapi:2.11.3'
     compileOnly 'io.netty:netty-all:4.1.42.Final'
 }

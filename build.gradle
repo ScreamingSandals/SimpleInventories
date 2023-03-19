@@ -1,29 +1,24 @@
+plugins {
+    id 'org.screamingsandals.plugin-builder' version '1.0.81' apply false
+}
+
 defaultTasks 'clean', 'screamCompile'
 
 allprojects {
     group = 'org.screamingsandals.simpleinventories'
-    version = '1.0.6.7'
-}
-
-buildscript {
-    repositories {
-        maven { url 'https://repo.screamingsandals.org/public/' }
-    }
-    dependencies {
-		classpath 'org.screamingsandals.gradle.builder:screaming-plugin-builder:1.0.43'
-    }
+    version = '1.0.6.8'
 }
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'org.screamingsandals.gradle.builder'
+    apply plugin: 'org.screamingsandals.plugin-builder'
 
     repositories {
         maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'  }
     }
     
     dependencies {
-    	compileOnly paper("1.16.1")
+    	compileOnly paperLegacy("1.16.1")
     }
 
     sourceCompatibility = '1.8'

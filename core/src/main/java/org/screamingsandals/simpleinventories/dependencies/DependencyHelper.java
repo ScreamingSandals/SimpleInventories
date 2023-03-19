@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum DependencyHelper {
-    GROOVY("groovy.util.GroovyScriptEngine", "Groovy", "3.0.3"),
+    GROOVY("groovy.util.GroovyScriptEngine", "Groovy", "3.0.16"),
     UNIVOCITY("com.univocity.parsers.csv.CsvParser", "Univocity", "2.8.3");
 
     private final String checkClass;
