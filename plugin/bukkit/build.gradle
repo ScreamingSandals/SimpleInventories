@@ -4,10 +4,10 @@ enableShadowPlugin()
 
 dependencies {
     implementation project(':core-bukkit')
-    implementation screaming('cloud-bukkit', SCREAMING_LIB_VERSION)
-    annotationProcessor screaming('annotation', SCREAMING_LIB_VERSION)
+    implementation libs.slib.cloud.bukkit
+    annotationProcessor libs.slib.annotation
 
-    compileOnly paperLegacy(PAPER_VERSION)
+    api libs.paper
 }
 
 shadowJar {

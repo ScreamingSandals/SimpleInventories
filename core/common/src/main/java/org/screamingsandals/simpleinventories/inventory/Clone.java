@@ -36,7 +36,7 @@ public class Clone implements Cloneable {
 
     public void cloneInto(GenericItemInfo original, GenericItemInfo newOne) {
         if (original != null) {
-            if (original.getItem() != null && !original.getItem().getMaterial().isAir() && (cloneMethod.isOverride() || newOne.getItem() == null || newOne.getItem().getMaterial().isAir())) {
+            if (original.getItem() != null && !original.getItem().getType().isAir() && (cloneMethod.isOverride() || newOne.getItem() == null || newOne.getItem().getType().isAir())) {
                 newOne.setItem(original.getItem());
             }
             if (original.hasAnimation()) {

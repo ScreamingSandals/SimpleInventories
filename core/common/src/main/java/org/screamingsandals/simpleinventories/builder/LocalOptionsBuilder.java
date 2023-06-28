@@ -21,8 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.ReceiverConsumer;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
-import org.screamingsandals.lib.item.builder.ItemBuilder;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemStackBuilder;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 
 @RequiredArgsConstructor(staticName = "of")
 @Getter
@@ -36,78 +36,93 @@ public class LocalOptionsBuilder {
     public static final int RENDER_HEADER_START = LocalOptions.RENDER_HEADER_START;
     public static final int RENDER_FOOTER_START = LocalOptions.RENDER_FOOTER_START;
 
-    public LocalOptionsBuilder backItem(ReceiverConsumer<ItemBuilder> consumer) {
-        localOptions.setBackItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
+    public LocalOptionsBuilder backItem(ReceiverConsumer<ItemStackBuilder> consumer) {
+        var item = ItemStackFactory.build(consumer);
+        localOptions.setBackItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
-    public LocalOptionsBuilder pageBackItem(ReceiverConsumer<ItemBuilder> consumer) {
-        localOptions.setPageBackItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
+    public LocalOptionsBuilder pageBackItem(ReceiverConsumer<ItemStackBuilder> consumer) {
+        var item = ItemStackFactory.build(consumer);
+        localOptions.setPageBackItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
-    public LocalOptionsBuilder pageForwardItem(ReceiverConsumer<ItemBuilder> consumer) {
-        localOptions.setPageForwardItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
+    public LocalOptionsBuilder pageForwardItem(ReceiverConsumer<ItemStackBuilder> consumer) {
+        var item = ItemStackFactory.build(consumer);
+        localOptions.setPageForwardItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
-    public LocalOptionsBuilder cosmeticItem(ReceiverConsumer<ItemBuilder> consumer) {
-        localOptions.setCosmeticItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
+    public LocalOptionsBuilder cosmeticItem(ReceiverConsumer<ItemStackBuilder> consumer) {
+        var item = ItemStackFactory.build(consumer);
+        localOptions.setCosmeticItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
-    public LocalOptionsBuilder emptySlotItem(ReceiverConsumer<ItemBuilder> consumer) {
-        localOptions.setEmptySlotItem(ItemFactory.build(consumer).orElse(ItemFactory.getAir()));
+    public LocalOptionsBuilder emptySlotItem(ReceiverConsumer<ItemStackBuilder> consumer) {
+        var item = ItemStackFactory.build(consumer);
+        localOptions.setEmptySlotItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
     public LocalOptionsBuilder backItem(Object stack) {
-        localOptions.setBackItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
+        var item = ItemStackFactory.build(stack);
+        localOptions.setBackItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
     public LocalOptionsBuilder pageBackItem(Object stack) {
-        localOptions.setPageBackItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
+        var item = ItemStackFactory.build(stack);
+        localOptions.setPageBackItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
     public LocalOptionsBuilder pageForwardItem(Object stack) {
-        localOptions.setPageForwardItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
+        var item = ItemStackFactory.build(stack);
+        localOptions.setPageForwardItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
     public LocalOptionsBuilder cosmeticItem(Object stack) {
-        localOptions.setCosmeticItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
+        var item = ItemStackFactory.build(stack);
+        localOptions.setCosmeticItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
     public LocalOptionsBuilder emptySlotItem(Object stack) {
-        localOptions.setEmptySlotItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
+        var item = ItemStackFactory.build(stack);
+        localOptions.setEmptySlotItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
-    public LocalOptionsBuilder backItem(Object stack, ReceiverConsumer<ItemBuilder> consumer) {
-        localOptions.setBackItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
+    public LocalOptionsBuilder backItem(Object stack, ReceiverConsumer<ItemStackBuilder> consumer) {
+        var item = ItemStackFactory.build(stack, consumer);
+        localOptions.setBackItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
-    public LocalOptionsBuilder pageBackItem(Object stack, ReceiverConsumer<ItemBuilder> consumer) {
-        localOptions.setPageBackItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
+    public LocalOptionsBuilder pageBackItem(Object stack, ReceiverConsumer<ItemStackBuilder> consumer) {
+        var item = ItemStackFactory.build(stack, consumer);
+        localOptions.setPageBackItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
-    public LocalOptionsBuilder pageForwardItem(Object stack, ReceiverConsumer<ItemBuilder> consumer) {
-        localOptions.setPageForwardItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
+    public LocalOptionsBuilder pageForwardItem(Object stack, ReceiverConsumer<ItemStackBuilder> consumer) {
+        var item = ItemStackFactory.build(stack, consumer);
+        localOptions.setPageForwardItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
-    public LocalOptionsBuilder cosmeticItem(Object stack, ReceiverConsumer<ItemBuilder> consumer) {
-        localOptions.setCosmeticItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
+    public LocalOptionsBuilder cosmeticItem(Object stack, ReceiverConsumer<ItemStackBuilder> consumer) {
+        var item = ItemStackFactory.build(stack, consumer);
+        localOptions.setCosmeticItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 
-    public LocalOptionsBuilder emptySlotItem(Object stack, ReceiverConsumer<ItemBuilder> consumer) {
-        localOptions.setEmptySlotItem(ItemFactory.build(stack, consumer).orElse(ItemFactory.getAir()));
+    public LocalOptionsBuilder emptySlotItem(Object stack, ReceiverConsumer<ItemStackBuilder> consumer) {
+        var item = ItemStackFactory.build(stack, consumer);
+        localOptions.setEmptySlotItem(item != null ? item : ItemStackFactory.getAir());
         return this;
     }
 

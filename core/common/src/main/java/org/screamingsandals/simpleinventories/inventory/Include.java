@@ -48,10 +48,7 @@ public class Include implements Queueable {
             Map.entry("groovy", GroovyLoader::new),
             Map.entry("gvy", GroovyLoader::new),
             Map.entry("gy", GroovyLoader::new),
-            Map.entry("gsh", GroovyLoader::new),
-            // Univocity
-            Map.entry("csv", CsvLoader::new),
-            Map.entry("txt", CsvLoader::new)
+            Map.entry("gsh", GroovyLoader::new)
     );
 
     private final Path path;

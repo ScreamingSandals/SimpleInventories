@@ -18,7 +18,7 @@ package org.screamingsandals.simpleinventories.operations.conditions;
 
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 public class OrCondition extends AbstractCondition {
 
@@ -27,7 +27,7 @@ public class OrCondition extends AbstractCondition {
 	}
 
 	@Override
-	protected boolean process(PlayerWrapper player, Object obj1, Object obj2, PlayerItemInfo info) {
+	protected boolean process(Player player, Object obj1, Object obj2, PlayerItemInfo info) {
 		return new BooleanCondition(format, obj1).process(player, info)
 			|| new BooleanCondition(format, obj2).process(player, info);
 	}

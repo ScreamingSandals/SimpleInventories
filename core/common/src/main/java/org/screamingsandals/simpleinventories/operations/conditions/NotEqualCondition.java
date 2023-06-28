@@ -19,7 +19,7 @@ package org.screamingsandals.simpleinventories.operations.conditions;
 
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 public class NotEqualCondition extends EqualsCondition {
 
@@ -28,7 +28,7 @@ public class NotEqualCondition extends EqualsCondition {
 	}
 
 	@Override
-	protected boolean process(PlayerWrapper player, Object obj1, Object obj2, PlayerItemInfo info) {
+	protected boolean process(Player player, Object obj1, Object obj2, PlayerItemInfo info) {
 		return !super.process(player, obj1, obj2, info);
 	}
 

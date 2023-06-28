@@ -1,0 +1,47 @@
+[versions]
+# slib
+slib = "2.0.3-SNAPSHOT"
+
+# platforms
+paper = "1.16.5-R0.1-SNAPSHOT"
+sponge = "8.1.3"
+minestom = "master-SNAPSHOT"
+groovy = "3.0.16"
+
+# kotlin-extra (compileOnly)
+kotlin = "1.6.20-M1"
+
+# all modules (compileOnly)
+configurate = "4.1.2"
+
+# plugins
+screaming-plugin-builder = "1.0.81"
+buildconfig = "3.0.2"
+
+[libraries]
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+groovy = { group = "org.codehaus.groovy", name = "groovy", version.ref = "groovy" }
+
+# configurate
+configurate-core = { group = "org.spongepowered", name = "configurate-core", version.ref = "configurate" }
+configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
+configurate-gson = { group = "org.spongepowered", name = "configurate-gson", version.ref = "configurate" }
+configurate-hocon = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate" }
+configurate-xml = { group = "org.spongepowered", name = "configurate-xml", version.ref = "configurate" }
+
+# slib
+slib-core-common = { group = "org.screamingsandals.lib", name = "core-common", version.ref = "slib" }
+slib-core-bukkit = { group = "org.screamingsandals.lib", name = "core-bukkit", version.ref = "slib" }
+slib-annotation = { group = "org.screamingsandals.lib", name = "annotation", version.ref = "slib" }
+slib-cloud-bukkit = { group = "org.screamingsandals.lib", name = "cloud-bukkit", version.ref = "slib" }
+slib-placeholders-common = { group = "org.screamingsandals.lib", name = "placeholders-common", version.ref = "slib" }
+
+# platforms
+paper = { group = "com.destroystokyo.paper", name = "paper-api", version.ref = "paper" }
+sponge = { group = "org.spongepowered", name = "spongeapi", version.ref = "sponge" }
+minestom = { group = "com.github.Minestom", name = "Minestom", version.ref = "minestom" }
+
+[plugins]
+screaming-plugin-builder = { id = "org.screamingsandals.plugin-builder", version.ref = "screaming-plugin-builder" }
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }

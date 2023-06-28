@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.Players;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.utils.InventoryUtils;
 
@@ -37,7 +37,7 @@ public class BukkitItemDragActionHandler implements Listener {
         if (possibleHolder instanceof AbstractHolder) {
             var player = (Player) event.getWhoClicked();
             var inventoryRenderer = ((AbstractHolder) possibleHolder).getInventoryRenderer();
-            if (!inventoryRenderer.getPlayer().equals(PlayerMapper.wrapPlayer(player))) {
+            if (!inventoryRenderer.getPlayer().equals(Players.wrapPlayer(player))) {
                 event.setCancelled(true);
                 return; // HOW???
             }

@@ -17,12 +17,12 @@
 package org.screamingsandals.simpleinventories.render;
 
 import lombok.*;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.spectator.Component;
-import org.screamingsandals.lib.tasker.task.TaskerTask;
+import org.screamingsandals.lib.tasker.task.Task;
 import org.screamingsandals.simpleinventories.events.SubInventoryOpenEvent;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,18 +30,18 @@ import java.util.Map;
 
 @Getter
 public abstract class InventoryRenderer {
-    protected final PlayerWrapper player;
+    protected final Player player;
     protected SubInventory subInventory;
     protected int page;
 
     protected final Map<Integer, PlayerItemInfo> itemInfoMap = new HashMap<>();
-    protected final Map<Integer, Item> itemStacksInInventory = new HashMap<>();
-    protected final Map<Integer, List<Item>> animations = new HashMap<>();
-    protected TaskerTask animator;
+    protected final Map<Integer, ItemStack> itemStacksInInventory = new HashMap<>();
+    protected final Map<Integer, List<ItemStack>> animations = new HashMap<>();
+    protected Task animator;
     protected int nextAnimationPosition = 0;
     protected boolean mainEventCalled = false;
 
-    public InventoryRenderer(PlayerWrapper player, SubInventory subInventory, int page) {
+    public InventoryRenderer(Player player, SubInventory subInventory, int page) {
         this.player = player;
         this.subInventory = subInventory;
         this.page = page;
@@ -218,7 +218,7 @@ public abstract class InventoryRenderer {
         });
     }
 
-    protected void safePutStackToInventory(int max, int position, Item stack) {
+    protected void safePutStackToInventory(int max, int position, ItemStack stack) {
         if (position >= 0 && position < max) {
             itemStacksInInventory.put(position, stack);
         }

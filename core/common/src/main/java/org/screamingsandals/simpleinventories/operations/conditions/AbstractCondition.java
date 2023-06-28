@@ -16,10 +16,10 @@
 
 package org.screamingsandals.simpleinventories.operations.conditions;
 
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.operations.Operation;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 public abstract class AbstractCondition implements Condition {
 	protected InventorySet format;
@@ -33,7 +33,7 @@ public abstract class AbstractCondition implements Condition {
 	}
 
 	@Override
-	public boolean process(PlayerWrapper player, PlayerItemInfo info) {
+	public boolean process(Player player, PlayerItemInfo info) {
 		Object ob1 = this.obj1;
 		Object ob2 = this.obj2;
 		if (ob1 instanceof Operation) {
@@ -51,7 +51,7 @@ public abstract class AbstractCondition implements Condition {
 		return process(player, ob1, ob2, info);
 	}
 
-	protected abstract boolean process(PlayerWrapper player, Object obj1, Object obj2, PlayerItemInfo info);
+	protected abstract boolean process(Player player, Object obj1, Object obj2, PlayerItemInfo info);
 
 	@Override
 	public String toString() {

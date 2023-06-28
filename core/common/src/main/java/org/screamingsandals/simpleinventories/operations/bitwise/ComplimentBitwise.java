@@ -19,7 +19,7 @@ package org.screamingsandals.simpleinventories.operations.bitwise;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.operations.Operation;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 public class ComplimentBitwise implements Operation {
 	
@@ -32,7 +32,7 @@ public class ComplimentBitwise implements Operation {
 	}
 
 	@Override
-	public Object resolveFor(PlayerWrapper player, PlayerItemInfo info) {
+	public Object resolveFor(Player player, PlayerItemInfo info) {
 		Object ob = this.obj;
 		if (ob instanceof Operation) {
 			ob = ((Operation) ob).resolveFor(player, info);

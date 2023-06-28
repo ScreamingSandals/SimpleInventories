@@ -18,8 +18,8 @@ package org.screamingsandals.simpleinventories.events;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.lib.event.SCancellableEvent;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.event.CancellableEvent;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.utils.ClickType;
 import org.screamingsandals.simpleinventories.inventory.IdentifiableEntry;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
@@ -28,8 +28,8 @@ import org.screamingsandals.simpleinventories.inventory.SubInventory;
 
 @Data
 @RequiredArgsConstructor
-public class PreClickEvent implements SCancellableEvent {
-    private final PlayerWrapper player;
+public class PreClickEvent implements CancellableEvent {
+    private final Player player;
     private final PlayerItemInfo item;
     private final ClickType clickType;
     private final SubInventory subInventory;

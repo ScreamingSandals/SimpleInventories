@@ -1,12 +1,7 @@
 plugins {
-    id 'org.screamingsandals.plugin-builder' version "${SCREAMING_PLUGIN_BUILDER_VERSION}" apply false
-    id 'com.github.gmazzo.buildconfig' version "${BUILDCONFIG_VERSION}" apply false
-    id 'org.jetbrains.kotlin.jvm' version "${KOTLIN_VERSION}" apply false
-}
-
-allprojects {
-    group = 'org.screamingsandals.simpleinventories'
-    version = SIMPLE_INVENTORIES_VERSION
+    alias libs.plugins.screaming.plugin.builder apply false
+    alias libs.plugins.buildconfig apply false
+    alias libs.plugins.kotlin apply false
 }
 
 if (version.toString().endsWith('-SNAPSHOT')) {
@@ -27,9 +22,8 @@ subprojects {
     repositories {
         mavenLocal()
         placeholderApi()
-        minecraftLibraries()
-        jitpack()
-        sponge()
+//        jitpack()
+//        sponge()
     }
 
     sourceCompatibility = 11

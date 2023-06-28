@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package org.screamingsandals.simpleinventories.bukkit.placeholders;
+package org.screamingsandals.simpleinventories.placeholders;
 
-import org.bukkit.entity.Player;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 public class PermissionPlaceholderParser implements IPlaceholderParser {
 
 	@Override
-	public String processPlaceholder(String key, PlayerWrapper player, PlayerItemInfo item, String[] arguments) {
+	public String processPlaceholder(String key, Player player, PlayerItemInfo item, String[] arguments) {
 		if (arguments.length >= 2) {
 			String[] permission = new String[arguments.length - 1];
 			for (int i = 1; i < arguments.length; i++) {
@@ -32,7 +30,7 @@ public class PermissionPlaceholderParser implements IPlaceholderParser {
 			}
 			String perms = String.join(".", permission);
 			if (arguments[0].equalsIgnoreCase("has")) {
-				return Boolean.toString(player.as(Player.class).hasPermission(perms));
+				return Boolean.toString(player.hasPermission(perms));
 			}
 		}
 		return "";

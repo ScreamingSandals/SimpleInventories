@@ -21,8 +21,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.spectator.Component;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -45,11 +45,26 @@ public class LocalOptions implements Cloneable {
     public static final String INVENTORY_TYPE = "CHEST";
     public static final Component PREFIX = Component.text("Inventory");
 
-    public static final Item BACK_ITEM = ItemFactory.build("BARRIER").orElse(ItemFactory.getAir());
-    public static final Item PAGE_BACK_ITEM = ItemFactory.build("ARROW").orElse(ItemFactory.getAir());
-    public static final Item PAGE_FORWARD_ITEM = ItemFactory.build("ARROW").orElse(ItemFactory.getAir());
-    public static final Item COSMETIC_ITEM = ItemFactory.getAir();
-    public static final Item EMPTY_SLOT_ITEM = ItemFactory.getAir();
+    public static final ItemStack BACK_ITEM;
+    public static final ItemStack PAGE_BACK_ITEM;
+    public static final ItemStack PAGE_FORWARD_ITEM;
+    public static final ItemStack COSMETIC_ITEM = ItemStackFactory.getAir();
+    public static final ItemStack EMPTY_SLOT_ITEM = ItemStackFactory.getAir();
+
+    static {
+        var backItem = ItemStackFactory.build("BARRIER");
+        if (backItem == null) {
+            backItem = ItemStackFactory.getAir();
+        }
+        BACK_ITEM = backItem;
+
+        var arrowItem = ItemStackFactory.build("ARROW");
+        if (arrowItem == null) {
+            arrowItem = ItemStackFactory.getAir();
+        }
+        PAGE_BACK_ITEM = arrowItem;
+        PAGE_FORWARD_ITEM = arrowItem;
+    }
 
     /*
         CURRENT VALUES
@@ -62,15 +77,15 @@ public class LocalOptions implements Cloneable {
     private LocalOptions parent;
 
     @Nullable
-    private Item backItem;
+    private ItemStack backItem;
     @Nullable
-    private Item pageBackItem;
+    private ItemStack pageBackItem;
     @Nullable
-    private Item pageForwardItem;
+    private ItemStack pageForwardItem;
     @Nullable
-    private Item cosmeticItem;
+    private ItemStack cosmeticItem;
     @Nullable
-    private Item emptySlotItem;
+    private ItemStack emptySlotItem;
 
     @Nullable
     private Boolean showPageNumber;
@@ -97,23 +112,23 @@ public class LocalOptions implements Cloneable {
         GETTERS
      */
 
-    public Item getBackItem() {
+    public ItemStack getBackItem() {
         return Optional.ofNullable(backItem).orElseGet(parent != null ? parent::getBackItem : BACK_ITEM::clone);
     }
 
-    public Item getPageBackItem() {
+    public ItemStack getPageBackItem() {
         return Optional.ofNullable(pageBackItem).orElseGet(parent != null ? parent::getPageBackItem : PAGE_BACK_ITEM::clone);
     }
 
-    public Item getPageForwardItem() {
+    public ItemStack getPageForwardItem() {
         return Optional.ofNullable(pageForwardItem).orElseGet(parent != null ? parent::getPageForwardItem : PAGE_FORWARD_ITEM::clone);
     }
 
-    public Item getCosmeticItem() {
+    public ItemStack getCosmeticItem() {
         return Optional.ofNullable(cosmeticItem).orElseGet(parent != null ? parent::getCosmeticItem : COSMETIC_ITEM::clone);
     }
 
-    public Item getEmptySlotItem() {
+    public ItemStack getEmptySlotItem() {
         return Optional.ofNullable(emptySlotItem).orElseGet(parent != null ? parent::getEmptySlotItem : EMPTY_SLOT_ITEM::clone);
     }
 
@@ -182,19 +197,19 @@ public class LocalOptions implements Cloneable {
     public void fromNode(ConfigurationNode configurationNode) {
         var backItem = configurationNode.node("backItem");
         if (!backItem.empty()) {
-            this.backItem = ItemFactory.build(backItem).orElse(null);
+            this.backItem = ItemStackFactory.build(backItem);
         }
         var pageBackItem = configurationNode.node("pageBackItem");
         if (!pageBackItem.empty()) {
-            this.pageBackItem = ItemFactory.build(pageBackItem).orElse(null);
+            this.pageBackItem = ItemStackFactory.build(pageBackItem);
         }
         var pageForwardItem = configurationNode.node("pageForwardItem");
         if (!pageForwardItem.empty()) {
-            this.pageForwardItem = ItemFactory.build(pageForwardItem).orElse(null);
+            this.pageForwardItem = ItemStackFactory.build(pageForwardItem);
         }
         var cosmeticItem = configurationNode.node("cosmeticItem");
         if (!cosmeticItem.empty()) {
-            this.cosmeticItem = ItemFactory.build(cosmeticItem).orElse(null);
+            this.cosmeticItem = ItemStackFactory.build(cosmeticItem);
         }
 
         var rows = configurationNode.node("rows");

@@ -17,7 +17,6 @@
 package org.screamingsandals.simpleinventories;
 
 import org.screamingsandals.lib.Core;
-import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.utils.annotations.AbstractService;
 import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.simpleinventories.builder.InventorySetBuilder;
@@ -25,7 +24,7 @@ import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -34,14 +33,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-@AbstractService(
-        pattern = "^(?<basePackage>.+)\\.(?<className>.+)Core$",
-        replaceRule = "{basePackage}.{platform}.{className}{Platform}"
-)
-@ServiceDependencies(dependsOn = {
-        Core.class,
-        Tasker.class
-})
+@AbstractService("org.screamingsandals.simpleinventories.{platform}.SimpleInventories{Platform}")
+@ServiceDependencies(dependsOn = Core.class)
 public abstract class SimpleInventoriesCore {
 
     protected Logger logger;
@@ -57,7 +50,7 @@ public abstract class SimpleInventoriesCore {
         this.logger = logger;
     }
 
-    public static InventoryRenderer openInventory(PlayerWrapper playerWrapper, SubInventory subInventory) {
+    public static InventoryRenderer openInventory(Player playerWrapper, SubInventory subInventory) {
         if (core == null) {
             throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
         }
@@ -66,7 +59,7 @@ public abstract class SimpleInventoriesCore {
         return renderer;
     }
 
-    protected abstract InventoryRenderer openInventory0(PlayerWrapper playerWrapper, SubInventory subInventory);
+    protected abstract InventoryRenderer openInventory0(Player playerWrapper, SubInventory subInventory);
 
     public static Logger getLogger() {
         if (core == null) {
@@ -75,14 +68,14 @@ public abstract class SimpleInventoriesCore {
         return core.logger;
     }
 
-    public static Optional<InventoryRenderer> getInventoryRenderer(PlayerWrapper playerWrapper) {
+    public static Optional<InventoryRenderer> getInventoryRenderer(Player playerWrapper) {
         if (core == null) {
             throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
         }
         return Optional.ofNullable(core.getInventoryRenderer0(playerWrapper));
     }
 
-    protected abstract InventoryRenderer getInventoryRenderer0(PlayerWrapper playerWrapper);
+    protected abstract InventoryRenderer getInventoryRenderer0(Player playerWrapper);
 
     public static List<InventoryRenderer> getAllInventoryRenderersForSubInventory(SubInventory subInventory) {
         if (core == null) {

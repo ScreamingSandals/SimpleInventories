@@ -21,12 +21,16 @@ import lombok.ToString;
 import org.screamingsandals.lib.container.Openable;
 import org.screamingsandals.lib.event.EventManager;
 import org.screamingsandals.lib.spectator.Component;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 import org.screamingsandals.simpleinventories.placeholders.PagePlaceholderParser;
+import org.screamingsandals.simpleinventories.placeholders.PermissionPlaceholderParser;
+import org.screamingsandals.simpleinventories.placeholders.PlayerPlaceholderParser;
+import org.screamingsandals.simpleinventories.placeholders.SlibPlaceholderParser;
 import org.screamingsandals.simpleinventories.placeholders.ThisPlaceholderParser;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -55,6 +59,15 @@ public class InventorySet implements Openable {
 
         placeholders.put("page", new PagePlaceholderParser());
 
+        placeholders.put("player", new PlayerPlaceholderParser());
+        placeholders.put("permission", new PermissionPlaceholderParser());
+
+        if (Reflect.has("org.screamingsandals.lib.placeholders.PlaceholderManager")) {
+            var slibPlaceholders = new SlibPlaceholderParser();
+            placeholders.put("slib", slibPlaceholders);
+            placeholders.put("papi", slibPlaceholders);
+        }
+
         SimpleInventoriesCore.registerPlatformSpecificPlaceholders(placeholders);
     }
 
@@ -70,11 +83,11 @@ public class InventorySet implements Openable {
         return true;
     }
 
-    public Component processPlaceholders(PlayerWrapper player, Component text, PlayerItemInfo info) {
+    public Component processPlaceholders(Player player, Component text, PlayerItemInfo info) {
         return Component.fromLegacy(processPlaceholders(player, text.toLegacy(), info)); // Misat, tell me, what tf is this?
     }
 
-    public String processPlaceholders(PlayerWrapper player, String text, PlayerItemInfo info) {
+    public String processPlaceholders(Player player, String text, PlayerItemInfo info) {
         var characters = text.toCharArray();
         var lastEscapeIndex = -2;
         var buf = "";
@@ -163,7 +176,7 @@ public class InventorySet implements Openable {
     }
 
     @Override
-    public void openInventory(PlayerWrapper wrapper) {
+    public void openInventory(Player wrapper) {
         mainSubInventory.openInventory(wrapper);
     }
 }

@@ -18,7 +18,7 @@ package org.screamingsandals.simpleinventories.builder;
 
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.simpleinventories.placeholders.RuntimeDefinedPlaceholder;
 
 import java.util.regex.Pattern;
@@ -63,13 +63,15 @@ public class BuilderUtils {
                 clone.setCloneLink("cosmetic");
                 itemInfo.setRequestedClone(clone);
             } else {
-                itemInfo.setItem(ItemFactory.build(enhancedShortStack).orElse(ItemFactory.getAir()));
+                var item = ItemStackFactory.build(enhancedShortStack);
+                itemInfo.setItem(item != null ? item : ItemStackFactory.getAir());
             }
 
             return itemInfo;
         } else {
             var itemInfo = new GenericItemInfo(format);
-            itemInfo.setItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
+            var item = ItemStackFactory.build(stack);
+            itemInfo.setItem(item != null ? item : ItemStackFactory.getAir());
             return itemInfo;
         }
     }

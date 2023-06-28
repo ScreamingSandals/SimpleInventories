@@ -20,7 +20,7 @@ import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.event.EventManager;
-import org.screamingsandals.lib.item.Item;
+import org.screamingsandals.lib.item.ItemStack;
 import org.screamingsandals.lib.spectator.Book;
 
 import java.util.ArrayList;
@@ -38,8 +38,8 @@ public class GenericItemInfo implements Cloneable, IdentifiableEntry {
     @ToString.Exclude
     private SubInventory parent;
     private int position;
-    private Item item;
-    private final List<Item> animation = new ArrayList<>();
+    private ItemStack item;
+    private final List<ItemStack> animation = new ArrayList<>();
     private Supplier<Boolean> visible;
     private Supplier<Boolean> disabled;
     private String id;
@@ -157,7 +157,7 @@ public class GenericItemInfo implements Cloneable, IdentifiableEntry {
     public GenericItemInfo clone() {
         var info = new GenericItemInfo(format);
         info.item = item != null ? item.clone() : null;
-        animation.stream().map(Item::clone).forEach(info.animation::add);
+        animation.stream().map(ItemStack::clone).forEach(info.animation::add);
         info.visible = visible;
         info.disabled = disabled;
         info.written = written;

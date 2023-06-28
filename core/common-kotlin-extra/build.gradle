@@ -1,8 +1,8 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm'
+    alias libs.plugins.kotlin
 }
 
 dependencies {
-    compileOnly 'org.jetbrains.kotlin:kotlin-stdlib:' + KOTLIN_VERSION
+    compileOnly libs.kotlin.stdlib
     compileOnly project(":core-common")
 }

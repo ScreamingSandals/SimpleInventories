@@ -20,9 +20,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum DependencyHelper {
-    GROOVY("groovy.util.GroovyScriptEngine", "Groovy", "3.0.7"),
-    UNIVOCITY("com.univocity.parsers.csv.CsvParser", "Univocity", "2.8.3"),
-    KOTLIN("", "Kotlin", "1.4.21");
+    GROOVY("groovy.util.GroovyScriptEngine", "Groovy", "3.0.16");
 
     private final String checkClass;
     private final String dependencyName;

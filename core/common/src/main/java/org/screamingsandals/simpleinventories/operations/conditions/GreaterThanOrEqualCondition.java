@@ -18,7 +18,7 @@ package org.screamingsandals.simpleinventories.operations.conditions;
 
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 public class GreaterThanOrEqualCondition extends AbstractCondition {
 
@@ -27,7 +27,7 @@ public class GreaterThanOrEqualCondition extends AbstractCondition {
 	}
 
 	@Override
-	protected boolean process(PlayerWrapper player, Object obj1, Object obj2, PlayerItemInfo info) {
+	protected boolean process(Player player, Object obj1, Object obj2, PlayerItemInfo info) {
 		return new GreaterThanCondition(format, obj1, obj2).process(player, info)
 				|| new EqualsCondition(format, obj1, obj2).process(player, info);
 	}

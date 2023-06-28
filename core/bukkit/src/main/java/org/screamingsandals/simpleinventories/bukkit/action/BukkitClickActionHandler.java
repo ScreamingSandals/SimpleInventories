@@ -22,13 +22,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.screamingsandals.lib.player.PlayerMapper;
+import org.screamingsandals.lib.player.Players;
 import org.screamingsandals.lib.utils.ClickType;
 import org.screamingsandals.simpleinventories.action.ClickActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.utils.InventoryUtils;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 public class BukkitClickActionHandler extends ClickActionHandler implements Listener {
 
@@ -44,7 +43,7 @@ public class BukkitClickActionHandler extends ClickActionHandler implements List
         if (possibleHolder instanceof AbstractHolder) {
             var player = (Player) event.getWhoClicked();
             var inventoryRenderer = ((AbstractHolder) possibleHolder).getInventoryRenderer();
-            if (!inventoryRenderer.getPlayer().equals(PlayerMapper.wrapPlayer(player))) {
+            if (!inventoryRenderer.getPlayer().equals(Players.wrapPlayer(player))) {
                 event.setCancelled(true);
                 return; // HOW???
             }
@@ -61,7 +60,7 @@ public class BukkitClickActionHandler extends ClickActionHandler implements List
     }
 
     @Override
-    protected void dispatchPlayerCommand(PlayerWrapper playerWrapper, String command) {
+    protected void dispatchPlayerCommand(org.screamingsandals.lib.player.Player playerWrapper, String command) {
         playerWrapper.as(Player.class).performCommand(command);
     }
 
@@ -71,7 +70,7 @@ public class BukkitClickActionHandler extends ClickActionHandler implements List
     }
 
     @Override
-    protected void movePlayerOnProxy(PlayerWrapper playerWrapper, String server) {
+    protected void movePlayerOnProxy(org.screamingsandals.lib.player.Player playerWrapper, String server) {
         if (!Bukkit.getMessenger().getOutgoingChannels(SimpleInventoriesBukkit.getPlugin()).contains("BungeeCord")) {
             Bukkit.getMessenger().registerOutgoingPluginChannel(SimpleInventoriesBukkit.getPlugin(), "BungeeCord");
         }

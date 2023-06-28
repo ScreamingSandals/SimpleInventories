@@ -16,13 +16,13 @@
 
 package org.screamingsandals.simpleinventories.placeholders;
 
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 public class PagePlaceholderParser implements IPlaceholderParser {
 
 	@Override
-	public String processPlaceholder(String key, PlayerWrapper player, PlayerItemInfo item, String[] arguments) {
+	public String processPlaceholder(String key, Player player, PlayerItemInfo item, String[] arguments) {
 		if (arguments.length > 0) {
 			if (arguments.length == 1) {
 				switch(arguments[0]) {

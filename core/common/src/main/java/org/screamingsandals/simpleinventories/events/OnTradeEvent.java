@@ -18,9 +18,9 @@ package org.screamingsandals.simpleinventories.events;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.lib.event.SCancellableEvent;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.event.CancellableEvent;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.utils.ClickType;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
@@ -31,10 +31,10 @@ import java.util.List;
 
 @Data
 @RequiredArgsConstructor
-public class OnTradeEvent implements SCancellableEvent {
-    private final PlayerWrapper player;
+public class OnTradeEvent implements CancellableEvent {
+    private final Player player;
     private final List<Price> prices;
-    private final Item stack;
+    private final ItemStack stack;
     private final PlayerItemInfo item;
     private final ClickType clickType;
     private boolean cancelled;
@@ -57,23 +57,23 @@ public class OnTradeEvent implements SCancellableEvent {
         return hasPlayerInInventory(this.stack);
     }
 
-    public boolean hasPlayerInInventory(Item item) {
+    public boolean hasPlayerInInventory(ItemStack item) {
         return player.getPlayerInventory().containsAtLeast(item, item.getAmount());
     }
 
-    public List<Item> sellStack() {
+    public List<ItemStack> sellStack() {
         return sellStack(this.stack);
     }
 
-    public List<Item> sellStack(Item item) {
+    public List<ItemStack> sellStack(ItemStack item) {
         return player.getPlayerInventory().removeItem(item);
     }
 
-    public List<Item> buyStack() {
+    public List<ItemStack> buyStack() {
         return buyStack(this.stack);
     }
 
-    public List<Item> buyStack(Item item) {
+    public List<ItemStack> buyStack(ItemStack item) {
         return player.getPlayerInventory().addItem(item);
     }
 

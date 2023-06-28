@@ -16,26 +16,18 @@
 
 package org.screamingsandals.simpleinventories.placeholders;
 
+import org.screamingsandals.lib.placeholders.PlaceholderManager;
 import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 
-public class ThisPlaceholderParser implements IPlaceholderParser {
+public class SlibPlaceholderParser implements IPlaceholderParser {
 
 	@Override
 	public String processPlaceholder(String key, Player player, PlayerItemInfo item, String[] arguments) {
-		if (arguments.length > 0) {
-			if (arguments.length == 1) {
-				switch(arguments[0]) {
-					case "stack":
-						return item.getStack().getMaterial().platformName();
-					case "visible":
-						return String.valueOf(item.isVisible());
-					case "disabled":
-						return String.valueOf(item.isDisabled());
-				}
-			}
+		var format = String.join(".", arguments);
+		if (PlaceholderManager.isInitialized()) {
+			return PlaceholderManager.resolveString(player, "%" + format + "%");
 		}
-		return "%" + key + "%"; // ignore this placeholder
+		return "%" + format + "%"; // ignore this placeholder
 	}
-
 }

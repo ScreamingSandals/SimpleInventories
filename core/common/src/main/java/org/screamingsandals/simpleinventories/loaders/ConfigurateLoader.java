@@ -17,10 +17,10 @@
 package org.screamingsandals.simpleinventories.loaders;
 
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.simpleinventories.builder.BuilderUtils;
 import org.screamingsandals.simpleinventories.builder.ItemInfoBuilder;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.loader.AbstractConfigurationLoader;
@@ -98,7 +98,8 @@ public class ConfigurateLoader implements ILoader {
 
                         var item = new GenericItemInfo(subInventory.getInventorySet());
 
-                        item.setItem(ItemFactory.build(stack).orElse(ItemFactory.getAir()));
+                        var builtItem = ItemStackFactory.build(stack);
+                        item.setItem(builtItem != null ? builtItem : ItemStackFactory.getAir());
 
                         subInventory.getWaitingQueue().add(item);
 
@@ -149,7 +150,8 @@ public class ConfigurateLoader implements ILoader {
                                                 }
 
                                                 if (!stackRender.empty()) {
-                                                    itemRenderEvent.setStack(ItemFactory.build(stackRender).orElse(itemRenderEvent.getStack()));
+                                                    var anotherBuiltItem = ItemStackFactory.build(stackRender);
+                                                    itemRenderEvent.setStack(anotherBuiltItem != null ? anotherBuiltItem : itemRenderEvent.getStack());
                                                 }
 
                                                 if (!animationRender.empty()) {
@@ -172,7 +174,8 @@ public class ConfigurateLoader implements ILoader {
                                                 }
 
                                                 if (!stackRender.empty()) {
-                                                    itemRenderEvent.setStack(ItemFactory.build(stackRender).orElse(itemRenderEvent.getStack()));
+                                                    var anotherBuiltItem = ItemStackFactory.build(stackRender);
+                                                    itemRenderEvent.setStack(anotherBuiltItem != null ? anotherBuiltItem : itemRenderEvent.getStack());
                                                 }
 
                                                 if (!animationRender.empty()) {

@@ -16,8 +16,8 @@
 
 package org.screamingsandals.simpleinventories.placeholders;
 
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class RuntimeDefinedPlaceholder implements IPlaceholderParser {
 	private String defstr = null;
 	
 	@Override
-	public String processPlaceholder(String key, PlayerWrapper player, PlayerItemInfo item, String[] arguments) {
+	public String processPlaceholder(String key, Player player, PlayerItemInfo item, String[] arguments) {
 		for (var entry : map.entrySet()) {
 			var keys = entry.getKey();
 			var value = entry.getValue();

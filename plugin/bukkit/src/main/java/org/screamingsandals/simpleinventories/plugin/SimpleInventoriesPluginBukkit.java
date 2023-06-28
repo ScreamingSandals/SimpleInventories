@@ -30,10 +30,12 @@ import cloud.commandframework.permission.Permission;
 import lombok.SneakyThrows;
 import org.screamingsandals.lib.Server;
 import org.screamingsandals.lib.cloud.CloudConstructor;
-import org.screamingsandals.lib.player.PlayerMapper;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Players;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.plugin.PluginContainer;
-import org.screamingsandals.lib.sender.CommandSenderWrapper;
+import org.screamingsandals.lib.sender.CommandSender;
+import org.screamingsandals.lib.spectator.Color;
+import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.annotations.Init;
 import org.screamingsandals.lib.utils.annotations.Plugin;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
@@ -50,7 +52,7 @@ import org.screamingsandals.simpleinventories.VersionInfo;
 })
 public class SimpleInventoriesPluginBukkit extends PluginContainer {
     private Map<String, InventorySet> inventories;
-    private CommandManager<CommandSenderWrapper> manager;
+    private CommandManager<CommandSender> manager;
 
     @SneakyThrows
     @Override
@@ -68,9 +70,9 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
                         .literal("list")
                         .permission(OrPermission.of(List.of(Permission.of("simpleinventories.use"), Permission.of("simpleinventories.admin"))))
                         .handler(context -> {
-                            context.getSender().sendMessage("§f[SI] §aAvailable inventories:");
+                            context.getSender().sendMessage(Component.text("[SI] ", Color.WHITE).withAppendix(Component.text("Available inventories:", Color.GREEN)));
                             inventories.keySet().forEach(inventory ->
-                                context.getSender().sendMessage("§7" + inventory)
+                                context.getSender().sendMessage(Component.text(inventory, Color.GRAY))
                             );
                         })
         );
@@ -80,15 +82,15 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
                         .literal("open")
                         .permission(OrPermission.of(List.of(Permission.of("simpleinventories.use"), Permission.of("simpleinventories.admin"))))
                         .argument(StringArgument.of("inventory"))
-                        .senderType(PlayerWrapper.class)
+                        .senderType(Player.class)
                         .handler(context -> {
                             String inventory = context.get("inventory");
                             var inv = inventories.get(inventory);
                             if (inv == null) {
-                                context.getSender().sendMessage("§cInventory " + inventory + " doesn't exist!");
+                                context.getSender().sendMessage(Component.text("Inventory " + inventory + " doesn't exist!", Color.RED));
                                 return;
                             }
-                            context.getSender().as(PlayerWrapper.class).openInventory(inv);
+                            context.getSender().as(Player.class).openInventory(inv);
                         })
         );
 
@@ -108,32 +110,32 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
                         .handler(context -> {
                             String playerName = context.get("player");
                             String inventoryName = context.get("inventory");
-                            var player = PlayerMapper.getPlayer(playerName);
-                            if (player.isEmpty()) {
-                                context.getSender().sendMessage("§cPlayer " + playerName + " doesn't exist! or is offline");
+                            var player = Players.getPlayer(playerName);
+                            if (player == null) {
+                                context.getSender().sendMessage(Component.text("Player " + playerName + " doesn't exist! or is offline", Color.RED));
                                 return;
                             }
 
                             var inv = inventories.get(inventoryName);
                             if (inv == null) {
-                                context.getSender().sendMessage("§cInventory " + inventoryName + " doesn't exist!");
+                                context.getSender().sendMessage(Component.text("Inventory " + inventoryName + " doesn't exist!", Color.RED));
                                 return;
                             }
-                            player.get().openInventory(inv);
+                            player.openInventory(inv);
                         })
         );
 
         manager.command(builder
                 .meta(CommandMeta.DESCRIPTION, "Command of SimpleInventories plugin")
-                .handler(c -> c.getSender().sendMessage("whoosh"))
+                .handler(c -> c.getSender().sendMessage(Component.text("whoosh")))
         );
 
 
-        PlayerMapper.getConsoleSender().sendMessage("§6=========§f=============  by ScreamingSandals <Misat11, Ceph>");
-        PlayerMapper.getConsoleSender()
-                .sendMessage("§6+ Simple §fInventories +  §6Version: " + getPluginDescription().getVersion());
-        PlayerMapper.getConsoleSender()
-                .sendMessage("§6=========§f=============  " + (getPluginDescription().getVersion().contains("SNAPSHOT") ? "§cSNAPSHOT VERSION" : "§aSTABLE VERSION"));
+        Server.getConsoleSender().sendMessage(Component.text("=========", Color.GOLD).withAppendix(Component.text("=============  by ScreamingSandals <Misat11, Ceph>", Color.WHITE)));
+        Server.getConsoleSender()
+                .sendMessage(Component.text("+ Simple ", Color.GOLD).withAppendix(Component.text("Inventories +  ", Color.WHITE), Component.text("Version: " + getPluginDescription().version())));
+        Server.getConsoleSender()
+                .sendMessage(Component.text("=========", Color.GOLD).withAppendix(Component.text("=============  ", Color.WHITE), getPluginDescription().version().contains("SNAPSHOT") ? Component.text("SNAPSHOT VERSION", Color.RED) : Component.text("STABLE VERSION", Color.GREEN)));
 
         this.inventories.values().forEach(inv -> {
             try {
@@ -162,7 +164,7 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
     }
 
     private void loadSimpleInventories() {
-        var config = new File(getPluginDescription().getDataFolder().toFile(), "config.yml");
+        var config = new File(getPluginDescription().dataFolder().toFile(), "config.yml");
         if (!config.exists()) {
             saveResource("config.yml", false);
             saveResource("sample.yml", false);
@@ -170,7 +172,7 @@ public class SimpleInventoriesPluginBukkit extends PluginContainer {
         }
 
         var loader = YamlConfigurationLoader.builder()
-                .path(getPluginDescription().getDataFolder().resolve("config.yml"))
+                .path(getPluginDescription().dataFolder().resolve("config.yml"))
                 .build();
 
         try {

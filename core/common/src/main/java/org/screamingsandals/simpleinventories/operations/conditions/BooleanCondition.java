@@ -19,7 +19,7 @@ package org.screamingsandals.simpleinventories.operations.conditions;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.operations.Operation;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 public class BooleanCondition implements Condition {
 	protected InventorySet format;
@@ -31,7 +31,7 @@ public class BooleanCondition implements Condition {
 	}
 
 	@Override
-	public boolean process(PlayerWrapper player, PlayerItemInfo info) {
+	public boolean process(Player player, PlayerItemInfo info) {
 		Object ob = obj;
 		if (ob instanceof Operation) {
 			ob = ((Operation) ob).resolveFor(player, info);

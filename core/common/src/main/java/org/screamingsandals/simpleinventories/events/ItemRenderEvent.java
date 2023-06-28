@@ -18,11 +18,11 @@ package org.screamingsandals.simpleinventories.events;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.lib.event.SEvent;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.item.builder.ItemBuilder;
-import org.screamingsandals.lib.item.builder.ItemFactory;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.event.Event;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackBuilder;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.lib.utils.ReceiverConsumer;
 import org.screamingsandals.simpleinventories.builder.AnimationBuilder;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
@@ -31,7 +31,7 @@ import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 
 @Data
 @RequiredArgsConstructor
-public class ItemRenderEvent implements SEvent {
+public class ItemRenderEvent implements Event {
     private final PlayerItemInfo item;
 
     public InventorySet getFormat() {
@@ -46,11 +46,11 @@ public class ItemRenderEvent implements SEvent {
         return item.getOriginal();
     }
 
-    public Item getStack() {
+    public ItemStack getStack() {
         return item.getStack();
     }
 
-    public void setStack(Item stack) {
+    public void setStack(ItemStack stack) {
         item.setStack(stack);
     }
 
@@ -89,17 +89,19 @@ public class ItemRenderEvent implements SEvent {
         return this;
     }
 
-    public ItemRenderEvent stack(ReceiverConsumer<ItemBuilder> consumer) {
+    public ItemRenderEvent stack(ReceiverConsumer<ItemStackBuilder> consumer) {
         var builder = item.getStack().builder();
         consumer.accept(builder);
-        item.setStack(builder.build().orElse(ItemFactory.getAir()));
+        var builtStack = builder.build();
+        item.setStack(builtStack != null ? builtStack : ItemStackFactory.getAir());
         return this;
     }
 
-    public ItemRenderEvent clearStack(ReceiverConsumer<ItemBuilder> consumer) {
-        var builder = ItemFactory.builder();
+    public ItemRenderEvent clearStack(ReceiverConsumer<ItemStackBuilder> consumer) {
+        var builder = ItemStackFactory.builder();
         consumer.accept(builder);
-        item.setStack(builder.build().orElse(ItemFactory.getAir()));
+        var builtStack = builder.build();
+        item.setStack(builtStack != null ? builtStack : ItemStackFactory.getAir());
         return this;
     }
 
@@ -107,11 +109,11 @@ public class ItemRenderEvent implements SEvent {
         return item.getFormat().processPlaceholders(item.getPlayer(), raw, item);
     }
 
-    public PlayerWrapper getPlayer() {
+    public Player getPlayer() {
         return item.getPlayer();
     }
 
-    public ItemRenderEvent player(ReceiverConsumer<PlayerWrapper> consumer) {
+    public ItemRenderEvent player(ReceiverConsumer<Player> consumer) {
         consumer.accept(getPlayer());
         return this;
     }

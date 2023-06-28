@@ -18,14 +18,14 @@ package org.screamingsandals.simpleinventories.builder;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
 import org.screamingsandals.lib.utils.*;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
 import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 import org.screamingsandals.simpleinventories.events.PostClickEvent;
 import org.screamingsandals.simpleinventories.events.PreClickEvent;
 import org.screamingsandals.simpleinventories.inventory.*;
-import org.screamingsandals.lib.item.builder.ItemBuilder;
+import org.screamingsandals.lib.item.builder.ItemStackBuilder;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
 import org.screamingsandals.simpleinventories.operations.conditions.Condition;
 import org.screamingsandals.simpleinventories.utils.BreakType;
@@ -45,26 +45,29 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor(staticName = "of")
 public class ItemInfoBuilder extends CategoryBuilder {
     private final GenericItemInfo itemInfo;
-    private ItemBuilder builder;
+    private ItemStackBuilder builder;
 
     public static final Pattern PRICE_PATTERN = Pattern.compile("(?<price>\\d+)(\\s+of\\s+|\\s+)(?<currency>[a-zA-Z0-9]+)?");
 
-    public ItemInfoBuilder stack(ReceiverConsumer<ItemBuilder> consumer) {
+    public ItemInfoBuilder stack(ReceiverConsumer<ItemStackBuilder> consumer) {
         consumer.accept(getStack());
         processItemBuilderIfOpened();
         return this;
     }
 
-    public ItemBuilder getStack() {
+    public ItemStackBuilder getStack() {
         if (builder == null) {
-            builder = itemInfo.getItem() != null ? itemInfo.getItem().builder() : ItemFactory.builder();
+            builder = itemInfo.getItem() != null ? itemInfo.getItem().builder() : ItemStackFactory.builder();
         }
         return builder;
     }
 
     public void processItemBuilderIfOpened() {
         if (builder != null) {
-            builder.build().ifPresent(itemInfo::setItem);
+            var built = builder.build();
+            if (built != null) {
+                itemInfo.setItem(built);
+            }
             builder = null;
         }
     }

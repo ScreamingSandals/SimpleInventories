@@ -18,10 +18,10 @@ package org.screamingsandals.simpleinventories.inventory;
 
 import lombok.Data;
 import lombok.Getter;
-import org.screamingsandals.lib.item.builder.ItemFactory;
+import org.screamingsandals.lib.item.ItemStack;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.events.ItemRenderEvent;
-import org.screamingsandals.lib.item.Item;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,21 +32,21 @@ import java.util.stream.Stream;
 @Data
 public class PlayerItemInfo {
     private GenericItemInfo original;
-    private Item stack;
+    private ItemStack stack;
     private boolean visible;
     private boolean disabled;
-    private final List<Item> animation = new ArrayList<>();
+    private final List<ItemStack> animation = new ArrayList<>();
     @Getter
-    private PlayerWrapper player;
+    private Player player;
 
     @SuppressWarnings("unchecked")
-    public PlayerItemInfo(PlayerWrapper player, GenericItemInfo original) {
+    public PlayerItemInfo(Player player, GenericItemInfo original) {
         this.player = player;
         this.original = original;
-        this.stack = original.getItem() != null ? original.getItem().clone() : ItemFactory.getAir();
+        this.stack = original.getItem() != null ? original.getItem().clone() : ItemStackFactory.getAir();
         this.visible = original.isVisible();
         this.disabled = original.isDisabled();
-        original.getAnimation().stream().map(Item::clone).forEach(animation::add);
+        original.getAnimation().stream().map(ItemStack::clone).forEach(animation::add);
 
         if (stack.getDisplayName() != null) {
             stack = stack.withDisplayName(original.getFormat().processPlaceholders(player, stack.getDisplayName(), this));

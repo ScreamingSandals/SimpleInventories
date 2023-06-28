@@ -19,7 +19,6 @@ package org.screamingsandals.simpleinventories.bukkit;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.screamingsandals.lib.utils.annotations.Service;
 import org.screamingsandals.lib.utils.annotations.methods.OnEnable;
@@ -29,16 +28,13 @@ import org.screamingsandals.simpleinventories.bukkit.action.BukkitCloseInventory
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitItemDragActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.action.BukkitItemMoveActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
-import org.screamingsandals.simpleinventories.bukkit.placeholders.PAPIPlaceholderParser;
-import org.screamingsandals.simpleinventories.bukkit.placeholders.PermissionPlaceholderParser;
-import org.screamingsandals.simpleinventories.bukkit.placeholders.PlayerPlaceholderParser;
 import org.screamingsandals.simpleinventories.bukkit.placeholders.WorldPlaceholderParser;
 import org.screamingsandals.simpleinventories.bukkit.render.BukkitInventoryRenderer;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -73,20 +69,17 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
     }
 
     @Override
-    protected BukkitInventoryRenderer openInventory0(PlayerWrapper playerWrapper, SubInventory subInventory) {
+    protected BukkitInventoryRenderer openInventory0(Player playerWrapper, SubInventory subInventory) {
         return new BukkitInventoryRenderer(playerWrapper, subInventory, 0);
     }
 
     @Override
-    protected InventoryRenderer getInventoryRenderer0(PlayerWrapper playerWrapper) {
-        var player = playerWrapper.as(Player.class);
-        if (player != null) {
-            return getInventoryRenderer0(player);
-        }
-        return null;
+    protected InventoryRenderer getInventoryRenderer0(Player playerWrapper) {
+        var player = playerWrapper.as(org.bukkit.entity.Player.class);
+        return getInventoryRenderer0(player);
     }
 
-    protected InventoryRenderer getInventoryRenderer0(Player player) {
+    protected InventoryRenderer getInventoryRenderer0(org.bukkit.entity.Player player) {
         var top = player.getOpenInventory().getTopInventory();
         if (top.getHolder() instanceof AbstractHolder) {
             return ((AbstractHolder) top.getHolder()).getInventoryRenderer();
@@ -126,10 +119,7 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
 
     @Override
     protected void registerPlatformSpecificPlaceholders0(Map<String, IPlaceholderParser> placeholders) {
-        placeholders.put("papi", new PAPIPlaceholderParser());
         placeholders.put("world", new WorldPlaceholderParser());
-        placeholders.put("player", new PlayerPlaceholderParser());
-        placeholders.put("permission", new PermissionPlaceholderParser());
     }
 
     @Override

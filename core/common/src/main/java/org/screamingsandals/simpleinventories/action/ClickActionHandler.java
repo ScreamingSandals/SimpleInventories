@@ -22,7 +22,7 @@ import org.screamingsandals.simpleinventories.events.PostClickEvent;
 import org.screamingsandals.simpleinventories.events.PreClickEvent;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -134,9 +134,9 @@ public abstract class ClickActionHandler {
         }
     }
 
-    protected abstract void dispatchPlayerCommand(PlayerWrapper playerWrapper, String command);
+    protected abstract void dispatchPlayerCommand(Player playerWrapper, String command);
 
     protected abstract void dispatchConsoleCommand(String command);
 
-    protected abstract void movePlayerOnProxy(PlayerWrapper playerWrapper, String server);
+    protected abstract void movePlayerOnProxy(Player playerWrapper, String server);
 }

@@ -20,12 +20,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 public class WorldPlaceholderParser implements IPlaceholderParser {
 
 	@Override
-	public String processPlaceholder(String key, PlayerWrapper player, PlayerItemInfo item, String[] arguments) {
+	public String processPlaceholder(String key, org.screamingsandals.lib.player.Player player, PlayerItemInfo item, String[] arguments) {
 		World world = player.as(Player.class).getWorld();
 		if (arguments.length >= 1) {
 			switch(arguments[0]) {

@@ -20,10 +20,10 @@ import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.screamingsandals.lib.container.Openable;
+import org.screamingsandals.lib.item.builder.ItemStackFactory;
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
-import org.screamingsandals.lib.item.builder.ItemFactory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.lib.player.PlayerWrapper;
 import org.screamingsandals.simpleinventories.utils.Column;
 import org.screamingsandals.simpleinventories.utils.TimesFlags;
 
@@ -130,7 +130,7 @@ public class SubInventory implements Openable, SubInventoryLike<SubInventory> {
                 if (item.getRequestedClone() != null) {
                     var clone = item.getRequestedClone();
                     if (clone.getCloneLink().equalsIgnoreCase("cosmetic")) {
-                        if (clone.getCloneMethod().isOverride() || item.getItem() == null || item.getItem().getMaterial().equals(ItemFactory.getAir().getMaterial())) {
+                        if (clone.getCloneMethod().isOverride() || item.getItem() == null || item.getItem().getMaterial().equals(ItemStackFactory.getAir().getMaterial())) {
                             item.setItem(getLocalOptions().getCosmeticItem());
                         }
                     } else {
@@ -206,7 +206,7 @@ public class SubInventory implements Openable, SubInventoryLike<SubInventory> {
     }
 
     @Override
-    public void openInventory(PlayerWrapper wrapper) {
+    public void openInventory(Player wrapper) {
         SimpleInventoriesCore.openInventory(wrapper, this);
     }
 

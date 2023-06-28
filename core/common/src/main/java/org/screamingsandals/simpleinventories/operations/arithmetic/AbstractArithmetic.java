@@ -16,10 +16,10 @@
 
 package org.screamingsandals.simpleinventories.operations.arithmetic;
 
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.operations.Operation;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 public abstract class AbstractArithmetic implements Operation {
 	protected InventorySet format;
@@ -33,7 +33,7 @@ public abstract class AbstractArithmetic implements Operation {
 	}
 	
 	@Override
-	public Object resolveFor(PlayerWrapper player, PlayerItemInfo info) {
+	public Object resolveFor(Player player, PlayerItemInfo info) {
 		Object ob1 = this.obj1;
 		Object ob2 = this.obj2;
 		if (ob1 instanceof Operation) {

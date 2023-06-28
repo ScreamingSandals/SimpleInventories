@@ -16,9 +16,9 @@
 
 package org.screamingsandals.simpleinventories.operations;
 
+import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 public class BlankOperation implements Operation {
 
@@ -35,7 +35,7 @@ public class BlankOperation implements Operation {
 	}
 	
 	@Override
-	public Object resolveFor(PlayerWrapper player, PlayerItemInfo info) {
+	public Object resolveFor(Player player, PlayerItemInfo info) {
 		Object ob = this.obj;
 		if (ob instanceof Operation) {
 			ob = ((Operation) ob).resolveFor(player, info);

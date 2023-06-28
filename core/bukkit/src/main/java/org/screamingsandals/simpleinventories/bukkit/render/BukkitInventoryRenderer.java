@@ -21,13 +21,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.screamingsandals.lib.tasker.DefaultThreads;
 import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.holder.StandardInventoryHolder;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
-import org.screamingsandals.lib.player.PlayerWrapper;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
 
     private static final List<String> SIZEABLE_CONTAINERS = List.of("CHEST", "ENDER_CHEST", "SHULKER_BOX", "BARREL");
 
-    public BukkitInventoryRenderer(PlayerWrapper player, SubInventory subInventory, int page) {
+    public BukkitInventoryRenderer(org.screamingsandals.lib.player.Player player, SubInventory subInventory, int page) {
         super(player, subInventory, page);
     }
 
@@ -82,13 +82,12 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
         player.asOptional(Player.class).ifPresent(p -> p.openInventory(inventory));
 
         if (!animations.isEmpty()) {
-            animator = Tasker.build(() ->
-                    animations.forEach((position, items) ->
-                            inventory.setItem(position, items.get(nextAnimationPosition % items.size()).as(ItemStack.class))
-                    ))
-                    .delay(1L, TaskerTime.TICKS)
-                    .repeat(20L, TaskerTime.TICKS)
-                    .start();
+            animator = Tasker.runDelayedAndRepeatedly(
+                    DefaultThreads.GLOBAL_THREAD,
+                    () -> animations.forEach((position, items) -> inventory.setItem(position, items.get(nextAnimationPosition % items.size()).as(ItemStack.class))),
+                    1L, TaskerTime.TICKS,
+                    20L, TaskerTime.TICKS
+            );
         }
     }
 

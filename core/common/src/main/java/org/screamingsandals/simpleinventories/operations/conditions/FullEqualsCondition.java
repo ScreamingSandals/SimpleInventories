@@ -19,7 +19,7 @@ package org.screamingsandals.simpleinventories.operations.conditions;
 
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.lib.player.PlayerWrapper;
+import org.screamingsandals.lib.player.Player;
 
 public class FullEqualsCondition extends AbstractCondition {
 
@@ -28,7 +28,7 @@ public class FullEqualsCondition extends AbstractCondition {
 	}
 
 	@Override
-	protected boolean process(PlayerWrapper player, Object obj1, Object obj2, PlayerItemInfo info) {
+	protected boolean process(Player player, Object obj1, Object obj2, PlayerItemInfo info) {
 		if (obj1 instanceof String && obj2 instanceof String) {
 			return obj1.equals(obj2);
 		}
