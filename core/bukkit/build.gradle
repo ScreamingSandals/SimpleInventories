@@ -1,5 +1,5 @@
 dependencies {
     api project(':core-common')
     api libs.slib.core.bukkit
-    api libs.paper
+    compileOnly libs.paper
 }
