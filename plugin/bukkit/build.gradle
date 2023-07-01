@@ -7,7 +7,7 @@ dependencies {
     implementation libs.slib.cloud.bukkit
     annotationProcessor libs.slib.annotation
 
-    api libs.paper
+    compileOnly libs.paper
 }
 
 shadowJar {
