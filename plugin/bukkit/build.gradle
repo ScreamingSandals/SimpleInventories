@@ -5,6 +5,10 @@ enableShadowPlugin()
 dependencies {
     implementation project(':core-bukkit')
     implementation libs.slib.cloud.bukkit
+    implementation libs.configurate.gson
+    implementation libs.configurate.hocon
+    implementation libs.configurate.xml
+    implementation libs.configurate.yaml
     annotationProcessor libs.slib.annotation
 
     compileOnly libs.paper

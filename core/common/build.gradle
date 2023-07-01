@@ -1,10 +1,7 @@
 dependencies {
     compileOnly libs.groovy
 
-    api libs.configurate.gson
-    api libs.configurate.hocon
-    api libs.configurate.xml
-    api libs.configurate.yaml
+    api libs.configurate.core
 
     api libs.slib.core.common
     compileOnly libs.slib.placeholders.common

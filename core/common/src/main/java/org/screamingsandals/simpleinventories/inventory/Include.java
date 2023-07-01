@@ -19,16 +19,15 @@ package org.screamingsandals.simpleinventories.inventory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.screamingsandals.lib.utils.config.ConfigurationLoaderBuilderSupplier;
+import org.screamingsandals.lib.utils.config.YamlConfigurationLoaderBuilderSupplier;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.loaders.*;
-import org.spongepowered.configurate.gson.GsonConfigurationLoader;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
-import org.spongepowered.configurate.xml.XmlConfigurationLoader;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
@@ -37,13 +36,6 @@ import java.util.regex.Pattern;
 public class Include implements Queueable {
     public static final Pattern INCLUDE_PATTERN = Pattern.compile("^((?<loader>[A-Za-z0-9]*)(:(?<section>[A-Za-z0-9.]*))?@)?(?<path>.+)$");
     public static final Map<String, Supplier<? extends ILoader>> LOADERS = Map.ofEntries(
-            // Configurate
-            Map.entry("yml", () -> ConfigurateLoader.of(YamlConfigurationLoader::builder)),
-            Map.entry("yaml", () -> ConfigurateLoader.of(YamlConfigurationLoader::builder)),
-            Map.entry("json", () -> ConfigurateLoader.of(GsonConfigurationLoader::builder)),
-            Map.entry("xml", () -> ConfigurateLoader.of(XmlConfigurationLoader::builder)),
-            Map.entry("conf", () -> ConfigurateLoader.of(HoconConfigurationLoader::builder)),
-            Map.entry("hocon", () -> ConfigurateLoader.of(HoconConfigurationLoader::builder)),
             // Groovy
             Map.entry("groovy", GroovyLoader::new),
             Map.entry("gvy", GroovyLoader::new),
@@ -136,7 +128,10 @@ public class Include implements Queueable {
     }
 
     public static Include of(Path path, String loader, String section) {
-        return of(path, LOADERS.getOrDefault(loader.toLowerCase(), () -> ConfigurateLoader.of(YamlConfigurationLoader::builder)).get(), section);
+        return of(path, LOADERS.getOrDefault(loader.toLowerCase(), () -> {
+            var builderSupplier = ConfigurationLoaderBuilderSupplier.getForExtension(loader.toLowerCase());
+            return ConfigurateLoader.of(Objects.requireNonNullElse(builderSupplier, YamlConfigurationLoaderBuilderSupplier.INSTANCE));
+        }).get(), section);
     }
 
     public static Include of(Path path, ILoader loader, String section) {
