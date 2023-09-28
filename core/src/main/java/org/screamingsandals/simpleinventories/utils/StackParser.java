@@ -3,9 +3,14 @@ package org.screamingsandals.simpleinventories.utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.enchantments.Enchantment;
@@ -17,6 +22,8 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 public class StackParser {
@@ -321,9 +328,76 @@ public class StackParser {
 				}
 			}
 		}
+
+		if (obj.containsKey("effects") && meta instanceof PotionMeta) {
+			Object ob = obj.get("effects");
+			if (ob instanceof List) {
+				for (Object o : (List<?>) ob) {
+					if (!(o instanceof Map)) {
+						continue;
+					}
+
+					PotionEffect effect1 = getPotionEffect((Map<String, Object>) o);
+
+					if (effect1 != null) {
+						((PotionMeta) meta).addCustomEffect(effect1, true);
+					}
+				}
+			} else if (ob instanceof Map) {
+				PotionEffect effect1 = getPotionEffect((Map<String, Object>) ob);
+
+				if (effect1 != null) {
+					((PotionMeta) meta).addCustomEffect(effect1, true);
+				}
+			}
+		}
 		
 		stack.setItemMeta(meta);
 		
 		return stack;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static PotionEffect getPotionEffect(Object ob) {
+		if (ob instanceof PotionEffect) {
+			return (PotionEffect) ob;
+		}
+
+		if (ob instanceof Map) {
+			return getPotionEffect((Map<String, Object>) ob);
+		}
+
+		return null;
+	}
+
+	public static PotionEffect getPotionEffect(Map<String, Object> map) {
+		Object effect = map.get("effect");
+
+		if (effect == null) {
+			return null;
+		}
+
+		PotionEffectType potionEffect = PotionTypeEffectSearchEngine.find(effect.toString());
+
+		Map<String, Object> processedMap = new HashMap<>(map); // clone map to not change the input object
+
+		if (potionEffect != null) {
+			processedMap.put("effect", potionEffect.getId());
+		}
+
+		if (processedMap.containsKey("particles")) {
+			processedMap.put("has-particles", processedMap.get("particles"));
+		}
+
+		if (processedMap.containsKey("icon")) {
+			processedMap.put("has-icon", processedMap.get("icon"));
+		}
+
+		try {
+			return new PotionEffect(processedMap);
+		} catch (Exception ex) {
+			Bukkit.getLogger().log(Level.WARNING, "[SimpleInventories] An error occurred while resolving custom potion effect", ex);
+			return null;
+		}
 	}
 }

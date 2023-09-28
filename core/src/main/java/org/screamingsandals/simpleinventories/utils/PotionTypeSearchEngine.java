@@ -7,6 +7,7 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class PotionTypeSearchEngine {
@@ -70,7 +71,13 @@ public class PotionTypeSearchEngine {
     };
 
     public static PotionData find(String potionType) {
-        String potion = potionType.toLowerCase();
+        String potion = potionType.toLowerCase(Locale.ROOT);
+
+        // allow prefixing vanilla stuff with minecraft:
+        if (potion.startsWith("minecraft:")) {
+            potion = potion.substring(10);
+        }
+
         return Attemptor.start()
                 .attempt(extendable.containsKey(potion), type -> new PotionData(PotionType.valueOf(extendable.get(type)), true, false))
                 .attempt(upgradeable.containsKey(potion), type -> new PotionData(PotionType.valueOf(upgradeable.get(type)), false, true))

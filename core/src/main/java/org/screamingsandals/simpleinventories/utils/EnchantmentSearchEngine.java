@@ -4,6 +4,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class EnchantmentSearchEngine {
@@ -57,6 +58,13 @@ public class EnchantmentSearchEngine {
 
         /* NamespacedKeys are not available on old versions, use hardcoded map */
 
-        return Enchantment.getByName(LEGACY_MAPPING.get(enchant.toLowerCase()));
+        enchant = enchant.toLowerCase(Locale.ROOT);
+
+        // allow prefixing vanilla stuff with minecraft:
+        if (enchant.startsWith("minecraft:")) {
+            enchant = enchant.substring(10);
+        }
+
+        return Enchantment.getByName(LEGACY_MAPPING.get(enchant));
     }
 }

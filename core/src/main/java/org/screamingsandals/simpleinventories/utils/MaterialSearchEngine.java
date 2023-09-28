@@ -651,6 +651,11 @@ public class MaterialSearchEngine {
 	}
 
 	public static Result find(String materialArgument) {
+		// allow prefixing vanilla stuff with minecraft:
+		if (materialArgument.toLowerCase().startsWith("minecraft:")) {
+			materialArgument = materialArgument.substring(10);
+		}
+
 		String[] splitByColon = materialArgument.split(":");
 		String materialString = splitByColon[0];
 		short damageShort = 0;
