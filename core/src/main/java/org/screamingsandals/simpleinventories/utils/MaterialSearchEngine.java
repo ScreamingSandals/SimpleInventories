@@ -32,6 +32,20 @@ public class MaterialSearchEngine {
 	}
 
 	@AllArgsConstructor
+	public enum TT5_T_TTranslator {
+		TURTLE_SCUTE("SCUTE");
+
+		private String translate;
+	}
+
+	@AllArgsConstructor
+	public enum TT_T_TT5CTranslator {
+		SCUTE("TURTLE_SCUTE");
+
+		private String translate;
+	}
+
+	@AllArgsConstructor
 	public enum FCTNTranslator {
 		DIRT_PATH("GRASS_PATH");
 
@@ -634,6 +648,7 @@ public class MaterialSearchEngine {
 	}
 	
 	private static int versionNumber;
+	private static boolean v1_20_5;
 	private static boolean isLegacy;
 	
 	static {
@@ -642,12 +657,19 @@ public class MaterialSearchEngine {
         for (int i = 0; i < 2; i++) {
             versionNumber += Integer.parseInt(bukkitVersion[i]) * (i == 0 ? 100 : 1);
         }
+		if (versionNumber == 120 && bukkitVersion.length > 2 && "5".equals(bukkitVersion[2])) {
+			v1_20_5 = true;
+		}
 
         isLegacy = versionNumber < 113;
 	}
 
 	public static int getVersionNumber() {
 		return versionNumber;
+	}
+
+	public static boolean isV1_20_5() {
+		return v1_20_5;
 	}
 
 	public static Result find(String materialArgument) {
@@ -683,6 +705,14 @@ public class MaterialSearchEngine {
 			return new Result(mat, damage);
 		}).attempt(versionNumber < 117 && !isLegacy, (material, damage) -> {
 			FCTNTranslator translate = FCTNTranslator.valueOf(material.toUpperCase());
+			Material mat = Material.matchMaterial(translate.translate);
+			return new Result(mat, damage);
+		}).attempt((versionNumber >= 121 || v1_20_5) && !isLegacy, (material, damage) -> {
+			TT_T_TT5CTranslator translate = TT_T_TT5CTranslator.valueOf(material.toUpperCase());
+			Material mat = Material.matchMaterial(translate.translate);
+			return new Result(mat, damage);
+		}).attempt(versionNumber < 121 && !v1_20_5 && !isLegacy, (material, damage) -> {
+			TT5_T_TTranslator translate = TT5_T_TTranslator.valueOf(material.toUpperCase());
 			Material mat = Material.matchMaterial(translate.translate);
 			return new Result(mat, damage);
 		}).attempt(versionNumber < 116 && !isLegacy, (material, damage) -> {

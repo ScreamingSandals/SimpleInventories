@@ -29,7 +29,7 @@ public class PotionTypeEffectSearchEngine {
             potion = potion.substring(10);
         }
 
-        if (minecraft2bukkit.containsKey(potion)) {
+        if (!MaterialSearchEngine.isV1_20_5() && MaterialSearchEngine.getVersionNumber() <= 120 && minecraft2bukkit.containsKey(potion)) {
             potion = minecraft2bukkit.get(potion);
         }
 
