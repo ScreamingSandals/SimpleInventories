@@ -16,31 +16,17 @@ public class PotionTypeSearchEngine1_8_8 {
     private static final Map<String, String> regular = new HashMap<String, String>() {
         {
             put("water", "WATER");
-            if (MaterialSearchEngine.isV1_20_5() || MaterialSearchEngine.getVersionNumber() > 120) {
-                put("regeneration", "REGENERATION");
-                put("swiftness", "SWIFTNESS");
-            } else {
-                put("regeneration", "REGEN");
-                put("swiftness", "SPEED");
-            }
+            put("regeneration", "REGEN");
+            put("swiftness", "SPEED");
             put("fire_resistance", "FIRE_RESISTANCE");
             put("poison", "POISON");
-            if (MaterialSearchEngine.isV1_20_5() || MaterialSearchEngine.getVersionNumber() > 120) {
-                put("healing", "HEALING");
-            } else {
-                put("healing", "INSTANT_HEAL");
-            }
+            put("healing", "INSTANT_HEAL");
             put("night_vision", "NIGHT_VISION");
             put("weakness", "WEAKNESS");
             put("strength", "STRENGTH");
             put("slowness", "SLOWNESS");
-            if (MaterialSearchEngine.isV1_20_5() || MaterialSearchEngine.getVersionNumber() > 120) {
-                put("leaping", "LEAPING");
-                put("harming", "HARMING");
-            } else {
-                put("leaping", "JUMP");
-                put("harming", "INSTANT_DAMAGE");
-            }
+            put("leaping", "JUMP");
+            put("harming", "INSTANT_DAMAGE");
             put("water_breathing", "WATER_BREATHING");
             put("invisibility", "INVISIBILITY");
         }
@@ -48,20 +34,12 @@ public class PotionTypeSearchEngine1_8_8 {
 
     private static final Map<String, String> upgradeable = new HashMap<String, String>() {
         {
-            if (MaterialSearchEngine.isV1_20_5() || MaterialSearchEngine.getVersionNumber() > 120) {
-                put("strong_leaping", "LEAPING");
-                put("strong_swiftness", "SWIFTNESS");
-                put("strong_healing", "HEALING");
-                put("strong_harming", "HARMING");
-                put("strong_regeneration", "REGENERATION");
-            } else {
-                put("strong_leaping", "JUMP");
-                put("strong_swiftness", "SPEED");
-                put("strong_healing", "INSTANT_HEAL");
-                put("strong_harming", "INSTANT_DAMAGE");
-                put("strong_regeneration", "REGEN");
-            }
+            put("strong_leaping", "JUMP");
+            put("strong_swiftness", "SPEED");
+            put("strong_healing", "INSTANT_HEAL");
+            put("strong_harming", "INSTANT_DAMAGE");
             put("strong_poison", "POISON");
+            put("strong_regeneration", "REGEN");
             put("strong_strength", "STRENGTH");
             put("strong_slowness", "SLOWNESS");
         }
@@ -70,19 +48,13 @@ public class PotionTypeSearchEngine1_8_8 {
         {
             put("long_night_vision", "NIGHT_VISION");
             put("long_invisibility", "INVISIBILITY");
-            if (MaterialSearchEngine.isV1_20_5() || MaterialSearchEngine.getVersionNumber() > 120) {
-                put("long_leaping", "LEAPING");
-                put("long_swiftness", "SWIFTNESS");
-                put("long_regeneration", "REGENERATION");
-            } else {
-                put("long_leaping", "JUMP");
-                put("long_swiftness", "SPEED");
-                put("long_regeneration", "REGEN");
-            }
+            put("long_leaping", "JUMP");
             put("long_fire_resistance", "FIRE_RESISTANCE");
+            put("long_swiftness", "SPEED");
             put("long_slowness", "SLOWNESS");
             put("long_water_breathing", "WATER_BREATHING");
             put("long_poison", "POISON");
+            put("long_regeneration", "REGEN");
             put("long_strength", "STRENGTH");
             put("long_weakness", "WEAKNESS");
         }

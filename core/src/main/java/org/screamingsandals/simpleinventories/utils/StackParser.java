@@ -322,9 +322,17 @@ public class StackParser {
 				return stack; // return earlier
 			} else {
 				if (ob instanceof PotionType) {
-					potion.setBasePotionData(new PotionData((PotionType) ob));
+					if (MaterialSearchEngine.isV1_20_5() || MaterialSearchEngine.getVersionNumber() > 120) {
+						PotionTypeSearchEngine1_20_5.setPotionType(potion, (PotionType) ob);
+					} else {
+						potion.setBasePotionData(new PotionData((PotionType) ob));
+					}
 				} else {
-					potion.setBasePotionData(PotionTypeSearchEngine.find(ob.toString()));
+					if (MaterialSearchEngine.isV1_20_5() || MaterialSearchEngine.getVersionNumber() > 120) {
+						PotionTypeSearchEngine1_20_5.setPotionType(potion, PotionTypeSearchEngine1_20_5.find(ob.toString()));
+					} else {
+						potion.setBasePotionData(PotionTypeSearchEngine.find(ob.toString()));
+					}
 				}
 			}
 		}

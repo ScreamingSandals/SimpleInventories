@@ -120,8 +120,13 @@ public class GroovyBukkitStackBuilder implements IGroovyStackBuilder {
         } else {
             ItemMeta meta = stack.getItemMeta();
             if (meta instanceof PotionMeta) {
-                ((PotionMeta) meta).setBasePotionData(PotionTypeSearchEngine.find(potion));
-                stack.setItemMeta(meta);
+                if (MaterialSearchEngine.getVersionNumber() > 120 || MaterialSearchEngine.isV1_20_5()) {
+                    PotionTypeSearchEngine1_20_5.setPotionType((PotionMeta) meta, PotionTypeSearchEngine1_20_5.find(potion));
+                    stack.setItemMeta(meta);
+                } else {
+                    ((PotionMeta) meta).setBasePotionData(PotionTypeSearchEngine.find(potion));
+                    stack.setItemMeta(meta);
+                }
             }
         }
     }
@@ -130,8 +135,12 @@ public class GroovyBukkitStackBuilder implements IGroovyStackBuilder {
     public void potion(PotionType potion) {
         ItemMeta meta = stack.getItemMeta();
         if (meta instanceof PotionMeta) {
-            ((PotionMeta) meta).setBasePotionData(new PotionData(potion));
-            stack.setItemMeta(meta);
+            if (MaterialSearchEngine.getVersionNumber() > 120 || MaterialSearchEngine.isV1_20_5()) {
+                PotionTypeSearchEngine1_20_5.setPotionType((PotionMeta) meta, potion);
+            } else {
+                ((PotionMeta) meta).setBasePotionData(new PotionData(potion));
+                stack.setItemMeta(meta);
+            }
         }
     }
 }
