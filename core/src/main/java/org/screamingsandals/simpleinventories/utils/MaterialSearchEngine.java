@@ -657,9 +657,11 @@ public class MaterialSearchEngine {
         for (int i = 0; i < 2; i++) {
             versionNumber += Integer.parseInt(bukkitVersion[i]) * (i == 0 ? 100 : 1);
         }
-		if (versionNumber == 120 && bukkitVersion.length > 2 && "5".equals(bukkitVersion[2])) {
-			v1_20_5 = true;
-		}
+		try {
+			if (versionNumber == 120 && bukkitVersion.length > 2 && Integer.parseInt(bukkitVersion[2]) >= 5) {
+				v1_20_5 = true;
+			}
+		} catch (NumberFormatException ignored) {}
 
         isLegacy = versionNumber < 113;
 	}
