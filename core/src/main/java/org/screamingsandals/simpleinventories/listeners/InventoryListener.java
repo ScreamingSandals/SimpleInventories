@@ -160,7 +160,7 @@ public class InventoryListener implements Listener {
                 String type = originalData.getString("price-type", "default");
 
                 ShopTransactionEvent shopEvent = new ShopTransactionEvent(player, format, playersItem, price,
-                        type, e.getClick());
+                        type, e.getClick(), originalData.containsKey("execute"));
 
                 if (playersItem.getReader().containsKey("buycallbacks")) {
                     List<Object> buycallbacks = (List<Object>) playersItem.getReader().get("buycallbacks");
@@ -171,6 +171,10 @@ public class InventoryListener implements Listener {
 
                 Bukkit.getPluginManager().callEvent(shopEvent);
 
+                if (shopEvent.isHasExecutions() && shopEvent.isRunExecutions()) {
+                    runExecutions(originalData.get("execute"), format, player);
+                }
+
                 if (player.getOpenInventory().getTopInventory().getHolder() == holder) {
                     holder.repaint();
                 }
@@ -178,42 +182,7 @@ public class InventoryListener implements Listener {
             }
 
             if (originalData.containsKey("execute")) {
-                Object obj = originalData.get("execute");
-                List<String> list = obj instanceof List ? (List<String>) obj : Collections.singletonList(obj.toString());
-                for (String str : list) {
-                    str = str.trim();
-                    if (str.startsWith("console:")) {
-                        if (format.isAllowedToExecuteConsoleCommands()) {
-                            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str.substring(8).trim());
-                        }
-                    } else if (str.startsWith("bungee:")) {
-                        if (format.isAllowBungeecord()) {
-                            final String server = str.substring(7).trim();
-                            Bukkit.getScheduler().runTask(format.getPluginForRunnables(), () -> {
-                                try {
-                                    if (!Bukkit.getMessenger().getOutgoingChannels(format.getPluginForRunnables()).contains("BungeeCord")) {
-                                        Bukkit.getMessenger().registerOutgoingPluginChannel(format.getPluginForRunnables(), "BungeeCord");
-                                    }
-
-                                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
-
-                                    out.writeUTF("Connect");
-                                    out.writeUTF(server);
-
-                                    player.sendPluginMessage(format.getPluginForRunnables(), "BungeeCord", out.toByteArray());
-                                } catch (Throwable throwable) {
-                                    System.out.println("Something went wrong while teleporting player through bungeecord: " + throwable.getMessage());
-                                    throwable.printStackTrace();
-                                }
-                            });
-                        }
-                    } else {
-                        if (str.startsWith("player:")) {
-                            str = str.substring(7).trim();
-                        }
-                        Bukkit.getServer().dispatchCommand(player, str);
-                    }
-                }
+                runExecutions(originalData.get("execute"), format, player);
             }
 
             PostActionEvent postEvent = new PostActionEvent(player, format, inventory, parent, playersItem, e.getClick());
@@ -229,6 +198,44 @@ public class InventoryListener implements Listener {
 
             if (player.getOpenInventory().getTopInventory().getHolder() == holder) {
                 holder.repaint();
+            }
+        }
+    }
+
+    private void runExecutions(Object obj, SimpleInventories format, Player player) {
+        List<String> list = obj instanceof List ? (List<String>) obj : Collections.singletonList(obj.toString());
+        for (String str : list) {
+            str = str.trim();
+            if (str.startsWith("console:")) {
+                if (format.isAllowedToExecuteConsoleCommands()) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), str.substring(8).trim());
+                }
+            } else if (str.startsWith("bungee:")) {
+                if (format.isAllowBungeecord()) {
+                    final String server = str.substring(7).trim();
+                    Bukkit.getScheduler().runTask(format.getPluginForRunnables(), () -> {
+                        try {
+                            if (!Bukkit.getMessenger().getOutgoingChannels(format.getPluginForRunnables()).contains("BungeeCord")) {
+                                Bukkit.getMessenger().registerOutgoingPluginChannel(format.getPluginForRunnables(), "BungeeCord");
+                            }
+
+                            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+
+                            out.writeUTF("Connect");
+                            out.writeUTF(server);
+
+                            player.sendPluginMessage(format.getPluginForRunnables(), "BungeeCord", out.toByteArray());
+                        } catch (Throwable throwable) {
+                            System.out.println("Something went wrong while teleporting player through bungeecord: " + throwable.getMessage());
+                            throwable.printStackTrace();
+                        }
+                    });
+                }
+            } else {
+                if (str.startsWith("player:")) {
+                    str = str.substring(7).trim();
+                }
+                Bukkit.getServer().dispatchCommand(player, str);
             }
         }
     }

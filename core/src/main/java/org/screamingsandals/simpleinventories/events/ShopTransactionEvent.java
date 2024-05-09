@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -14,7 +14,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.screamingsandals.simpleinventories.SimpleInventories;
-import org.screamingsandals.simpleinventories.item.ItemInfo;
 import org.screamingsandals.simpleinventories.item.ItemProperty;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 
@@ -30,8 +29,11 @@ public class ShopTransactionEvent extends Event implements Cancellable {
 	private final PlayerItemInfo item;
 	private boolean cancel = false;
 	private final ClickType clickType;
+	private final boolean hasExecutions;
+	@Setter
+	private boolean runExecutions = false;
 
-	public ShopTransactionEvent(Player player, SimpleInventories format, PlayerItemInfo item, int price, String type, ClickType clickType) {
+	public ShopTransactionEvent(Player player, SimpleInventories format, PlayerItemInfo item, int price, String type, ClickType clickType, boolean hasExecutions) {
 		this.player = player;
 		this.format = format;
 		this.item = item;
@@ -53,6 +55,7 @@ public class ShopTransactionEvent extends Event implements Cancellable {
 		this.price = price;
 		this.type = type;
 		this.clickType = clickType;
+		this.hasExecutions = hasExecutions;
 	}
 
 	public static HandlerList getHandlerList() {
