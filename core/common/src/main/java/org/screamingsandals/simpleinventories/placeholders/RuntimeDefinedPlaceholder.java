@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RuntimeDefinedPlaceholder implements IPlaceholderParser {
+public class RuntimeDefinedPlaceholder implements PlaceholderParser {
 
 	private Map<String, String> map = new HashMap<>();
 	private String defstr = null;

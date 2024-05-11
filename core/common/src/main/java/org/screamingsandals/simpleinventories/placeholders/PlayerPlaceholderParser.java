@@ -22,7 +22,7 @@ import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 
 import java.util.Objects;
 
-public class PlayerPlaceholderParser implements IPlaceholderParser {
+public class PlayerPlaceholderParser implements PlaceholderParser {
 
 	@Override
 	public String processPlaceholder(String key, Player playerWrapper, PlayerItemInfo item, String[] arguments) {

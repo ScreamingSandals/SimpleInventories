@@ -21,6 +21,7 @@ import org.screamingsandals.simpleinventories.events.OnTradeEvent;
 import org.screamingsandals.simpleinventories.events.PostClickEvent;
 import org.screamingsandals.simpleinventories.events.PreClickEvent;
 import org.screamingsandals.simpleinventories.inventory.GenericItemInfo;
+import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.lib.player.Player;
 
@@ -97,8 +98,12 @@ public abstract class ClickActionHandler {
                 return price1;
             }).filter(Objects::nonNull).collect(Collectors.toList());
             if (!list.isEmpty()) {
-                var tradeEvent = new OnTradeEvent(playerWrapper, list, playerItemInfo.getOriginal().getItem().clone(), playerItemInfo, clickType);
+                var tradeEvent = new OnTradeEvent(playerWrapper, list, playerItemInfo.getOriginal().getItem().clone(), playerItemInfo, clickType, !playerItemInfo.getOriginal().getExecutions().isEmpty());
                 playerItemInfo.getOriginal().getEventManager().fireEvent(tradeEvent);
+
+                if (tradeEvent.isHasAnyExecutions() && tradeEvent.isRunExecutions()) {
+                    dispatchCommands(playerItemInfo, playerWrapper);
+                }
 
                 if (inventoryRenderer.isOpened()) {
                     inventoryRenderer.render();
@@ -108,22 +113,7 @@ public abstract class ClickActionHandler {
         }
 
         if (!playerItemInfo.getOriginal().getExecutions().isEmpty()) {
-            playerItemInfo.getOriginal().getExecutions().forEach(s -> {
-                if (s.startsWith("console:")) {
-                    if (playerItemInfo.getFormat().isAllowAccessToConsole()) {
-                        var command = s.split(":", 2)[1];
-                        dispatchConsoleCommand(command);
-                    }
-                } else if (s.startsWith("bungee:") || s.startsWith("proxy:")) {
-                    if (playerItemInfo.getFormat().isAllowBungeecordPlayerSending()) {
-                        var server = s.split(":", 2)[1];
-                        movePlayerOnProxy(playerWrapper, server);
-                    }
-                } else {
-                    var command = s.startsWith("player:") ? s.split(":", 2)[1] : s;
-                    dispatchPlayerCommand(playerWrapper, command);
-                }
-            });
+            dispatchCommands(playerItemInfo, playerWrapper);
         }
 
         var postClickEvent = new PostClickEvent(playerWrapper, playerItemInfo, clickType, subInventory);
@@ -132,6 +122,26 @@ public abstract class ClickActionHandler {
         if (inventoryRenderer.isOpened()) {
             inventoryRenderer.render();
         }
+    }
+
+    private void dispatchCommands(PlayerItemInfo playerItemInfo, Player player) {
+        var format = playerItemInfo.getFormat();
+        playerItemInfo.getOriginal().getExecutions().forEach(s -> {
+            if (s.startsWith("console:")) {
+                if (format.isAllowAccessToConsole()) {
+                    var command = format.processPlaceholders(player, s.split(":", 2)[1], playerItemInfo);
+                    dispatchConsoleCommand(command);
+                }
+            } else if (s.startsWith("bungee:") || s.startsWith("proxy:")) {
+                if (format.isAllowBungeecordPlayerSending()) {
+                    var server =format.processPlaceholders(player, s.split(":", 2)[1], playerItemInfo);
+                    movePlayerOnProxy(player, server);
+                }
+            } else {
+                var command = format.processPlaceholders(player, s.startsWith("player:") ? s.split(":", 2)[1] : s, playerItemInfo);
+                dispatchPlayerCommand(player, command);
+            }
+        });
     }
 
     protected abstract void dispatchPlayerCommand(Player playerWrapper, String command);

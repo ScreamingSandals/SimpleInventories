@@ -19,9 +19,9 @@ package org.screamingsandals.simpleinventories.bukkit.placeholders;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
-import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
+import org.screamingsandals.simpleinventories.placeholders.PlaceholderParser;
 
-public class WorldPlaceholderParser implements IPlaceholderParser {
+public class WorldPlaceholderParser implements PlaceholderParser {
 
 	@Override
 	public String processPlaceholder(String key, org.screamingsandals.lib.player.Player player, PlayerItemInfo item, String[] arguments) {

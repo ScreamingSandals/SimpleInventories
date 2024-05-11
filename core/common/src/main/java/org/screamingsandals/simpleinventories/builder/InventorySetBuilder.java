@@ -24,7 +24,7 @@ import org.screamingsandals.simpleinventories.inventory.Include;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.inventory.SubInventoryLike;
-import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
+import org.screamingsandals.simpleinventories.placeholders.PlaceholderParser;
 
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class InventorySetBuilder extends CategoryBuilder {
         return this;
     }
 
-    public InventorySetBuilder define(String placeholder, IPlaceholderParser placeholderParser) {
+    public InventorySetBuilder define(String placeholder, PlaceholderParser placeholderParser) {
         inventorySet.registerPlaceholder(placeholder, placeholderParser);
         return this;
     }

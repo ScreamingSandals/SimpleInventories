@@ -39,7 +39,6 @@ public class PlayerItemInfo {
     @Getter
     private Player player;
 
-    @SuppressWarnings("unchecked")
     public PlayerItemInfo(Player player, GenericItemInfo original) {
         this.player = player;
         this.original = original;

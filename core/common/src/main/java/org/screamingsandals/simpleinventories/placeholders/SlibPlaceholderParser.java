@@ -20,7 +20,7 @@ import org.screamingsandals.lib.placeholders.PlaceholderManager;
 import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 
-public class SlibPlaceholderParser implements IPlaceholderParser {
+public class SlibPlaceholderParser implements PlaceholderParser {
 
 	@Override
 	public String processPlaceholder(String key, Player player, PlayerItemInfo item, String[] arguments) {

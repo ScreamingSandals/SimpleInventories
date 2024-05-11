@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Include implements Queueable {
     public static final Pattern INCLUDE_PATTERN = Pattern.compile("^((?<loader>[A-Za-z0-9]*)(:(?<section>[A-Za-z0-9.]*))?@)?(?<path>.+)$");
-    public static final Map<String, Supplier<? extends ILoader>> LOADERS = Map.ofEntries(
+    public static final Map<String, Supplier<? extends Loader>> LOADERS = Map.ofEntries(
             // Groovy
             Map.entry("groovy", GroovyLoader::new),
             Map.entry("gvy", GroovyLoader::new),
@@ -44,7 +44,7 @@ public class Include implements Queueable {
     );
 
     private final Path path;
-    private final ILoader loader;
+    private final Loader loader;
     private final String section;
 
     public static Include of(String link) {
@@ -91,7 +91,7 @@ public class Include implements Queueable {
         return of(Path.of(fileName), loader);
     }
 
-    public static Include of(String fileName, ILoader loader) {
+    public static Include of(String fileName, Loader loader) {
         return of(Path.of(fileName), loader);
     }
 
@@ -99,7 +99,7 @@ public class Include implements Queueable {
         return of(file.toPath(), loader);
     }
 
-    public static Include of(File file, ILoader loader) {
+    public static Include of(File file, Loader loader) {
         return of(file.toPath(), loader);
     }
 
@@ -107,7 +107,7 @@ public class Include implements Queueable {
         return of(path, loader, "data");
     }
 
-    public static Include of(Path path, ILoader loader) {
+    public static Include of(Path path, Loader loader) {
         return of(path, loader, "data");
     }
 
@@ -115,7 +115,7 @@ public class Include implements Queueable {
         return of(Path.of(fileName), loader, section);
     }
 
-    public static Include of(String fileName, ILoader loader, String section) {
+    public static Include of(String fileName, Loader loader, String section) {
         return of(Path.of(fileName), loader, section);
     }
 
@@ -123,7 +123,7 @@ public class Include implements Queueable {
         return of(file.toPath(), loader, section);
     }
 
-    public static Include of(File file, ILoader loader, String section) {
+    public static Include of(File file, Loader loader, String section) {
         return of(file.toPath(), loader, section);
     }
 
@@ -134,7 +134,7 @@ public class Include implements Queueable {
         }).get(), section);
     }
 
-    public static Include of(Path path, ILoader loader, String section) {
+    public static Include of(Path path, Loader loader, String section) {
         if (!path.isAbsolute()) {
             path = SimpleInventoriesCore.getRootPath().resolve(path);
         }

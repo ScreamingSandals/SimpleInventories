@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor(staticName = "of")
-public class ConfigurateLoader implements ILoader {
+public class ConfigurateLoader implements Loader {
     private final Supplier<AbstractConfigurationLoader.Builder<?,?>> configurationLoaderBuilder;
 
     @Override

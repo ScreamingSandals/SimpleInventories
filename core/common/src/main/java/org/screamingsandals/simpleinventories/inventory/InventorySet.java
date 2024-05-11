@@ -24,7 +24,7 @@ import org.screamingsandals.lib.spectator.Component;
 import org.screamingsandals.lib.utils.reflect.Reflect;
 import org.screamingsandals.simpleinventories.SimpleInventoriesCore;
 import org.screamingsandals.simpleinventories.operations.OperationParser;
-import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
+import org.screamingsandals.simpleinventories.placeholders.PlaceholderParser;
 import org.screamingsandals.simpleinventories.placeholders.PagePlaceholderParser;
 import org.screamingsandals.simpleinventories.placeholders.PermissionPlaceholderParser;
 import org.screamingsandals.simpleinventories.placeholders.PlayerPlaceholderParser;
@@ -45,7 +45,7 @@ public class InventorySet implements Openable {
 
     private final EventManager eventManager = EventManager.createChildManager();
 
-    private final Map<String, IPlaceholderParser> placeholders = new HashMap<>();
+    private final Map<String, PlaceholderParser> placeholders = new HashMap<>();
     private final Map<String, IdentifiableEntry> ids = new HashMap<>();
     private final Map<String, String> variableToPropertyMap = new HashMap<>();
     private final SubInventory mainSubInventory = new SubInventory(true, null, this);
@@ -75,7 +75,7 @@ public class InventorySet implements Openable {
         return registerPlaceholder(name, (a,b,c,d) -> value);
     }
 
-    public boolean registerPlaceholder(String name, IPlaceholderParser parser) {
+    public boolean registerPlaceholder(String name, PlaceholderParser parser) {
         if (name.contains(".") || name.contains(":") || name.contains("%") || name.contains(" ")) {
             return false;
         }
@@ -90,13 +90,13 @@ public class InventorySet implements Openable {
     public String processPlaceholders(Player player, String text, PlayerItemInfo info) {
         var characters = text.toCharArray();
         var lastEscapeIndex = -2;
-        var buf = "";
+        var buf = new StringBuilder();
         for (var i = 0; i < characters.length; i++) {
             var c = characters[i];
             if (c == '{' && lastEscapeIndex != (i - 1)) {
                 var bracketEnd = characters.length;
                 var alastEscapeIndex = -2;
-                var bracketBuf = "";
+                var bracketBuf = new StringBuilder();
                 for (var j = i + 1; j < characters.length; j++) {
                     var cc = characters[j];
                     if (cc == '\\' && alastEscapeIndex != (j - 1)) {
@@ -105,24 +105,23 @@ public class InventorySet implements Openable {
                         bracketEnd = j;
                         break;
                     } else {
-                        bracketBuf += cc;
+                        bracketBuf.append(cc);
                     }
                 }
                 i = bracketEnd;
-                buf += String
-                        .valueOf(OperationParser.getFinalOperation(this, bracketBuf).resolveFor(player, info));
+                buf.append(OperationParser.getFinalOperation(this, bracketBuf.toString()).resolveFor(player, info));
             } else if (c == '\\' && lastEscapeIndex != (i - 1)) {
                 lastEscapeIndex = i;
             } else {
-                buf += c;
+                buf.append(c);
             }
         }
 
-        text = buf;
+        text = buf.toString();
 
         var pat = Pattern.compile("%[^%]+%");
         var matcher = pat.matcher(text);
-        var sb = new StringBuffer();
+        var sb = new StringBuilder();
         while (matcher.find()) {
             var matched = matcher.group();
             matched = matcher.group().substring(1, matched.length() - 1);

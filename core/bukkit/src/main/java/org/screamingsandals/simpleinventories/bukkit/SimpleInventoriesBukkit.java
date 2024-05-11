@@ -32,7 +32,7 @@ import org.screamingsandals.simpleinventories.bukkit.placeholders.WorldPlacehold
 import org.screamingsandals.simpleinventories.bukkit.render.BukkitInventoryRenderer;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
+import org.screamingsandals.simpleinventories.placeholders.PlaceholderParser;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.lib.player.Player;
 
@@ -118,7 +118,7 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
     }
 
     @Override
-    protected void registerPlatformSpecificPlaceholders0(Map<String, IPlaceholderParser> placeholders) {
+    protected void registerPlatformSpecificPlaceholders0(Map<String, PlaceholderParser> placeholders) {
         placeholders.put("world", new WorldPlaceholderParser());
     }
 

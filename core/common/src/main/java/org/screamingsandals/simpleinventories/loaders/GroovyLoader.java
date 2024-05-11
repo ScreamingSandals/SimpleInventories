@@ -26,7 +26,7 @@ import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import java.net.URL;
 import java.nio.file.Path;
 
-public class GroovyLoader implements ILoader {
+public class GroovyLoader implements Loader {
     @Override
     public void loadPathInto(SubInventory subInventory, Path path, String configPath) throws Exception {
         DependencyHelper.GROOVY.load();

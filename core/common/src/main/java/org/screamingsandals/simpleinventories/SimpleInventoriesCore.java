@@ -22,7 +22,7 @@ import org.screamingsandals.lib.utils.annotations.ServiceDependencies;
 import org.screamingsandals.simpleinventories.builder.InventorySetBuilder;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
-import org.screamingsandals.simpleinventories.placeholders.IPlaceholderParser;
+import org.screamingsandals.simpleinventories.placeholders.PlaceholderParser;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 import org.screamingsandals.lib.player.Player;
 
@@ -104,14 +104,14 @@ public abstract class SimpleInventoriesCore {
 
     protected abstract Object readConfigurationSerializable0(Map<String, Object> configuration);
 
-    public static void registerPlatformSpecificPlaceholders(Map<String, IPlaceholderParser> placeholders) {
+    public static void registerPlatformSpecificPlaceholders(Map<String, PlaceholderParser> placeholders) {
         if (core == null) {
             throw new UnsupportedOperationException("SimpleInventoriesCore isn't initialized yet.");
         }
         core.registerPlatformSpecificPlaceholders0(placeholders);
     }
 
-    protected abstract void registerPlatformSpecificPlaceholders0(Map<String, IPlaceholderParser> placeholders);
+    protected abstract void registerPlatformSpecificPlaceholders0(Map<String, PlaceholderParser> placeholders);
 
     public static void runJar(File file) throws Exception {
         if (core == null) {

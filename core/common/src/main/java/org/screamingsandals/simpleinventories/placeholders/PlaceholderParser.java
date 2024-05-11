@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.screamingsandals.simpleinventories.loaders;
+package org.screamingsandals.simpleinventories.placeholders;
 
-import org.screamingsandals.simpleinventories.inventory.SubInventory;
+import org.screamingsandals.lib.player.Player;
+import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 
-import java.nio.file.Path;
-
-public interface ILoader {
-    void loadPathInto(SubInventory subInventory, Path path, String configPath) throws Exception;
+public interface PlaceholderParser {
+    String processPlaceholder(String key, Player player, PlayerItemInfo item, String[] arguments);
 }

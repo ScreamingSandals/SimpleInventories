@@ -37,7 +37,9 @@ public class OnTradeEvent implements CancellableEvent {
     private final ItemStack stack;
     private final PlayerItemInfo item;
     private final ClickType clickType;
+    private final boolean hasAnyExecutions;
     private boolean cancelled;
+    private boolean runExecutions;
 
     public InventorySet getFormat() {
         return item.getFormat();

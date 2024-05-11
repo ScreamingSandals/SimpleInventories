@@ -19,7 +19,7 @@ package org.screamingsandals.simpleinventories.placeholders;
 import org.screamingsandals.lib.player.Player;
 import org.screamingsandals.simpleinventories.inventory.PlayerItemInfo;
 
-public class PermissionPlaceholderParser implements IPlaceholderParser {
+public class PermissionPlaceholderParser implements PlaceholderParser {
 
 	@Override
 	public String processPlaceholder(String key, Player player, PlayerItemInfo item, String[] arguments) {
