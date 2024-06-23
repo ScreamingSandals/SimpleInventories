@@ -20,6 +20,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
+import org.screamingsandals.simpleinventories.bukkit.utils.InventoryUtils;
 
 public class BukkitItemMoveActionHandler implements Listener {
     @EventHandler
@@ -28,8 +29,8 @@ public class BukkitItemMoveActionHandler implements Listener {
             return;
         }
 
-        var possibleHolder = event.getSource().getHolder();
-        var possibleDestHolder = event.getDestination().getHolder();
+        var possibleHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(event.getSource());
+        var possibleDestHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(event.getDestination());
 
         if (possibleHolder instanceof AbstractHolder || possibleDestHolder instanceof AbstractHolder) {
             event.setCancelled(true);

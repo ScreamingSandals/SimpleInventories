@@ -32,7 +32,7 @@ public class BukkitItemDragActionHandler implements Listener {
         }
 
         var primaryInventory = event.getInventory();
-        var possibleHolder = primaryInventory.getHolder();
+        var possibleHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(primaryInventory);
 
         if (possibleHolder instanceof AbstractHolder) {
             var player = (Player) event.getWhoClicked();

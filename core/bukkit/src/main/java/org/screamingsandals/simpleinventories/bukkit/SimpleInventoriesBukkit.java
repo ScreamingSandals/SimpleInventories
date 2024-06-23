@@ -30,6 +30,7 @@ import org.screamingsandals.simpleinventories.bukkit.action.BukkitItemMoveAction
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.placeholders.WorldPlaceholderParser;
 import org.screamingsandals.simpleinventories.bukkit.render.BukkitInventoryRenderer;
+import org.screamingsandals.simpleinventories.bukkit.utils.InventoryUtils;
 import org.screamingsandals.simpleinventories.inventory.InventorySet;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.placeholders.PlaceholderParser;
@@ -81,8 +82,9 @@ public class SimpleInventoriesBukkit extends SimpleInventoriesCore {
 
     protected InventoryRenderer getInventoryRenderer0(org.bukkit.entity.Player player) {
         var top = player.getOpenInventory().getTopInventory();
-        if (top.getHolder() instanceof AbstractHolder) {
-            return ((AbstractHolder) top.getHolder()).getInventoryRenderer();
+        var topHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(top);
+        if (topHolder instanceof AbstractHolder) {
+            return ((AbstractHolder) topHolder).getInventoryRenderer();
         } /*else if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(top)) {
             return GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(top);
         }*/

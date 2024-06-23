@@ -17,9 +17,14 @@
 package org.screamingsandals.simpleinventories.bukkit.utils;
 
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
+import org.jetbrains.annotations.NotNull;
+import org.screamingsandals.lib.impl.utils.feature.PlatformFeature;
+import org.screamingsandals.lib.utils.reflect.Reflect;
 
 public class InventoryUtils {
+    private static final @NotNull PlatformFeature HOLDER_WITHOUT_SNAPSHOT = PlatformFeature.of(() -> Reflect.hasMethod(Inventory.class, "getHolder", boolean.class));
 
     public static Inventory getInventory(InventoryView view, int rawSlot) {
         if (rawSlot == InventoryView.OUTSIDE) {
@@ -30,6 +35,14 @@ public class InventoryUtils {
             return view.getTopInventory();
         } else {
             return view.getBottomInventory();
+        }
+    }
+
+    public static InventoryHolder getInventoryHolderWithoutSnapshot(Inventory inventory) {
+        if (HOLDER_WITHOUT_SNAPSHOT.isSupported()) {
+            return inventory.getHolder(false);
+        } else {
+            return inventory.getHolder();
         }
     }
 }

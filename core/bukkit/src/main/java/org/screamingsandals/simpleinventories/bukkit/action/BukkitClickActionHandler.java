@@ -38,7 +38,7 @@ public class BukkitClickActionHandler extends ClickActionHandler implements List
         }
 
         var primaryInventory = event.getInventory();
-        var possibleHolder = primaryInventory.getHolder();
+        var possibleHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(primaryInventory);
         // TODO: Tile inventory holder converter
         if (possibleHolder instanceof AbstractHolder) {
             var player = (Player) event.getWhoClicked();

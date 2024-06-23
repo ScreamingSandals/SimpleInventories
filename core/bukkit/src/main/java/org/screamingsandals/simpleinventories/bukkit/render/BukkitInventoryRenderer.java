@@ -26,6 +26,7 @@ import org.screamingsandals.lib.tasker.Tasker;
 import org.screamingsandals.lib.tasker.TaskerTime;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
 import org.screamingsandals.simpleinventories.bukkit.holder.StandardInventoryHolder;
+import org.screamingsandals.simpleinventories.bukkit.utils.InventoryUtils;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 import org.screamingsandals.simpleinventories.render.InventoryRenderer;
 
@@ -93,7 +94,7 @@ public class BukkitInventoryRenderer extends InventoryRenderer {
 
     @Override
     public boolean isOpened() {
-        return player.as(Player.class).getOpenInventory().getTopInventory().getHolder() == inventoryHolder;
+        return InventoryUtils.getInventoryHolderWithoutSnapshot(player.as(Player.class).getOpenInventory().getTopInventory()) == inventoryHolder;
     }
 
     @Override

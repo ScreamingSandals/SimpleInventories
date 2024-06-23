@@ -23,6 +23,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.screamingsandals.lib.player.Players;
 import org.screamingsandals.simpleinventories.action.CloseInventoryActionHandler;
 import org.screamingsandals.simpleinventories.bukkit.holder.AbstractHolder;
+import org.screamingsandals.simpleinventories.bukkit.utils.InventoryUtils;
 
 public class BukkitCloseInventoryActionHandler extends CloseInventoryActionHandler implements Listener {
     @EventHandler
@@ -32,7 +33,7 @@ public class BukkitCloseInventoryActionHandler extends CloseInventoryActionHandl
         }
 
         var primaryInventory = event.getInventory();
-        var possibleHolder = primaryInventory.getHolder();
+        var possibleHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(primaryInventory);
 
         if (possibleHolder instanceof AbstractHolder) {
             var player = (Player) event.getPlayer();
