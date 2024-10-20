@@ -15,6 +15,7 @@ import org.screamingsandals.simpleinventories.events.OpenInventoryEvent;
 import org.screamingsandals.simpleinventories.item.ItemInfo;
 import org.screamingsandals.simpleinventories.item.PlayerItemInfo;
 import org.screamingsandals.simpleinventories.utils.AnvilGUI;
+import org.screamingsandals.simpleinventories.utils.InventoryUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +78,7 @@ public class GuiHolder implements InventoryHolder {
 			return;
 		}
 
-		if (this.inv.getHolder() != this) {
+		if (InventoryUtils.getInventoryHolderWithoutSnapshot(this.inv) != this) {
 			TILE_ENTITY_HOLDER_CONVERTOR.put(this.inv, this);
 		}
 

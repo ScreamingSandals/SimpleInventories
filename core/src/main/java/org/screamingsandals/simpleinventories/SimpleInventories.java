@@ -17,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.Plugin;
@@ -36,6 +37,7 @@ import org.screamingsandals.simpleinventories.placeholders.PlayerPlaceholderPars
 import org.screamingsandals.simpleinventories.placeholders.RuntimeDefinedPlaceholder;
 import org.screamingsandals.simpleinventories.placeholders.ThisPlaceholderParser;
 import org.screamingsandals.simpleinventories.placeholders.WorldPlaceholderParser;
+import org.screamingsandals.simpleinventories.utils.InventoryUtils;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
 public class SimpleInventories {
@@ -1014,8 +1016,9 @@ public class SimpleInventories {
 	public GuiHolder getCurrentGuiHolder(Player player) {
 		Inventory top = player.getOpenInventory().getTopInventory();
 		if (top != null) {
-			if (top.getHolder() instanceof GuiHolder) {
-				return (GuiHolder) top.getHolder();
+			InventoryHolder holder = InventoryUtils.getInventoryHolderWithoutSnapshot(top);
+			if (holder instanceof GuiHolder) {
+				return (GuiHolder) holder;
 			} else if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(top)) {
 				return GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(top);
 			}

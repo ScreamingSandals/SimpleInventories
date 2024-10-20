@@ -25,6 +25,7 @@ import org.screamingsandals.simpleinventories.inventory.GuiHolder;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.screamingsandals.simpleinventories.item.*;
 import org.screamingsandals.simpleinventories.utils.BookUtils;
+import org.screamingsandals.simpleinventories.utils.InventoryUtils;
 import org.screamingsandals.simpleinventories.utils.MapReader;
 
 import java.util.Collections;
@@ -49,7 +50,7 @@ public class InventoryListener implements Listener {
 
         Inventory primaryInventory = e.getInventory();
 
-        InventoryHolder possibleHolder = primaryInventory.getHolder();
+        InventoryHolder possibleHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(primaryInventory);
         if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(primaryInventory)) {
             possibleHolder = GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(primaryInventory);
         }
@@ -175,7 +176,7 @@ public class InventoryListener implements Listener {
                     runExecutions(originalData.get("execute"), format, player);
                 }
 
-                if (player.getOpenInventory().getTopInventory().getHolder() == holder) {
+                if (InventoryUtils.getInventoryHolderWithoutSnapshot(player.getOpenInventory().getTopInventory()) == holder) {
                     holder.repaint();
                 }
                 return;
@@ -196,7 +197,7 @@ public class InventoryListener implements Listener {
 
             Bukkit.getPluginManager().callEvent(postEvent);
 
-            if (player.getOpenInventory().getTopInventory().getHolder() == holder) {
+            if (InventoryUtils.getInventoryHolderWithoutSnapshot(player.getOpenInventory().getTopInventory()) == holder) {
                 holder.repaint();
             }
         }
@@ -249,7 +250,7 @@ public class InventoryListener implements Listener {
         Player player = (Player) event.getPlayer();
         Inventory inventory = event.getInventory();
 
-        InventoryHolder possibleHolder = inventory.getHolder();
+        InventoryHolder possibleHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(inventory);
         if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(inventory)) {
             possibleHolder = GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(inventory);
         }
@@ -266,7 +267,7 @@ public class InventoryListener implements Listener {
 
             if (closeInventoryEvent.isCancelled()) {
                 format.openForPlayer(player);
-            } else if (inventory.getHolder() != holder) {
+            } else if (InventoryUtils.getInventoryHolderWithoutSnapshot(inventory) != holder) {
                 GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.remove(inventory);
             }
         }
@@ -280,7 +281,7 @@ public class InventoryListener implements Listener {
 
         Inventory primaryInventory = event.getInventory();
 
-        InventoryHolder possibleHolder = primaryInventory.getHolder();
+        InventoryHolder possibleHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(primaryInventory);
         if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(primaryInventory)) {
             possibleHolder = GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(primaryInventory);
         }
@@ -302,12 +303,12 @@ public class InventoryListener implements Listener {
             return;
         }
 
-        InventoryHolder possibleHolder = event.getSource().getHolder();
+        InventoryHolder possibleHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(event.getSource());
         if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(event.getSource())) {
             possibleHolder = GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(event.getSource());
         }
 
-        InventoryHolder possibleDestHolder = event.getDestination().getHolder();
+        InventoryHolder possibleDestHolder = InventoryUtils.getInventoryHolderWithoutSnapshot(event.getDestination());
         if (GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.containsKey(event.getDestination())) {
             possibleDestHolder = GuiHolder.TILE_ENTITY_HOLDER_CONVERTOR.get(event.getDestination());
         }
