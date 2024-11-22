@@ -40,6 +40,10 @@ public class GroovyLongStackBuilder implements IGroovyStackBuilder {
         stack.put("type", type);
     }
 
+    public void tag(String tag) {
+        stack.put("tag", tag);
+    }
+
     @Override
     public void durability(short durability) {
         stack.put("durability", durability);
