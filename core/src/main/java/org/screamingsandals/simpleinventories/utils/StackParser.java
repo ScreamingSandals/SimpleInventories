@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -25,12 +26,14 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.Nullable;
 
 public class StackParser {
 	
 	public static final List<String> STRING_BEGIN_END = Arrays.asList("\"", "'");
 	public static final List<String> ESCAPE_SYMBOLS = Arrays.asList("\\");
 	public static final List<String> ARGUMENT_SEPARATORS = Arrays.asList(";");
+	public static @Nullable TagParser tagParser;
 	
 	/**
 	 * This method will check the format of the stacks and than it'll parse the stacks.
@@ -172,6 +175,14 @@ public class StackParser {
 		
 		if (stack.getType() == Material.AIR) {
 			return stack;
+		}
+
+		if (tagParser != null && obj.containsKey("tag")) {
+			try {
+				stack = tagParser.applyTag(stack, (String) obj.get("tag"));
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
 		}
 		
 		if (obj.containsKey("amount")) {
