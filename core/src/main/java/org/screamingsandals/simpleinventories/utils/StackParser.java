@@ -179,7 +179,9 @@ public class StackParser {
 
 		if (tagParser != null && obj.containsKey("tag")) {
 			try {
-				stack = tagParser.applyTag(stack, (String) obj.get("tag"));
+				Object dataVersionO = obj.getOrDefault("DataVersion", 0);
+				int dataVersion = dataVersionO instanceof Integer ? (Integer) dataVersionO : 0;
+				stack = tagParser.applyTag(stack, (String) obj.get("tag"), dataVersion);
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}

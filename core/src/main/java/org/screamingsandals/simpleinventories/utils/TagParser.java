@@ -5,5 +5,5 @@ import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface TagParser {
-    @NotNull ItemStack applyTag(@NotNull ItemStack stack, @NotNull String tag) throws Exception;
+    @NotNull ItemStack applyTag(@NotNull ItemStack stack, @NotNull String tag, int dataVersion) throws Exception;
 }
