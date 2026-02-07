@@ -13,8 +13,8 @@ A clear and concise description of what the bug is.
 
 **Server and plugin version**
 Spigot version:
-Name and version of plugins contains SimpleGuiFormat:
-SimpleGuiFormat version (if you know it):
+Name and version of plugins contains SimpleInventories:
+SimpleInventories version (if you know it):
 
 **Installed plugins on server (can be obtained by `/pl`):**
 

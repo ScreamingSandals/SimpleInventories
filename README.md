@@ -1,97 +1,28 @@
 # SimpleInventories
+[![Simple Inventories CI](https://github.com/ScreamingSandals/SimpleInventories/actions/workflows/publish.yml/badge.svg)](https://github.com/ScreamingSandals/SimpleInventories/actions/workflows/gradle.yml)
 
-SimpleInventories used is small library for making guis in minecraft! It's also available as plugin.
+**If you are using version 1.0.x (part of ScreamingBedWars 0.2.x), you are probably looking for the [ver/1.0.x](https://github.com/ScreamingSandals/BedWars/tree/ver/1.0.x) branch instead. This version of readme does NOT apply to 1.0.x!**
 
-[![Simple Inventories CI](https://github.com/ScreamingSandals/SimpleInventories/actions/workflows/gradle.yml/badge.svg)](https://github.com/ScreamingSandals/SimpleInventories/actions/workflows/gradle.yml)
+This README is WIP. Look into our wiki: https://github.com/ScreamingSandals/SimpleInventories/wiki (most format stuff is similar)
 
-Look into our wiki: https://github.com/ScreamingSandals/SimpleInventories/wiki
+## Compiling
 
-## How to use
-1. Import maven repository
-```xml
-<repository>
-  <id>screaming-repo</id>
-  <url>https://repo.screamingsandals.org/</url>
-</repository>
+This project uses **Gradle** and requires **JDK 17** or newer (the compiled JARs require JDK 11 or newer to run). To build it, clone the repository and run:
+
+```bash
+./gradlew clean build
 ```
-2. Include dependency
-```xml
-<dependency>
-  <groupId>org.screamingsandals.simpleinventories</groupId>
-  <artifactId>SimpleInventories-Core</artifactId>
-  <version>LATEST_VERSION_HERE</version>
-  <scope>compile</scope>
-</dependency>
+
+On Windows, use:
+
+```bat
+gradlew.bat clean build
 ```
-3. Use in code
-```java
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.Player;
+The compiled JAR file for each module will be located in the `build/libs` folder of each subproject. You can also publish it to your local maven repository (`gradlew publishToMavenLocal`).
 
-import org.screamingsandals.simpleinventories.material.builder.ItemFactory;
-import org.screamingsandals.simpleinventories.bukkit.SimpleInventoriesBukkit;
+The compiled plugin JAR file will be located in the `plugin/{platform}/build/libs` directory (e.g. `plugin/bukkit/build/libs`).
 
-public class Sample extends JavaPlugin {
-    
-    private InventorySet inventorySet;
+## License
 
-    public void onEnable() {
-
-        SimpleInventoriesBukkit.init(this);
-
-        inventorySet = SimpleInventoriesBukkit.builder()
-                .render(itemRenderEvent -> {
-                    
-                })
-                .preClick(preClickEvent -> {
-                    
-                })
-                .click(clickEvent -> {
-                    
-                })
-                .categoryOptions(options -> 
-                    options.backItem(ItemFactory.build(someItemStack1))
-                        .pageBackItem(ItemFactory.build(someItemStack2))
-                        .pageForwardItem(ItemFactory.build(someItemStack3))
-                        .cosmeticItem(ItemFactory.build(someItemStack4))
-                )
-                .include("myAwesomeGui.yml")
-                .process();
-    }
-
-    public void show(Player player) {
-        SimpleInventoriesBukkit.wrapPlayer(player).openInventory(inventorySet);
-    }
-}
-```
-4. Relocate package
-```xml
-<build>
-  <plugins>
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-shade-plugin</artifactId>
-      <executions>
-        <execution>
-          <phase>package</phase>
-          <goals>
-            <goal>shade</goal>
-          </goals>
-          <configuration>
-            <relocations>
-              <relocation>
-                <pattern>org.screamingsandals.simpleinventories</pattern>
-                <shadedPattern>${project.groupId}.si</shadedPattern>
-              </relocation>
-            </relocations>
-          </configuration>
-        </execution>
-      </executions>
-    </plugin>
-  </plugins>
-</build>
-  ```
-5. Now build your plugin and enjoy it!
-`mvn install`
+This project is licensed under the **Apache License 2.0** License - see the [LICENSE](LICENSE) file for details.

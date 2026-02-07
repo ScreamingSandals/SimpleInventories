@@ -1,0 +1,6 @@
+dependencies {
+    compileOnly(libs.groovy)
+    api(libs.configurate.core)
+    api(libs.slib.core.common)
+    compileOnly(libs.slib.placeholders.common)
+}
