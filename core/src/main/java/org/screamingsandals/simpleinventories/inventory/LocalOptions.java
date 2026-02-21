@@ -6,8 +6,10 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.simpleinventories.utils.StackParser;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 @Data
@@ -72,29 +74,40 @@ public class LocalOptions {
 		return options;
 	}
 
-	protected void deserializeInternal(ConfigurationSection map) {
-		entry(map, "backItem", entry -> setBackItem(StackParser.parse(entry)));
-		entry(map, "pageBackItem", entry -> setPageBackItem(StackParser.parse(entry)));
-		entry(map, "pageForwardItem", entry -> setPageForwardItem(StackParser.parse(entry)));
-		entry(map, "cosmeticItem", entry -> setCosmeticItem(StackParser.parse(entry)));
+	@ApiStatus.Internal
+	public void deserializeInternal(ConfigurationSection map) {
+		entry(map, "backItem", entry -> setBackItem(StackParser.parse(entry)), "back-item");
+		entry(map, "pageBackItem", entry -> setPageBackItem(StackParser.parse(entry)), "page-back-item");
+		entry(map, "pageForwardItem", entry -> setPageForwardItem(StackParser.parse(entry)), "page-forward-item");
+		entry(map, "cosmeticItem", entry -> setCosmeticItem(StackParser.parse(entry)), "cosmetic-item");
 
 		// DANGER
 		entry(map, "rows", entry -> setRows(((Number) entry).intValue()));
-		entry(map, "render_actual_rows", entry -> setRender_actual_rows(((Number) entry).intValue()));
-		entry(map, "render_offset", entry -> setRender_offset(((Number) entry).intValue()));
-		entry(map, "render_header_start", entry -> setRender_header_start(((Number) entry).intValue()));
-		entry(map, "render_footer_start", entry -> setRender_footer_start(((Number) entry).intValue()));
-		entry(map, "inventoryType", entry -> setInventoryType(InventoryType.valueOf(entry.toString().toUpperCase())));
+		entry(map, "render_actual_rows", entry -> setRender_actual_rows(((Number) entry).intValue()), "render-actual-rows");
+		entry(map, "render_offset", entry -> setRender_offset(((Number) entry).intValue()), "render-offset");
+		entry(map, "render_header_start", entry -> setRender_header_start(((Number) entry).intValue()), "render-header-start");
+		entry(map, "render_footer_start", entry -> setRender_footer_start(((Number) entry).intValue()), "render-footer-start");
+		entry(map, "inventoryType", entry -> setInventoryType(InventoryType.valueOf(entry.toString().toUpperCase(Locale.ROOT))), "inventory-type");
 
 		// MOST DANGER
-		entry(map, "items_on_row", entry -> setItems_on_row(((Number) entry).intValue()));
+		entry(map, "items_on_row", entry -> setItems_on_row(((Number) entry).intValue()), "items-on-row");
 	}
 	
-	protected static void entry(ConfigurationSection map, String path, Consumer<Object> consumer) {
+	protected static void entry(ConfigurationSection map, String path, Consumer<Object> consumer, String... altKeys) {
 		if (map.contains(path)) {
 			try {
 				consumer.accept(map.get(path));
+				return;
 			} catch (Throwable ignored) {
+			}
+		}
+		for (String altKey : altKeys) {
+			if (map.contains(altKey)) {
+				try {
+					consumer.accept(map.get(altKey));
+					return;
+				} catch (Throwable ignored) {
+				}
 			}
 		}
 	}

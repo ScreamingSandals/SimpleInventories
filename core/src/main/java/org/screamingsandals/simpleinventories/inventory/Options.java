@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.screamingsandals.simpleinventories.placeholders.AdvancedPlaceholderParser;
 import org.screamingsandals.simpleinventories.placeholders.PlaceholderConstantParser;
 import org.screamingsandals.simpleinventories.placeholders.PlaceholderParser;
@@ -59,13 +60,14 @@ public class Options extends LocalOptions {
 	}
 
 	@Override
-	protected void deserializeInternal(ConfigurationSection map) {
+	@ApiStatus.Internal
+	public void deserializeInternal(ConfigurationSection map) {
 		super.deserializeInternal(map);
 
 		entry(map, "genericShop", entry -> setGenericShop((boolean) entry));
 		entry(map, "genericShopPriceTypeRequired", entry -> setGenericShopPriceTypeRequired((boolean) entry));
 		entry(map, "animationsEnabled", entry -> setAnimationsEnabled((boolean) entry));
-		entry(map, "showPageNumber", entry -> setShowPageNumber((boolean) entry));
+		entry(map, "showPageNumber", entry -> setShowPageNumber((boolean) entry), "show-page-numbers");
 		entry(map, "prefix", entry -> setPrefix(entry.toString()));
 		entry(map, "allowAccessToConsole", entry -> setAllowAccessToConsole((boolean) entry));
 		entry(map, "allowBungeecordPlayerSending", entry -> setAllowBungeecordPlayerSending((boolean) entry));

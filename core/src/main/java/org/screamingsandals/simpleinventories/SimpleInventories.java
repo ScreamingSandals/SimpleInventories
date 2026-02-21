@@ -320,6 +320,11 @@ public class SimpleInventories {
 			this.buyCallbacks.addAll(origin.getBuyCallbacks());
 			this.postClickCallbacks.addAll(origin.getPostClickCallbacks());
 			this.closeCallbacks.addAll(origin.getCloseCallbacks());
+
+			if (origin.getOptionsSection() != null) {
+				this.localOptions.deserializeInternal(origin.getOptionsSection());
+			}
+
 			for (Object object : origin.getContent()) {
 				lastpos = generateItem(null, object, lastpos, origin, localOptions);
 			}
@@ -529,6 +534,11 @@ public class SimpleInventories {
 				}
 				Origin or = loader.readData(file, data, currentOptions);
 				List<Object> items = or.getContent();
+
+				if (or.getOptionsSection() != null) {
+					currentOptions.deserializeInternal(or.getOptionsSection());
+				}
+
 				for (Object item : items) {
 					lastpos = generateItem(parent, item, lastpos, or, currentOptions);
 				}
