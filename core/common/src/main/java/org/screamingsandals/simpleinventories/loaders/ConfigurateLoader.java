@@ -45,6 +45,18 @@ public class ConfigurateLoader implements Loader {
         var configKeys = configPath.split("\\.");
         var node = root.node((Object[]) configKeys);
 
+        String optionNodeKey;
+        if ("data".equals(configPath)) {
+            optionNodeKey = "options";
+        } else {
+            optionNodeKey = configPath + "_options";
+        }
+        var options = root.node((Object[]) optionNodeKey.split("\\."));
+
+        if (!options.empty()) {
+            subInventory.getLocalOptions().fromNode(options);
+        }
+
         loadConfigurationNodeInto(subInventory, node);
     }
 

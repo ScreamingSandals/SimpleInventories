@@ -195,19 +195,19 @@ public class LocalOptions implements Cloneable {
     }
 
     public void fromNode(ConfigurationNode configurationNode) {
-        var backItem = configurationNode.node("backItem");
+        var backItem = node(configurationNode, "back-item", "backItem");
         if (!backItem.empty()) {
             this.backItem = ItemStackFactory.build(backItem);
         }
-        var pageBackItem = configurationNode.node("pageBackItem");
+        var pageBackItem = node(configurationNode, "page-back-item", "pageBackItem");
         if (!pageBackItem.empty()) {
             this.pageBackItem = ItemStackFactory.build(pageBackItem);
         }
-        var pageForwardItem = configurationNode.node("pageForwardItem");
+        var pageForwardItem = node(configurationNode, "page-forward-item", "pageForwardItem");
         if (!pageForwardItem.empty()) {
             this.pageForwardItem = ItemStackFactory.build(pageForwardItem);
         }
-        var cosmeticItem = configurationNode.node("cosmeticItem");
+        var cosmeticItem = node(configurationNode, "cosmetic-item", "cosmeticItem");
         if (!cosmeticItem.empty()) {
             this.cosmeticItem = ItemStackFactory.build(cosmeticItem);
         }
@@ -221,7 +221,7 @@ public class LocalOptions implements Cloneable {
             }
         }
 
-        var renderActualRows = configurationNode.node("render_actual_rows");
+        var renderActualRows = node(configurationNode, "render-actual-rows", "render_actual_rows");
         if (!renderActualRows.empty()) {
             try {
                 this.renderActualRows = renderActualRows.get(Integer.class);
@@ -230,7 +230,7 @@ public class LocalOptions implements Cloneable {
             }
         }
 
-        var renderOffset = configurationNode.node("render_offset");
+        var renderOffset = node(configurationNode, "render-offset", "render_offset");
         if (!renderOffset.empty()) {
             try {
                 this.renderOffset = renderOffset.get(Integer.class);
@@ -239,7 +239,7 @@ public class LocalOptions implements Cloneable {
             }
         }
 
-        var renderHeaderStart = configurationNode.node("render_header_start");
+        var renderHeaderStart = node(configurationNode, "render-header-start", "render_header_start");
         if (!renderHeaderStart.empty()) {
             try {
                 this.renderHeaderStart = renderHeaderStart.get(Integer.class);
@@ -248,7 +248,7 @@ public class LocalOptions implements Cloneable {
             }
         }
 
-        var renderFooterStart = configurationNode.node("render_footer_start");
+        var renderFooterStart = node(configurationNode, "render-footer-start", "render_footer_start");
         if (!renderFooterStart.empty()) {
             try {
                 this.renderFooterStart = renderFooterStart.get(Integer.class);
@@ -257,7 +257,7 @@ public class LocalOptions implements Cloneable {
             }
         }
 
-        var itemsOnRow = configurationNode.node("items_on_row");
+        var itemsOnRow = node(configurationNode, "items-on-row", "items_on_row");
         if (!itemsOnRow.empty()) {
             try {
                 this.itemsOnRow = itemsOnRow.get(Integer.class);
@@ -266,7 +266,7 @@ public class LocalOptions implements Cloneable {
             }
         }
 
-        var inventoryType = configurationNode.node("inventoryType");
+        var inventoryType = node(configurationNode, "inventory-type", "inventoryType");
         if (!inventoryType.empty()) {
             this.inventoryType = inventoryType.getString();
         }
@@ -284,9 +284,19 @@ public class LocalOptions implements Cloneable {
             }
         }
 
-        var showPageNumber = configurationNode.node("showPageNumber");
+        var showPageNumber = node(configurationNode, "show-page-numbers", "showPageNumber");
         if (!showPageNumber.empty()) {
             this.showPageNumber = showPageNumber.getBoolean();
         }
+    }
+
+    private ConfigurationNode node(ConfigurationNode root, String... keys) {
+        for (String key : keys) {
+            var node = root.node(key);
+            if (!node.empty()) {
+                return node;
+            }
+        }
+        return root.node(keys[0]);
     }
 }
