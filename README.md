@@ -1,8 +1,10 @@
 # SimpleInventories
 
-SimpleInventories used is small library for making guis in minecraft! It's also available as plugin.
+[![Simple Inventories CI](https://github.com/ScreamingSandals/SimpleInventories/actions/workflows/publish-1.0.x.yml/badge.svg)](https://github.com/ScreamingSandals/SimpleInventories/actions/workflows/publish-1.0.x.yml)
 
-[![Build Status](https://ci.screamingsandals.org/job/SimpleInventories/badge/icon?style=flat-square)](https://ci.screamingsandals.org/job/SimpleInventories/)
+**This version of the README only applies to SimpleInventories 1.0.x (used withing ScreamingBedWars 0.2.x). For SimpleInventories bundled in other plugins (SBA or SBW 0.3.x), look at the ver/2.0.x branch**
+
+SimpleInventories is a small library for making GUIs in Minecraft!
 
 Look into our wiki: https://github.com/ScreamingSandals/SimpleInventories/wiki
 
@@ -142,3 +144,23 @@ public class Sample extends JavaPlugin implements Listener {
   ```
 5. Now build your plugin and enjoy it!
 `mvn install`
+
+## Compiling
+
+This project uses **Gradle** and requires **JDK 17** or newer (the compiled JARs require JDK 8 or newer to run). To build it, clone the repository and run:
+
+```bash
+./gradlew clean build
+```
+
+On Windows, use:
+
+```bat
+gradlew.bat clean build
+```
+
+The compiled JAR file will be located in the `core/build/libs` directory.
+
+## License
+
+This project is licensed under the **Apache License 2.0** License - see the [LICENSE](LICENSE) file for details.
