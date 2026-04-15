@@ -20,7 +20,6 @@ import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
 import org.screamingsandals.simpleinventories.builder.CategoryBuilder;
 import org.screamingsandals.simpleinventories.builder.InventorySetBuilder;
-import org.screamingsandals.simpleinventories.dependencies.DependencyHelper;
 import org.screamingsandals.simpleinventories.inventory.SubInventory;
 
 import java.net.URL;
@@ -29,7 +28,12 @@ import java.nio.file.Path;
 public class GroovyLoader implements Loader {
     @Override
     public void loadPathInto(SubInventory subInventory, Path path, String configPath) throws Exception {
-        DependencyHelper.GROOVY.load();
+        try {
+            Class.forName("groovy.util.GroovyScriptEngine");
+        } catch (ClassNotFoundException exception) {
+            throw new UnsupportedOperationException("Groovy runtime is not provided. Switch to using YAML or download a plugin-ized runtime from: " +
+                    "https://repo.screamingsandals.org/public/org/screamingsandals/misc/groovy/3.0.16/groovy-3.0.16.jar");
+        }
 
         Binding binding = new Binding();
         CategoryBuilder builder;
