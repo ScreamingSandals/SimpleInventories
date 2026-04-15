@@ -33,11 +33,6 @@ public final class LoaderRegister {
 		REGISTER.put(".yml", yaml);
 		REGISTER.put(".yaml", yaml);
 		REGISTER.put(".json", yaml); // SnakeYAML can read json files
-		
-		Loader csv = new CsvLoader();
-		
-		REGISTER.put(".csv", csv);
-		REGISTER.put(".txt", csv);
 
 		Loader groovy = new GroovyLoader();
 

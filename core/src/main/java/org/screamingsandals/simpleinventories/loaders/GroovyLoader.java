@@ -21,7 +21,6 @@ package org.screamingsandals.simpleinventories.loaders;
 
 import groovy.lang.Binding;
 import groovy.util.GroovyScriptEngine;
-import org.screamingsandals.simpleinventories.dependencies.DependencyHelper;
 import org.screamingsandals.simpleinventories.groovy.builder.MainGroovyBuilder;
 import org.screamingsandals.simpleinventories.inventory.LocalOptions;
 import org.screamingsandals.simpleinventories.inventory.Origin;
@@ -32,7 +31,12 @@ import java.net.URL;
 public class GroovyLoader implements Loader {
     @Override
     public Origin readData(File file, String configPath, LocalOptions options) throws Exception {
-        DependencyHelper.GROOVY.load();
+        try {
+            Class.forName("groovy.util.GroovyScriptEngine");
+        } catch (ClassNotFoundException exception) {
+            throw new UnsupportedOperationException("Groovy runtime is not provided. Switch to using YAML or download a plugin-ized runtime from: " +
+                    "https://repo.screamingsandals.org/public/org/screamingsandals/misc/groovy/3.0.16/groovy-3.0.16.jar");
+        }
 
         Binding binding = new Binding();
         MainGroovyBuilder builder = new MainGroovyBuilder(options);
