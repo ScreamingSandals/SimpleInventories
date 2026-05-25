@@ -134,6 +134,10 @@ public class InventorySet implements Openable {
                 }
             }
             var key = args[0];
+            if (key.startsWith("§") && key.length() > 2 && !placeholders.containsKey(key)) {
+                // Bukkit can do weird things to the start of the placeholder, if it starts with a color code, skip it
+                key = key.substring(2);
+            }
             if (placeholders.containsKey(key)) {
                 matcher.appendReplacement(sb, placeholders.get(key).processPlaceholder(key, player, info, gargs));
             }
